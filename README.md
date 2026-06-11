@@ -9,9 +9,9 @@ An interactive physics reference and equation solver for first-year undergraduat
 
 ## Origin
 
-Physicalc is the mobile/desktop evolution of my earlier project, [Physics-TUI](https://github.com/ClaudioRMalvino/Physics-TUI) — a terminal user interface covering 12 chapters of first-year physics with 190+ equations, 58 interactive calculators, and a unit converter. The TUI works great if you live in a terminal, but most students live on their phones.
+Physicalc is the mobile/desktop evolution of my earlier project, [Physics-TUI](https://github.com/ClaudioRMalvino/Physics-TUI), a terminal user interface covering 12 chapters of first-year physics with 190+ equations, 58 interactive calculators, and a unit converter. The TUI works great if you live in a terminal, but most students live on their phones.
 
-This project ports that work to a modern Material 3 app: the Python domain logic (equations, definitions, solvers, unit conversions) is being translated chapter-by-chapter into Kotlin, validated against the same test suites, and given a touch-first UI with the things a terminal can't offer — animated navigation, live-as-you-type unit conversion, and a proper on-screen experience for working through problems.
+This project ports that work to a modern Material 3 app: the Python domain logic (equations, definitions, solvers, unit conversions) is being translated chapter-by-chapter into Kotlin, validated against the same test suites, and given a touch-first UI with the things a terminal can't offer such as: animated navigation, live-as-you-type unit conversion, and a proper on-screen experience for working through problems.
 
 ## Who it's for
 
@@ -24,22 +24,22 @@ First-year undergraduate physics students (and anyone reviewing the fundamentals
 
 ## Screenshots
 
-| Home — live solar system | Chapters | Equations |
-|:---:|:---:|:---:|
+|                                                                Home                                                                | Chapters | Equations |
+|:----------------------------------------------------------------------------------------------------------------------------------:|:---:|:---:|
 | <img src="assets/screenshots/home_dark.png" width="260" alt="Home screen: live solar system with planets at their real positions"> | <img src="assets/screenshots/chapters_dark.png" width="260" alt="Chapter list"> | <img src="assets/screenshots/equation_expanded.png" width="260" alt="Equation reference with typeset formulas and variable definitions"> |
 
 | Equation solver | Unit converter | Flashcards |
 |:---:|:---:|:---:|
 | <img src="assets/screenshots/solver_dark.png" width="260" alt="Interactive solver with result"> | <img src="assets/screenshots/converter_dark.png" width="260" alt="Live unit converter"> | <img src="assets/screenshots/flashcard_back.png" width="260" alt="Flashcards with self-graded recall"> |
 
-| Light theme (paper cream) | |
-|:---:|:---:|
+|                                                Light theme                                                | |
+|:---------------------------------------------------------------------------------------------------------:|:---:|
 | <img src="assets/screenshots/home_light.png" width="260" alt="Light (paper-cream) home with daily quote"> | <img src="assets/screenshots/chapters_light.png" width="260" alt="Light (paper-cream) chapter list"> |
 
-The home screen is not just decoration: each planet is drawn at its true
+Each planet in the home screen is drawn at its true
 heliocentric ecliptic longitude for the current date (JPL Keplerian elements,
 Kepler's equation solved by Newton's method). Orbital radii are compressed to
-fit a phone; the angles are real.
+fit a phone; the angles are accurate.
 
 ## Porting status
 
@@ -59,9 +59,6 @@ fit a phone; the angles are real.
 | 14 | Fluid Dynamics | ✅ Ported (with tests) |
 | — | Unit Converter | ✅ Ported (with tests) |
 
-All 12 chapters are ported. During the port, each chapter's math was re-derived and verified;
-several latent bugs in the original Python solvers were found and fixed in the Kotlin
-(see commit history) — chapters without Python test coverage received new hand-derived test suites.
 
 ## Architecture
 

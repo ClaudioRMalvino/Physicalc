@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.em
  *   - multi-letter words are upright (sin, cos, Total, distance ...)
  *
  * Everything is plain Compose text — no images, no WebView, no dependencies —
- * so it works identically on Android, desktop, and iOS, scrolls like ordinary
+ * so it works identically on Android and desktop, scrolls like ordinary
  * text, and obeys the Material theme color/typography.
  */
 

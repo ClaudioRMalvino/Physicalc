@@ -18,7 +18,7 @@ import kotlin.math.sin
 /*
  * Hand-drawn vector glyphs for the chapter cards — one tiny "essence of the
  * chapter" pictogram each, drawn with Canvas so they are crisp at any size,
- * tint with the theme, and work identically on Android / desktop / iOS.
+ * tint with the theme, and work identically on Android and desktop.
  *
  * All coordinates are fractions of the canvas size (0..1), so the glyphs scale
  * with whatever size the badge gives them.

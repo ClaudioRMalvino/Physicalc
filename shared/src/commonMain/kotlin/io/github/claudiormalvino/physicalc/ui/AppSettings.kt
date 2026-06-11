@@ -9,8 +9,8 @@ import com.russhwolf.settings.Settings
  * User preferences, persisted across launches.
  *
  * `Settings()` (multiplatform-settings) stores values in the platform's native
- * key-value store: SharedPreferences on Android, java.util.prefs on desktop,
- * NSUserDefaults on iOS — no platform glue needed here.
+ * key-value store: SharedPreferences on Android, java.util.prefs on desktop —
+ * no platform glue needed here.
  *
  * `darkTheme` is also Compose state (`mutableStateOf`), so flipping it instantly
  * recomposes everything that reads it — the whole app retints live.

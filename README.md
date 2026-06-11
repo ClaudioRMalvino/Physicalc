@@ -1,6 +1,6 @@
 # Physicalc
 
-An interactive physics reference and equation solver for first-year undergraduate students, built with Kotlin Multiplatform and Compose Multiplatform. One shared codebase runs natively on **Android**, **desktop** (Linux/macOS/Windows), and **iOS**.
+An interactive physics reference and equation solver for first-year undergraduate students, built with Kotlin Multiplatform and Compose Multiplatform. One shared codebase runs natively on **Android** and **desktop** (Linux/macOS/Windows).
 
 ![Development Status](https://img.shields.io/badge/status-stable-green)
 ![Kotlin](https://img.shields.io/badge/kotlin-2.4-blue)
@@ -79,8 +79,7 @@ PhysicsApp/
 │       │   └── App.kt           # Navigation
 │       └── commonTest/          # Test suites ported from Physics-TUI
 ├── androidApp/                  # Android entry point + launcher icon
-├── desktopApp/                  # Desktop (JVM) entry point
-└── iosApp/                      # iOS entry point (requires macOS/Xcode to build)
+└── desktopApp/                  # Desktop (JVM) entry point
 ```
 
 The design principle carried over from Physics-TUI: **domain logic is pure and UI-free.** Every solver is a plain function from known values to the unknown, so it's trivially testable and platform-independent. Calculators follow the same convention as the Python original — the variable left unknown (`null`, formerly `None`) is the one solved for.
@@ -104,8 +103,6 @@ Prerequisites: JDK 17+, and for Android an SDK (the project reads its location f
 # Signed release bundle for the Play Store (requires keystore.properties)
 ./gradlew :androidApp:bundleRelease
 ```
-
-iOS builds require macOS with Xcode; the target is configured but untested until then.
 
 ## Testing
 

@@ -1,0 +1,54 @@
+package io.github.claudiormalvino.physicalc.ui
+
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+
+/*
+ * App-wide Material 3 theme.
+ *
+ * Material 3 works from a "color scheme" — a set of named roles (primary, surface,
+ * background, ...) that every component reads from. Change a color here and the
+ * entire app updates. This replaces your appearance.tcss from the TUI.
+ */
+
+// A deep-space palette: dark blue-black background, periwinkle primary, violet accents.
+private val SpaceDark = darkColorScheme(
+    primary = Color(0xFF8AB4FF),            // interactive elements, formulas
+    onPrimary = Color(0xFF062B52),
+    primaryContainer = Color(0xFF274468),   // chips, badges
+    onPrimaryContainer = Color(0xFFD7E3FF),
+
+    secondary = Color(0xFFBCA6FF),          // secondary accents
+    onSecondary = Color(0xFF2A1A55),
+    secondaryContainer = Color(0xFF3B2D63),
+    onSecondaryContainer = Color(0xFFE9DDFF),
+
+    tertiary = Color(0xFF77D9C9),           // small highlights (counts, success)
+    onTertiary = Color(0xFF003730),
+
+    background = Color(0xFF0B0F1A),         // app background
+    onBackground = Color(0xFFE4E7F0),
+
+    surface = Color(0xFF111726),            // cards, sheets
+    onSurface = Color(0xFFE4E7F0),
+    surfaceVariant = Color(0xFF1A2336),     // slightly raised surfaces
+    onSurfaceVariant = Color(0xFFA9B3C8),   // secondary text
+
+    outline = Color(0xFF45516B),
+    outlineVariant = Color(0xFF273249),
+
+    error = Color(0xFFFFB4AB),
+    onError = Color(0xFF690005),
+    errorContainer = Color(0xFF93000A),
+    onErrorContainer = Color(0xFFFFDAD6),
+)
+
+@Composable
+fun PhysicsTheme(content: @Composable () -> Unit) {
+    MaterialTheme(
+        colorScheme = SpaceDark,
+        content = content,
+    )
+}

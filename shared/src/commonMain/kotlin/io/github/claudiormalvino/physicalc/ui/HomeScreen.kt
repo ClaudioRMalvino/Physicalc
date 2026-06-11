@@ -205,12 +205,14 @@ fun HomeScreen(onSettingsClick: () -> Unit) {
             Icon(Icons.Default.MoreVert, contentDescription = "Settings", tint = colors.onSurfaceVariant)
         }
 
-        // Quote of the day (offline, deterministic by date) + the date caption.
+        // Quote of the day (offline, deterministic by date) — set in the empty
+        // sky above the solar system. Horizontal padding keeps it clear of the
+        // settings button in the top-right corner.
         Column(
             modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .navigationBarsPadding()
-                .padding(start = 32.dp, end = 32.dp, bottom = 86.dp), // above the glass bar
+                .align(Alignment.TopCenter)
+                .statusBarsPadding()
+                .padding(start = 56.dp, end = 56.dp, top = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             val quote = remember(epochMillis) { PhysicsQuotes.forDay(epochMillis) }
@@ -221,18 +223,22 @@ fun HomeScreen(onSettingsClick: () -> Unit) {
                 textAlign = TextAlign.Center,
                 color = colors.onSurfaceVariant,
             )
-            Spacer(Modifier.height(4.dp))
+            Spacer(Modifier.height(6.dp))
             Text(
                 text = "\u2014 ${quote.author}",
                 style = MaterialTheme.typography.labelMedium,
                 color = colors.onSurfaceVariant.copy(alpha = 0.75f),
             )
-            Spacer(Modifier.height(14.dp))
-            Text(
-                text = "Planet positions for ${SolarSystemModel.formatDate(epochMillis)}",
-                style = MaterialTheme.typography.labelMedium,
-                color = colors.onSurfaceVariant,
-            )
         }
+
+        Text(
+            text = "Planet positions for ${SolarSystemModel.formatDate(epochMillis)}",
+            style = MaterialTheme.typography.labelMedium,
+            color = colors.onSurfaceVariant,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .navigationBarsPadding()
+                .padding(bottom = 86.dp), // just above the glass bar
+        )
     }
 }

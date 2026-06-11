@@ -1,5 +1,11 @@
 package io.github.claudiormalvino.physicalc.physics
 
+import kotlin.math.abs
+import kotlin.math.floor
+import kotlin.math.log10
+import kotlin.math.pow
+import kotlin.math.round
+
 /*
  * This file is the Kotlin equivalent of your Python `base_chapter.py`.
  *
@@ -58,6 +64,22 @@ data class Definition(
  * `abstract val equations` is a property that every subclass MUST provide
  * (the compiler enforces it), just like the empty lists you populate in each Python chapter.
  */
+/**
+ * Rounds a solver result for stable display.
+ *
+ * Values of ordinary magnitude keep the long-standing 4-decimal convention.
+ * Magnitudes below 0.001 keep 6 SIGNIFICANT figures instead — so physically
+ * tiny results (a gravitational force of ~1e-9 N, say) no longer collapse
+ * to 0.0 the way plain 4-decimal rounding made them.
+ */
+internal fun roundResult(value: Double): Double {
+    if (value == 0.0 || !value.isFinite()) return value
+    if (abs(value) >= 1e-3) return round(value * 10_000.0) / 10_000.0
+    val magnitude = floor(log10(abs(value)))
+    val factor = 10.0.pow(5.0 - magnitude)
+    return round(value * factor) / factor
+}
+
 abstract class PhysicsChapter(
     val title: String,
     val description: String = "",

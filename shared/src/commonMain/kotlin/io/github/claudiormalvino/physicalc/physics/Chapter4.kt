@@ -209,7 +209,7 @@ class Chapter4 : PhysicsChapter(
         const val G: Double = 9.82
 
         /** Rounds to 4 decimal places, matching Python's `round(x, 4)`. */
-        private fun round4(value: Double): Double = round(value * 10000.0) / 10000.0
+        private fun round4(value: Double): Double = roundResult(value)
 
         /**
          * T = 2v₀sinθ / g. Pass every value except the one you want solved for;

@@ -202,7 +202,7 @@ class Chapter6 : PhysicsChapter(
                 "                        This makes viscosity a negative value."
 
         /** Rounds to 4 decimal places, matching Python's `round(x, 4)`. */
-        private fun round4(value: Double): Double = round(value * 10000.0) / 10000.0
+        private fun round4(value: Double): Double = roundResult(value)
 
         /**
          * F(c) = mv²/r. Pass every value except the one you want solved for;

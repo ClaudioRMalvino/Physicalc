@@ -2,6 +2,7 @@ package io.github.claudiormalvino.physicalc.physics
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 import kotlin.test.assertFailsWith
 
 /*
@@ -19,6 +20,16 @@ import kotlin.test.assertFailsWith
  * embedded into them (hence the `" ".repeat(n)` below).
  */
 class Chapter13Test {
+
+    @Test
+    fun tinyForcesSurviveRounding() {
+        // Two 70 kg people 1 m apart: F = G·m1·m2/r² ≈ 3.27e-7 N.
+        // Plain 4-decimal rounding used to collapse this to 0.0; significant-
+        // figure rounding for small magnitudes must preserve it.
+        val f = Chapter13.Calculate.lawOfGravitation(mass1 = 70.0, mass2 = 70.0, distance = 1.0)
+        assertTrue(f > 3.2e-7 && f < 3.4e-7, "F = $f")
+    }
+
 
     private val calc = Chapter13.Calculate
 

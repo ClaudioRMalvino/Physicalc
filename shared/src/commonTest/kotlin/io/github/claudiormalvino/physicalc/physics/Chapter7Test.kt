@@ -222,11 +222,12 @@ class Chapter7Test {
         val work = listOf(500.0, 100.0)
         val springConst = listOf(10.0, 1000.0)
         val finalXpos = listOf(0.0, -10.0)
-        val expected = listOf(100.0, 100.2)
+        // x₁ = sqrt(2W/k + x₂²): sqrt(100) = 10, sqrt(100.2) ≈ 10.01
+        val expected = listOf(10.0, 10.01)
 
         for (i in expected.indices) {
             val result = calc.workBySpring(work = work[i], springConst = springConst[i], finalXpos = finalXpos[i])
-            assertEquals(expected[i], result, 0.05)
+            assertEquals(expected[i], result, 0.005)
         }
     }
 
@@ -235,11 +236,21 @@ class Chapter7Test {
         val work = listOf(500.0, 100.0)
         val springConst = listOf(10.0, 1000.0)
         val initialXpos = listOf(0.0, -10.0)
-        val expected = listOf(-100.0, 99.8)
+        // First case: x₂² = -2W/k + x₁² = -100 — no real solution, must throw.
+        // Second: sqrt(99.8) ≈ 9.99.
+        val expected = listOf(null, 9.99)
 
         for (i in expected.indices) {
-            val result = calc.workBySpring(work = work[i], springConst = springConst[i], initialXpos = initialXpos[i])
-            assertEquals(expected[i], result, 0.005)
+            val e = expected[i]
+            if (e == null) {
+                val ex = assertFailsWith<IllegalArgumentException> {
+                    calc.workBySpring(work = work[i], springConst = springConst[i], initialXpos = initialXpos[i])
+                }
+                assertEquals("The discriminant cannot be negative", ex.message)
+            } else {
+                val result = calc.workBySpring(work = work[i], springConst = springConst[i], initialXpos = initialXpos[i])
+                assertEquals(e, result, 0.005)
+            }
         }
     }
 

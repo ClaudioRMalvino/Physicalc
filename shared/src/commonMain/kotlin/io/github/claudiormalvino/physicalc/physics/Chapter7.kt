@@ -149,7 +149,7 @@ class Chapter7 : PhysicsChapter(
         const val G: Double = 9.82
 
         /** Rounds to 4 decimal places, matching Python's `round(x, 4)`. */
-        private fun round4(value: Double): Double = round(value * 10000.0) / 10000.0
+        private fun round4(value: Double): Double = roundResult(value)
 
         /**
          * W = Fd·cos(θ). Pass every value except the one you want solved for;
@@ -269,14 +269,20 @@ class Chapter7 : PhysicsChapter(
                 )
             }
 
-            // Solve for x₁ (initial position, squared — see note above)
+            // Solve for x₁ (initial position). The algebra yields x₁², so take
+            // the square root; the positive root is returned (the sign of a
+            // spring displacement is not recoverable from W and k alone).
             if (initialXpos == null) {
-                return round4(((2.0 * work!!) / springConst) + (finalXpos!! * finalXpos))
+                val square = ((2.0 * work!!) / springConst) + (finalXpos!! * finalXpos)
+                if (square < 0) throw IllegalArgumentException("The discriminant cannot be negative")
+                return round4(sqrt(square))
             }
 
-            // Solve for x₂ (final position, squared — see note above)
+            // Solve for x₂ (final position) — same square-root treatment.
             if (finalXpos == null) {
-                return round4(((-2.0 * work!!) / springConst) + (initialXpos * initialXpos))
+                val square = ((-2.0 * work!!) / springConst) + (initialXpos * initialXpos)
+                if (square < 0) throw IllegalArgumentException("The discriminant cannot be negative")
+                return round4(sqrt(square))
             }
 
             // Solve for W (work) — the default case

@@ -338,7 +338,7 @@ class Chapter10 : PhysicsChapter(
     object Calculate {
 
         /** Rounds to 4 decimal places, matching Python's `round(x, 4)`. */
-        private fun round4(value: Double): Double = round(value * 10000.0) / 10000.0
+        private fun round4(value: Double): Double = roundResult(value)
 
         /**
          * Solves a quadratic equation ax² + bx + c = 0 accurately in all cases.

@@ -222,7 +222,7 @@ class Chapter3 : PhysicsChapter(
          * Kotlin has no built-in "round to N decimals", so we scale, round, and unscale.
          * `private` means only code inside this object can call it.
          */
-        private fun round4(value: Double): Double = round(value * 10000.0) / 10000.0
+        private fun round4(value: Double): Double = roundResult(value)
 
         /**
          * Solves a quadratic equation ax² + bx + c = 0 accurately in all cases.

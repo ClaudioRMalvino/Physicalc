@@ -290,7 +290,7 @@ class Chapter13 : PhysicsChapter(
         private const val MSG_DISTANCE_LE_ZERO_SHORT = "Distance cannot be less than or equal to zero."
 
         /** Rounds to 4 decimal places, matching Chapter3's helper. */
-        private fun round4(value: Double): Double = round(value * 10000.0) / 10000.0
+        private fun round4(value: Double): Double = roundResult(value)
 
         /**
          * F = G·m₁·m₂/r². Pass every value except the unknown; leave it `null`.

@@ -171,7 +171,7 @@ class Chapter11 : PhysicsChapter(
                 "Check your values."
 
         /** Rounds to 4 decimal places, matching Python's `round(x, 4)`. */
-        private fun round4(value: Double): Double = round(value * 10000.0) / 10000.0
+        private fun round4(value: Double): Double = roundResult(value)
 
         /**
          * a = (mg·sinθ) / (m + I/r²) — acceleration of a body rolling without slipping.

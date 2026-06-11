@@ -22,6 +22,25 @@ First-year undergraduate physics students (and anyone reviewing the fundamentals
 - **Definitions** — the key terms of each chapter in plain language
 - **Unit converter** — length, time, mass, force, energy, pressure, and speed, converting live as you type
 
+## Screenshots
+
+| Home — live solar system | Chapters | Equations |
+|:---:|:---:|:---:|
+| <img src="assets/screenshots/home_dark.png" width="260" alt="Home screen: live solar system with planets at their real positions"> | <img src="assets/screenshots/chapters_dark.png" width="260" alt="Chapter list"> | <img src="assets/screenshots/equation_expanded.png" width="260" alt="Equation reference with typeset formulas and variable definitions"> |
+
+| Equation solver | Unit converter | Flashcards |
+|:---:|:---:|:---:|
+| <img src="assets/screenshots/solver_dark.png" width="260" alt="Interactive solver with result"> | <img src="assets/screenshots/converter_dark.png" width="260" alt="Live unit converter"> | <img src="assets/screenshots/flashcard_back.png" width="260" alt="Flashcards with self-graded recall"> |
+
+| Light theme | | |
+|:---:|:---:|:---:|
+| <img src="assets/screenshots/home_light.png" width="260" alt="Light (paper-cream) home"> | <img src="assets/screenshots/chapters_light.png" width="260" alt="Light (paper-cream) chapter list"> | <img src="assets/screenshots/flashcard_front.png" width="260" alt="Flashcard prompt side"> |
+
+The home screen is not just decoration: each planet is drawn at its true
+heliocentric ecliptic longitude for the current date (JPL Keplerian elements,
+Kepler's equation solved by Newton's method). Orbital radii are compressed to
+fit a phone; the angles are real.
+
 ## Porting status
 
 | Chapter | Topic | Status |

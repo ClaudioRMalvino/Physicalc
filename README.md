@@ -32,9 +32,9 @@ First-year undergraduate physics students (and anyone reviewing the fundamentals
 |:---:|:---:|:---:|
 | <img src="assets/screenshots/solver_dark.png" width="260" alt="Interactive solver with result"> | <img src="assets/screenshots/converter_dark.png" width="260" alt="Live unit converter"> | <img src="assets/screenshots/flashcard_back.png" width="260" alt="Flashcards with self-graded recall"> |
 
-| Light theme | | |
-|:---:|:---:|:---:|
-| <img src="assets/screenshots/home_light.png" width="260" alt="Light (paper-cream) home"> | <img src="assets/screenshots/chapters_light.png" width="260" alt="Light (paper-cream) chapter list"> | <img src="assets/screenshots/flashcard_front.png" width="260" alt="Flashcard prompt side"> |
+| Light theme (paper cream) | |
+|:---:|:---:|
+| <img src="assets/screenshots/home_light.png" width="260" alt="Light (paper-cream) home with daily quote"> | <img src="assets/screenshots/chapters_light.png" width="260" alt="Light (paper-cream) chapter list"> |
 
 The home screen is not just decoration: each planet is drawn at its true
 heliocentric ecliptic longitude for the current date (JPL Keplerian elements,

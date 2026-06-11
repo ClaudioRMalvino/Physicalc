@@ -79,7 +79,7 @@ fun ChaptersScreen(onChapterClick: (Int) -> Unit) {
 
 /** One tappable chapter row: topic glyph, title, description, content counts. */
 @Composable
-private fun ChapterCard(
+internal fun ChapterCard(
     chapter: PhysicsChapter,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,

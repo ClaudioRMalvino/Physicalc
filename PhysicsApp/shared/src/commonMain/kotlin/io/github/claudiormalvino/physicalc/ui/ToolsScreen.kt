@@ -40,7 +40,10 @@ import androidx.compose.ui.unit.dp
 
 /** Tools tab: the utilities that aren't tied to a chapter. */
 @Composable
-fun ToolsScreen(onConverterClick: () -> Unit) {
+fun ToolsScreen(
+    onConverterClick: () -> Unit,
+    onFlashcardsClick: () -> Unit,
+) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -67,6 +70,16 @@ fun ToolsScreen(onConverterClick: () -> Unit) {
                 subtitle = "Length, time, mass, force, energy, pressure, speed",
                 glyph = "⇄",
                 onClick = onConverterClick,
+                modifier = Modifier.padding(horizontal = 20.dp),
+            )
+        }
+
+        item {
+            ToolCard(
+                title = "Flashcards",
+                subtitle = "Test your recall of equations and definitions",
+                glyph = "❏",
+                onClick = onFlashcardsClick,
                 modifier = Modifier.padding(horizontal = 20.dp),
             )
         }

@@ -195,11 +195,6 @@ fun HomeScreen(onSettingsClick: () -> Unit) {
                 fontWeight = FontWeight.Bold,
                 color = colors.onBackground,
             )
-            Text(
-                text = "Interactive reference & equation solvers",
-                style = MaterialTheme.typography.bodyLarge,
-                color = colors.onSurfaceVariant,
-            )
         }
 
         IconButton(

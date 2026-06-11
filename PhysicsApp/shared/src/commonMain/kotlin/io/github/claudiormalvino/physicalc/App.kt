@@ -30,6 +30,10 @@ import io.github.claudiormalvino.physicalc.ui.AppSettings
 import io.github.claudiormalvino.physicalc.ui.CalculatorScreen
 import io.github.claudiormalvino.physicalc.ui.ChapterDetailScreen
 import io.github.claudiormalvino.physicalc.ui.ChaptersScreen
+import io.github.claudiormalvino.physicalc.ui.FlashcardMode
+import io.github.claudiormalvino.physicalc.ui.FlashcardsChaptersScreen
+import io.github.claudiormalvino.physicalc.ui.FlashcardsModeScreen
+import io.github.claudiormalvino.physicalc.ui.FlashcardsSessionScreen
 import io.github.claudiormalvino.physicalc.ui.HomeScreen
 import io.github.claudiormalvino.physicalc.ui.PhysicsTheme
 import io.github.claudiormalvino.physicalc.ui.SettingsSheet
@@ -58,12 +62,17 @@ sealed interface Screen {
     data class ChapterDetail(val chapterIndex: Int) : Screen
     data class Calculator(val chapterIndex: Int, val equationIndex: Int) : Screen
     data object UnitConverter : Screen
+    data object FlashcardsMode : Screen
+    data class FlashcardsChapters(val mode: FlashcardMode) : Screen
+    data class FlashcardsSession(val mode: FlashcardMode, val chapterIndex: Int) : Screen
 }
 
 /** How "deep" something is — used to slide forward vs. backward. */
 private fun depth(state: Any): Int = when (state) {
     is RootTab -> 0
     is Screen.Calculator -> 2
+    is Screen.FlashcardsChapters -> 2
+    is Screen.FlashcardsSession -> 3
     is Screen -> 1
     else -> 0
 }
@@ -131,6 +140,7 @@ fun App() {
 
                     RootTab.Tools -> ToolsScreen(
                         onConverterClick = { push(Screen.UnitConverter) },
+                        onFlashcardsClick = { push(Screen.FlashcardsMode) },
                     )
 
                     RootTab.Chapters -> ChaptersScreen(
@@ -152,6 +162,23 @@ fun App() {
                     )
 
                     is Screen.UnitConverter -> UnitConverterScreen(onBack = ::pop)
+
+                    is Screen.FlashcardsMode -> FlashcardsModeScreen(
+                        onSelect = { mode -> push(Screen.FlashcardsChapters(mode)) },
+                        onBack = ::pop,
+                    )
+
+                    is Screen.FlashcardsChapters -> FlashcardsChaptersScreen(
+                        mode = state.mode,
+                        onChapterClick = { index -> push(Screen.FlashcardsSession(state.mode, index)) },
+                        onBack = ::pop,
+                    )
+
+                    is Screen.FlashcardsSession -> FlashcardsSessionScreen(
+                        mode = state.mode,
+                        chapter = ChapterRegistry.all[state.chapterIndex],
+                        onExit = ::pop,
+                    )
                         }
                     }
                 }

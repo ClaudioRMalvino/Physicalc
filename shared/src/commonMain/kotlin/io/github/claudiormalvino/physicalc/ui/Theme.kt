@@ -57,7 +57,8 @@ fun PhysicsTheme(
     )
 }
 
-// Light counterpart: same blue/violet brand, paper-white surfaces.
+// Light counterpart: same blue/violet brand on warm cream "paper" neutrals
+// (the calm off-white used by Zen / Babbel), not clinical white.
 private val SpaceLight = lightColorScheme(
     primary = Color(0xFF2F5DA8),
     onPrimary = Color(0xFFFFFFFF),
@@ -72,16 +73,16 @@ private val SpaceLight = lightColorScheme(
     tertiary = Color(0xFF006A60),
     onTertiary = Color(0xFFFFFFFF),
 
-    background = Color(0xFFF8F9FE),
-    onBackground = Color(0xFF1A1C22),
+    background = Color(0xFFF2F0E3),       // paper cream
+    onBackground = Color(0xFF21211C),      // warm near-black
 
-    surface = Color(0xFFFFFFFF),
-    onSurface = Color(0xFF1A1C22),
-    surfaceVariant = Color(0xFFE6EAF4),
-    onSurfaceVariant = Color(0xFF44495A),
+    surface = Color(0xFFFAF9F0),           // cards: a lighter cream, lifted off the page
+    onSurface = Color(0xFF21211C),
+    surfaceVariant = Color(0xFFE7E4D3),     // warm raised surfaces (banners, chips)
+    onSurfaceVariant = Color(0xFF4C4A40),   // warm secondary text
 
-    outline = Color(0xFF74798C),
-    outlineVariant = Color(0xFFC4C9D8),
+    outline = Color(0xFF7A776A),
+    outlineVariant = Color(0xFFD2CFBE),
 
     error = Color(0xFFBA1A1A),
     onError = Color(0xFFFFFFFF),

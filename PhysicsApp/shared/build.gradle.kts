@@ -49,6 +49,9 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.compose.uiBackhandler)
             implementation(libs.compose.materialIconsCore)
+            implementation(libs.multiplatformSettings.noArg)
+            implementation(libs.haze)
+            implementation(libs.haze.materials)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
         }

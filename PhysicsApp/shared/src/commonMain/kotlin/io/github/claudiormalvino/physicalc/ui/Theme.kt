@@ -2,6 +2,7 @@ package io.github.claudiormalvino.physicalc.ui
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
@@ -46,9 +47,44 @@ private val SpaceDark = darkColorScheme(
 )
 
 @Composable
-fun PhysicsTheme(content: @Composable () -> Unit) {
+fun PhysicsTheme(
+    darkTheme: Boolean = true,
+    content: @Composable () -> Unit,
+) {
     MaterialTheme(
-        colorScheme = SpaceDark,
+        colorScheme = if (darkTheme) SpaceDark else SpaceLight,
         content = content,
     )
 }
+
+// Light counterpart: same blue/violet brand, paper-white surfaces.
+private val SpaceLight = lightColorScheme(
+    primary = Color(0xFF2F5DA8),
+    onPrimary = Color(0xFFFFFFFF),
+    primaryContainer = Color(0xFFD7E3FF),
+    onPrimaryContainer = Color(0xFF0A2D5C),
+
+    secondary = Color(0xFF5F4BA8),
+    onSecondary = Color(0xFFFFFFFF),
+    secondaryContainer = Color(0xFFE9DDFF),
+    onSecondaryContainer = Color(0xFF211352),
+
+    tertiary = Color(0xFF006A60),
+    onTertiary = Color(0xFFFFFFFF),
+
+    background = Color(0xFFF8F9FE),
+    onBackground = Color(0xFF1A1C22),
+
+    surface = Color(0xFFFFFFFF),
+    onSurface = Color(0xFF1A1C22),
+    surfaceVariant = Color(0xFFE6EAF4),
+    onSurfaceVariant = Color(0xFF44495A),
+
+    outline = Color(0xFF74798C),
+    outlineVariant = Color(0xFFC4C9D8),
+
+    error = Color(0xFFBA1A1A),
+    onError = Color(0xFFFFFFFF),
+    errorContainer = Color(0xFFFFDAD6),
+    onErrorContainer = Color(0xFF410002),
+)

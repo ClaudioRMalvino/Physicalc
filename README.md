@@ -2,7 +2,7 @@
 
 An interactive physics reference and equation solver for first-year undergraduate students, built with Kotlin Multiplatform and Compose Multiplatform. One shared codebase runs natively on **Android**, **desktop** (Linux/macOS/Windows), and **iOS**.
 
-![Development Status](https://img.shields.io/badge/status-in%20development-yellow)
+![Development Status](https://img.shields.io/badge/status-stable-green)
 ![Kotlin](https://img.shields.io/badge/kotlin-2.4-blue)
 ![Compose Multiplatform](https://img.shields.io/badge/compose%20multiplatform-1.11-blue)
 ![License](https://img.shields.io/badge/license-MIT-blue)

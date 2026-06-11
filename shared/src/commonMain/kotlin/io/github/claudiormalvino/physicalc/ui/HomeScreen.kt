@@ -34,7 +34,11 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.github.claudiormalvino.physicalc.ui.solar.SolarSystemModel
 import kotlinx.coroutines.delay
@@ -201,14 +205,34 @@ fun HomeScreen(onSettingsClick: () -> Unit) {
             Icon(Icons.Default.MoreVert, contentDescription = "Settings", tint = colors.onSurfaceVariant)
         }
 
-        Text(
-            text = "Planet positions for ${SolarSystemModel.formatDate(epochMillis)}",
-            style = MaterialTheme.typography.labelMedium,
-            color = colors.onSurfaceVariant,
+        // Quote of the day (offline, deterministic by date) + the date caption.
+        Column(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .navigationBarsPadding()
-                .padding(bottom = 86.dp), // sits just above the floating glass bar
-        )
+                .padding(start = 32.dp, end = 32.dp, bottom = 86.dp), // above the glass bar
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            val quote = remember(epochMillis) { PhysicsQuotes.forDay(epochMillis) }
+            Text(
+                text = "\u201C${quote.text}\u201D",
+                style = MaterialTheme.typography.bodyMedium,
+                fontStyle = FontStyle.Italic,
+                textAlign = TextAlign.Center,
+                color = colors.onSurfaceVariant,
+            )
+            Spacer(Modifier.height(4.dp))
+            Text(
+                text = "\u2014 ${quote.author}",
+                style = MaterialTheme.typography.labelMedium,
+                color = colors.onSurfaceVariant.copy(alpha = 0.75f),
+            )
+            Spacer(Modifier.height(14.dp))
+            Text(
+                text = "Planet positions for ${SolarSystemModel.formatDate(epochMillis)}",
+                style = MaterialTheme.typography.labelMedium,
+                color = colors.onSurfaceVariant,
+            )
+        }
     }
 }

@@ -189,12 +189,6 @@ fun HomeScreen(onSettingsClick: () -> Unit) {
                 .statusBarsPadding()
                 .padding(start = 24.dp, top = 16.dp, end = 64.dp),
         ) {
-            Text(
-                text = "Physicalc",
-                style = MaterialTheme.typography.displaySmall,
-                fontWeight = FontWeight.Bold,
-                color = colors.onBackground,
-            )
         }
 
         IconButton(

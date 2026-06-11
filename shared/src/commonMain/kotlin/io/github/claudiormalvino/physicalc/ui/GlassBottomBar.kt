@@ -39,11 +39,8 @@ import dev.chrisbanes.haze.materials.HazeMaterials
 import io.github.claudiormalvino.physicalc.RootTab
 
 /*
- * Floating frosted-glass navigation dock.
- *
- * A slim pill that hovers above the bottom edge. Haze renders a real backdrop
- * blur — the screen content scrolls by, blurred, beneath it — with a hairline
- * border supplying the "glass rim". Tabs tint to primary when selected.
+ * Floating frosted-glass navigation dock. Haze renders a real backdrop blur
+ * of the content scrolling beneath it; a hairline border supplies the glass rim.
  */
 
 private fun iconFor(tab: RootTab): ImageVector = when (tab) {

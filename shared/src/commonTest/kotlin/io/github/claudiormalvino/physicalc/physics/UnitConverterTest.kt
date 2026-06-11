@@ -4,8 +4,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 /*
- * Port of your Python `tests/conversion_test.py`, plus a couple of checks
- * covering the data fixes made during the port (day length, megawatt-hour).
+ * Tests for the UnitConverters conversion tables.
  */
 class UnitConverterTest {
 
@@ -60,7 +59,7 @@ class UnitConverterTest {
         }
     }
 
-    // --- Checks for the data fixes made during the port ---
+    // --- Regression checks for data fixes (day length, megawatt-hour) ---
 
     @Test
     fun dayIs24Hours() {

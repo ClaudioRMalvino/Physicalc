@@ -4,9 +4,7 @@ import kotlin.math.exp
 import kotlin.math.ln
 import kotlin.math.round
 
-/**
- * Chapter on Linear Momentum and Collisions — the Kotlin twin of your Python `chapter9.py`.
- */
+/** Chapter 9 — Linear momentum, impulse, and collisions. */
 class Chapter9 : PhysicsChapter(
     title = "Ch.9 - Linear Momentum and Collisions",
     description = "Momentum, impulse, and elastic and inelastic collisions.",
@@ -207,19 +205,12 @@ class Chapter9 : PhysicsChapter(
         Definition("system", "object or collection of objects whose motion is currently under investigation; however, your system is defined at the start of the problem, you must keep that definition for the entire problem"),
     )
 
-    /**
-     * Holds the calculation functions for Chapter 9 — the twin of the nested
-     * Python `class Calculate`.
-     */
+    /** Calculation functions for Chapter 9. */
     object Calculate {
 
-        /** Rounds to 4 decimal places, matching Python's `round(x, 4)`. */
         private fun round4(value: Double): Double = roundResult(value)
 
-        /**
-         * m₁v₁ + m₂v₂ = Mv (perfectly inelastic collision).
-         * Pass every value except the one you want solved for; leave that one as `null`.
-         */
+        /** m₁v₁ + m₂v₂ = Mv (perfectly inelastic collision). Pass null for the unknown. */
         fun inelasticCollisionMomentum(
             mass1: Double? = null,
             mass2: Double? = null,
@@ -237,47 +228,44 @@ class Chapter9 : PhysicsChapter(
                 )
             }
 
-            // Solve for m(1) (mass of object 1)
+            // Solve for m(1)
             if (mass1 == null) {
                 if (velocity1 == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
                 return round4(((massF!! * velocityF!!) - (mass2!! * velocity2!!)) / velocity1!!)
             }
 
-            // Solve for m(2) (mass of object 2)
+            // Solve for m(2)
             if (mass2 == null) {
                 if (velocity2 == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
                 return round4(((massF!! * velocityF!!) - (mass1 * velocity1!!)) / velocity2!!)
             }
 
-            // Solve for v(1) (velocity of object 1)
+            // Solve for v(1)
             if (velocity1 == null) {
                 return round4(((massF!! * velocityF!!) - (mass2 * velocity2!!)) / mass1)
             }
 
-            // Solve for v(2) (velocity of object 2)
+            // Solve for v(2)
             if (velocity2 == null) {
                 return round4(((massF!! * velocityF!!) - (mass1 * velocity1)) / mass2)
             }
 
-            // Solve for M (mass after the collision)
+            // Solve for M
             if (massF == null) {
                 if (velocityF == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
                 return round4(((mass1 * velocity1) + (mass2 * velocity2)) / velocityF!!)
             }
 
-            // Solve for v (velocity after the collision)
+            // Solve for v
             if (velocityF == null) {
                 return round4(((mass1 * velocity1) + (mass2 * velocity2)) / massF)
             }
 
-            // All values provided — nothing to solve (mirrors the Python fallthrough).
+            // All values provided; nothing to solve.
             return 0.0
         }
 
-        /**
-         * m₁v(i1) + m₂v(i2) = m₁v(f1) + m₂v(f2) (elastic collision, momentum only).
-         * Pass every value except the one you want solved for; leave that one as `null`.
-         */
+        /** m₁v(i1) + m₂v(i2) = m₁v(f1) + m₂v(f2) (elastic collision, momentum only). Pass null for the unknown. */
         fun elasticCollisionMomentum(
             mass1: Double? = null,
             mass2: Double? = null,
@@ -287,12 +275,13 @@ class Chapter9 : PhysicsChapter(
             velocityF2: Double? = null,
         ): Double {
             if ((mass1 != null && mass1 <= 0.0) || (mass2 != null && mass2 <= 0.0)) {
+                // Whitespace run preserved verbatim from the original implementation; tests assert the exact message.
                 throw IllegalArgumentException(
                     "We are operating with massive objects.                     Make sure all objects have a mass greater than zero."
                 )
             }
 
-            // Solve for m(1): m1 = m2(v_i2 - v_f2) / (v_f1 - v_i1)
+            // Solve for m(1)
             if (mass1 == null) {
                 if (velocityF1 == velocityI1) throw IllegalArgumentException("Divison by zero is undefined.")
                 return round4(
@@ -300,8 +289,8 @@ class Chapter9 : PhysicsChapter(
                 )
             }
 
-            // Solve for m(2): m2 = m1(v_f1 - v_i1) / (v_i2 - v_f2)
-            // (The Python source negated the numerator — a sign error — fixed here.)
+            // Solve for m(2)
+            // Corrected from upstream: sign error in the numerator.
             if (mass2 == null) {
                 if (velocityI2 == velocityF2) throw IllegalArgumentException("Divison by zero is undefined.")
                 return round4(
@@ -337,14 +326,11 @@ class Chapter9 : PhysicsChapter(
                 )
             }
 
-            // All values provided — nothing to solve (mirrors the Python fallthrough).
+            // All values provided; nothing to solve.
             return 0.0
         }
 
-        /**
-         * Δv = u·ln(mᵢ/m) (Tsiolkovsky rocket equation).
-         * Pass every value except the one you want solved for; leave that one as `null`.
-         */
+        /** Δv = u·ln(mᵢ/m) (Tsiolkovsky rocket equation). Pass null for the unknown. */
         fun rocketEquation(
             deltaV: Double? = null,
             velExhaust: Double? = null,
@@ -352,27 +338,28 @@ class Chapter9 : PhysicsChapter(
             finalMass: Double? = null,
         ): Double {
             if ((initialMass != null && initialMass <= 0.0) || (finalMass != null && finalMass <= 0.0)) {
+                // Whitespace run preserved verbatim from the original implementation; tests assert the exact message.
                 throw IllegalArgumentException(
                     "We are operating with massive objects.                     Mass must be greater than zero."
                 )
             }
 
-            // Solve for u (velocity of the exhaust)
+            // Solve for u
             if (velExhaust == null) {
                 return round4(deltaV!! / ln(initialMass!! / finalMass!!))
             }
 
-            // Solve for m(i) (initial mass of the rocket)
+            // Solve for m(i)
             if (initialMass == null) {
                 return round4(exp(deltaV!! / velExhaust) * finalMass!!)
             }
 
-            // Solve for m (final mass of the rocket)
+            // Solve for m
             if (finalMass == null) {
                 return round4(initialMass / exp(deltaV!! / velExhaust))
             }
 
-            // Solve for Δv (change in velocity) — the default case
+            // Solve for Δv
             return round4(velExhaust * ln(initialMass / finalMass))
         }
     }

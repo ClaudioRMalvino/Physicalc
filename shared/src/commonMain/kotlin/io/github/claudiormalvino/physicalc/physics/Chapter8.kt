@@ -1,14 +1,10 @@
 package io.github.claudiormalvino.physicalc.physics
 
 /**
- * Chapter on Potential Energy and Conservation of Energy — the Kotlin twin of your
- * Python `chapter8.py`.
+ * Chapter 8: potential energy and conservation of energy.
  *
- * This chapter is reference-only: every equation here describes a relationship
- * (conservation laws, conditions on conservative forces) rather than a single-unknown
- * formula the calculator can solve, so none of them carry a `calculation` lambda —
- * exactly like the Python source, where `var_mapping` is empty and no equation has
- * a `calculation`.
+ * Reference-only: no equation here has a single-unknown solver, so none carry
+ * a calculation.
  */
 class Chapter8 : PhysicsChapter(
     title = "Ch.8 - Potential Energy & Conservation of Energy",
@@ -116,10 +112,6 @@ class Chapter8 : PhysicsChapter(
         ),
     )
 
-    /**
-     * The Python source has no `Calculate` class for this chapter (every equation is
-     * reference-only). This empty object is kept so Chapter8 mirrors the structure of
-     * the other chapters; add solvers here if any equation gains a calculator later.
-     */
+    /** Empty; kept for structural parity with the other chapters. */
     object Calculate
 }

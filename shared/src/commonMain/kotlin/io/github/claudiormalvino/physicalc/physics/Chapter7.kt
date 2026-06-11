@@ -7,7 +7,7 @@ import kotlin.math.round
 import kotlin.math.sqrt
 
 /**
- * Chapter on Work and Kinetic Energy — the Kotlin twin of your Python `chapter7.py`.
+ * Chapter 7: work, kinetic energy, and power.
  */
 class Chapter7 : PhysicsChapter(
     title = "Ch.7 - Work and Kinetic Energy",
@@ -139,33 +139,26 @@ class Chapter7 : PhysicsChapter(
         Definition("work-energy theorem", "net work done on a particle is equal to the change in its kinetic energy"),
     )
 
-    /**
-     * Holds the calculation functions for Chapter 7 — the twin of the nested
-     * Python `class Calculate`.
-     */
+    /** Calculation functions for Chapter 7. */
     object Calculate {
 
         /** Gravitational acceleration on Earth [m/s²]. */
         const val G: Double = 9.82
 
-        /** Rounds to 4 decimal places, matching Python's `round(x, 4)`. */
+        /** Delegates to roundResult; see PhysicsModels.kt. */
         private fun round4(value: Double): Double = roundResult(value)
 
-        /**
-         * W = Fd·cos(θ). Pass every value except the one you want solved for;
-         * leave that one as `null`. θ is taken/returned in degrees.
-         */
+        /** W = Fd·cos(θ). Pass null for the unknown. θ in degrees. */
         fun workConstantForce(
             work: Double? = null,
             constF: Double? = null,
             distance: Double? = null,
             theta: Double? = null,
         ): Double {
-            // Converts user input of degrees into SI units of radians.
-            // (null only when θ itself is the unknown, in which case it is never read.)
+            // Null only when θ is the unknown, in which case it is never read.
             val thetaRadians: Double? = theta?.times(PI / 180.0)
 
-            // Solve for F (constant force)
+            // Solve for F
             if (constF == null) {
                 if (theta == 90.0 || theta == 270.0 || distance == 0.0) {
                     throw IllegalArgumentException("Division by zero is undefined.")
@@ -173,7 +166,7 @@ class Chapter7 : PhysicsChapter(
                 return round4(work!! / (cos(thetaRadians!!) * distance!!))
             }
 
-            // Solve for d (distance)
+            // Solve for d
             if (distance == null) {
                 if (theta == 90.0 || theta == 270.0) {
                     throw IllegalArgumentException("Division by zero is undefined.")
@@ -184,7 +177,7 @@ class Chapter7 : PhysicsChapter(
                 return round4(work!! / (constF * cos(thetaRadians!!)))
             }
 
-            // Solve for θ (angle), returned in degrees
+            // Solve for θ, returned in degrees
             if (theta == null) {
                 if (constF == 0.0 || distance == 0.0) {
                     throw IllegalArgumentException("Division by zero is undefined.")
@@ -193,13 +186,11 @@ class Chapter7 : PhysicsChapter(
                 return round4(acos(argument) * (180.0 / PI))
             }
 
-            // Solve for W (work) — the default case
+            // Solve for W
             return round4(constF * distance * cos(thetaRadians!!))
         }
 
-        /**
-         * W = -mg(y₂ - y₁). Pass every value except the unknown; leave that one `null`.
-         */
+        /** W = -mg(y₂ - y₁). Pass null for the unknown. */
         fun workByGravity(
             work: Double? = null,
             mass: Double? = null,
@@ -212,7 +203,7 @@ class Chapter7 : PhysicsChapter(
                 )
             }
 
-            // Solve for m (mass)
+            // Solve for m
             if (mass == null) {
                 if (finalHeight == initialHeight) {
                     throw IllegalArgumentException("Division by zero is undefined.")
@@ -228,26 +219,24 @@ class Chapter7 : PhysicsChapter(
                 return round4(result)
             }
 
-            // Solve for y₁ (initial height)
+            // Solve for y₁
             if (initialHeight == null) {
                 return round4((work!! / (mass * G)) + finalHeight!!)
             }
 
-            // Solve for y₂ (final height)
+            // Solve for y₂
             if (finalHeight == null) {
                 return round4((-work!! / (mass * G)) + initialHeight)
             }
 
-            // Solve for W (work) — the default case
+            // Solve for W
             return round4(-mass * G * (finalHeight - initialHeight))
         }
 
         /**
-         * W = -½k(x₂² - x₁²). Pass every value except the unknown; leave that one `null`.
-         *
-         * NOTE (faithful to the Python source): when solving for x₁ or x₂ this returns
-         * the SQUARE of the position (x² = ±2W/k + x²), exactly as the Python does —
-         * the Python test suite encodes those squared values as the expected results.
+         * W = -½k(x₂² - x₁²). Pass null for the unknown.
+         * Corrected from upstream: solving for x₁/x₂ returns the positive root
+         * (the sign is not recoverable from W and k alone); Python returned the square.
          */
         fun workBySpring(
             work: Double? = null,
@@ -259,7 +248,7 @@ class Chapter7 : PhysicsChapter(
                 throw IllegalArgumentException("Spring constant cannot be a negative value.")
             }
 
-            // Solve for k (spring constant)
+            // Solve for k
             if (springConst == null) {
                 if (finalXpos == initialXpos) {
                     throw IllegalArgumentException("Division by zero is undefined.")
@@ -269,31 +258,27 @@ class Chapter7 : PhysicsChapter(
                 )
             }
 
-            // Solve for x₁ (initial position). The algebra yields x₁², so take
-            // the square root; the positive root is returned (the sign of a
-            // spring displacement is not recoverable from W and k alone).
+            // Solve for x₁
             if (initialXpos == null) {
                 val square = ((2.0 * work!!) / springConst) + (finalXpos!! * finalXpos)
                 if (square < 0) throw IllegalArgumentException("The discriminant cannot be negative")
                 return round4(sqrt(square))
             }
 
-            // Solve for x₂ (final position) — same square-root treatment.
+            // Solve for x₂
             if (finalXpos == null) {
                 val square = ((-2.0 * work!!) / springConst) + (initialXpos * initialXpos)
                 if (square < 0) throw IllegalArgumentException("The discriminant cannot be negative")
                 return round4(sqrt(square))
             }
 
-            // Solve for W (work) — the default case
+            // Solve for W
             return round4(
                 -0.5 * springConst * ((finalXpos * finalXpos) - (initialXpos * initialXpos))
             )
         }
 
-        /**
-         * K = ½mv². Pass every value except the unknown; leave that one `null`.
-         */
+        /** K = ½mv². Pass null for the unknown. */
         fun kineticEnergy(
             kineticE: Double? = null,
             mass: Double? = null,
@@ -309,7 +294,7 @@ class Chapter7 : PhysicsChapter(
                 throw IllegalArgumentException("This is a scalar product. Velocity cannot be negative")
             }
 
-            // Solve for m (mass)
+            // Solve for m
             if (mass == null) {
                 val result: Double = kineticE!! * (2.0 / (velocity!! * velocity))
                 if (result < 0.0) {
@@ -320,7 +305,7 @@ class Chapter7 : PhysicsChapter(
                 return round4(result)
             }
 
-            // Solve for v (velocity)
+            // Solve for v
             if (velocity == null) {
                 val radicand: Double = kineticE!! * (2.0 / mass)
                 if (radicand < 0.0) {
@@ -331,13 +316,11 @@ class Chapter7 : PhysicsChapter(
                 return round4(sqrt(radicand))
             }
 
-            // Solve for K (kinetic energy) — the default case
+            // Solve for K
             return round4(0.5 * mass * (velocity * velocity))
         }
 
-        /**
-         * K = ½(p²/m). Pass every value except the unknown; leave that one `null`.
-         */
+        /** K = ½(p²/m). Pass null for the unknown. */
         fun kineticEnergyMomentum(
             kineticE: Double? = null,
             mass: Double? = null,
@@ -353,7 +336,7 @@ class Chapter7 : PhysicsChapter(
                 throw IllegalArgumentException("This is a scalar product. Velocity cannot be negative")
             }
 
-            // Solve for m (mass)
+            // Solve for m
             if (mass == null) {
                 val result: Double = (momentum!! * momentum) / (kineticE!! * 2.0)
                 if (result < 0.0) {
@@ -364,7 +347,7 @@ class Chapter7 : PhysicsChapter(
                 return round4(result)
             }
 
-            // Solve for p (momentum)
+            // Solve for p
             if (momentum == null) {
                 val radicand: Double = kineticE!! * 2.0 * mass
                 if (radicand < 0.0) {
@@ -375,13 +358,11 @@ class Chapter7 : PhysicsChapter(
                 return round4(sqrt(radicand))
             }
 
-            // Solve for K (kinetic energy) — the default case
+            // Solve for K
             return round4((momentum * momentum) / (2.0 * mass))
         }
 
-        /**
-         * W(net) = ½mv₂² - ½mv₁². Pass every value except the unknown; leave that one `null`.
-         */
+        /** W_net = ½mv₂² - ½mv₁². Pass null for the unknown. */
         fun workEnergyTheorem(
             netWork: Double? = null,
             mass: Double? = null,
@@ -394,7 +375,7 @@ class Chapter7 : PhysicsChapter(
                 )
             }
 
-            // Solve for m (mass)
+            // Solve for m
             if (mass == null) {
                 val result: Double = (2.0 * netWork!!) /
                     ((finalVel!! * finalVel) - (initialVel!! * initialVel))
@@ -406,7 +387,7 @@ class Chapter7 : PhysicsChapter(
                 return round4(result)
             }
 
-            // Solve for v₂ (final velocity)
+            // Solve for v₂
             if (finalVel == null) {
                 val radicand: Double = ((2.0 * netWork!!) / mass) + (initialVel!! * initialVel)
                 if (radicand < 0) {
@@ -417,7 +398,7 @@ class Chapter7 : PhysicsChapter(
                 return round4(sqrt(radicand))
             }
 
-            // Solve for v₁ (initial velocity)
+            // Solve for v₁
             if (initialVel == null) {
                 val radicand: Double = ((-2.0 * netWork!!) / mass) + (finalVel * finalVel)
                 if (radicand < 0) {
@@ -428,7 +409,7 @@ class Chapter7 : PhysicsChapter(
                 return round4(sqrt(radicand))
             }
 
-            // Solve for W(net) (net work) — the default case
+            // Solve for W_net
             return round4((0.5 * mass) * ((finalVel * finalVel) - (initialVel * initialVel)))
         }
     }

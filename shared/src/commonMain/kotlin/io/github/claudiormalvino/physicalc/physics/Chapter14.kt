@@ -5,9 +5,7 @@ import kotlin.math.pow
 import kotlin.math.round
 import kotlin.math.sqrt
 
-/**
- * Chapter on Fluid Dynamics — the Kotlin twin of your Python `chapter14.py`.
- */
+/** Chapter 14 — Fluids at rest and in motion: pressure, buoyancy, and flow. */
 class Chapter14 : PhysicsChapter(
     title = "Ch.14 - Fluid Dynamics",
     description = "Fluids at rest and in motion: pressure, buoyancy, and flow.",
@@ -244,22 +242,15 @@ class Chapter14 : PhysicsChapter(
         Definition("viscosity", "measure of the internal friction in a fluid"),
     )
 
-    /**
-     * Holds the calculation functions for Chapter 14 — the twin of your nested
-     * Python `class Calculate`.
-     */
+    /** Calculation functions for Chapter 14. */
     object Calculate {
 
-        /** Acceleration due to gravity on Earth [m/s²] (positive magnitude, as in the Python source). */
+        /** Acceleration due to gravity on Earth [m/s²] (positive magnitude). */
         const val G: Double = 9.82
 
-        /** Rounds to 4 decimal places, matching Python's `round(x, 4)`. */
         private fun round4(value: Double): Double = roundResult(value)
 
-        /**
-         * p = p₀ + ρgh. Pass every value except the one you want solved for;
-         * leave that one as `null`.
-         */
+        /** p = p₀ + ρgh. Pass null for the unknown. */
         fun hydrostaticPressure(
             pressure: Double? = null,
             pressureAtm: Double? = null,
@@ -270,56 +261,53 @@ class Chapter14 : PhysicsChapter(
                 throw IllegalArgumentException("Hydrostatic or atmospheric pressure cannot be a negative value.")
             }
 
-            // Solve for p₀ (atmospheric pressure)
+            // Solve for p₀
             if (pressureAtm == null) {
                 return round4(pressure!! - (density!! * G * depth!!))
             }
 
-            // Solve for ρ (fluid density)
+            // Solve for ρ
             if (density == null) {
                 if (depth == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
                 return round4((pressure!! - pressureAtm) / (G * depth!!))
             }
 
-            // Solve for h (depth)
+            // Solve for h
             if (depth == null) {
                 if (density == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
                 return round4((pressure!! - pressureAtm) / (G * density))
             }
 
-            // Solve for p (pressure at depth) — the default case
+            // Solve for p
             return round4(pressureAtm + (density * G * depth))
         }
 
-        /**
-         * F₁/A₁ = F₂/A₂ (Pascal's principle). Pass every value except the unknown;
-         * leave that one `null`.
-         */
+        /** F₁/A₁ = F₂/A₂ (Pascal's principle). Pass null for the unknown. */
         fun pascalsPrinciple(
             force1: Double? = null,
             area1: Double? = null,
             force2: Double? = null,
             area2: Double? = null,
         ): Double {
-            // Solve for F₁ (force on piston 1)
+            // Solve for F₁
             if (force1 == null) {
                 if (area2 == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
                 return round4((force2!! / area2!!) * area1!!)
             }
 
-            // Solve for A₁ (area of piston 1)
+            // Solve for A₁
             if (area1 == null) {
                 if (force2 == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
                 return round4((force1 * area2!!) / force2!!)
             }
 
-            // Solve for F₂ (force on piston 2)
+            // Solve for F₂
             if (force2 == null) {
                 if (area1 == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
                 return round4((force1 / area1) * area2!!)
             }
 
-            // Solve for A₂ (area of piston 2)
+            // Solve for A₂
             if (area2 == null) {
                 if (force1 == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
                 return round4((force2 * area1) / force1)
@@ -328,10 +316,7 @@ class Chapter14 : PhysicsChapter(
             return 0.0
         }
 
-        /**
-         * A₁v₁ = A₂v₂ (continuity, constant density). Pass every value except the
-         * unknown; leave that one `null`.
-         */
+        /** A₁v₁ = A₂v₂ (continuity, constant density). Pass null for the unknown. */
         fun continuityConstDensity(
             area1: Double? = null,
             velocity1: Double? = null,
@@ -367,10 +352,7 @@ class Chapter14 : PhysicsChapter(
             return 0.0
         }
 
-        /**
-         * ρ₁A₁v₁ = ρ₂A₂v₂ (continuity, general form). Pass every value except the
-         * unknown; leave that one `null`.
-         */
+        /** ρ₁A₁v₁ = ρ₂A₂v₂ (continuity, general form). Pass null for the unknown. */
         fun continuityConstGeneral(
             density1: Double? = null,
             area1: Double? = null,
@@ -419,8 +401,7 @@ class Chapter14 : PhysicsChapter(
             }
 
             // Solve for A₂
-            // (The Python source checked velocity_1 here; the denominator is ρ₂v₂, so v₂ is the
-            //  correct value to guard against zero.)
+            // Corrected from upstream: guard v₂ (the denominator), not v₁.
             if (area2 == null) {
                 if (velocity2 == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
                 val numerator: Double = density1 * area1 * velocity1
@@ -439,12 +420,8 @@ class Chapter14 : PhysicsChapter(
         }
 
         /**
-         * p₁ + ½ρv₁² + ρgy₁ = p₂ + ½ρv₂² + ρgy₂ (Bernoulli's equation).
-         * Pass every value except the unknown; leave that one `null`.
-         *
-         * Note: the Python source omitted the density factor on the ½v² and gy terms in
-         * several branches (and never actually assigned `term3`); the correct physics is
-         * implemented here, with each term carrying its ρ factor.
+         * p₁ + ½ρv₁² + ρgy₁ = p₂ + ½ρv₂² + ρgy₂ (Bernoulli). Pass null for the unknown.
+         * Corrected from upstream: several branches omitted the ρ factor on the ½v² and gy terms.
          */
         fun bernoullisEquation(
             density: Double? = null,
@@ -459,7 +436,7 @@ class Chapter14 : PhysicsChapter(
                 throw IllegalArgumentException("Density of a fluid cannot be less than or equal to zero.")
             }
 
-            // Solve for ρ (density): ρ = (p₂ - p₁) / (½v₁² + gy₁ - ½v₂² - gy₂)
+            // Solve for ρ
             if (density == null) {
                 val term1: Double = 0.5 * (velocity1!! * velocity1)
                 val term2: Double = G * height1!!
@@ -473,7 +450,7 @@ class Chapter14 : PhysicsChapter(
                 return round4(numerator / denominator)
             }
 
-            // Solve for p₁: p₁ = p₂ + ½ρv₂² + ρgy₂ - ½ρv₁² - ρgy₁
+            // Solve for p₁
             if (pressure1 == null) {
                 val term1: Double = 0.5 * density * (velocity1!! * velocity1)
                 val term2: Double = density * G * height1!!
@@ -483,7 +460,7 @@ class Chapter14 : PhysicsChapter(
                 return round4(pressure2!! + term3 + term4 - term1 - term2)
             }
 
-            // Solve for v₁: v₁ = √[(p₂ - p₁ + ½ρv₂² + ρgy₂ - ρgy₁) / (½ρ)]
+            // Solve for v₁
             if (velocity1 == null) {
                 val term2: Double = density * G * height1!!
                 val term3: Double = 0.5 * density * (velocity2!! * velocity2)
@@ -496,7 +473,7 @@ class Chapter14 : PhysicsChapter(
                 return round4(sqrt(radicand / coeff))
             }
 
-            // Solve for y₁: y₁ = (p₂ - p₁ + ½ρv₂² + ρgy₂ - ½ρv₁²) / (ρg)
+            // Solve for y₁
             if (height1 == null) {
                 val term1: Double = 0.5 * density * (velocity1 * velocity1)
                 val term3: Double = 0.5 * density * (velocity2!! * velocity2)
@@ -505,7 +482,7 @@ class Chapter14 : PhysicsChapter(
                 return round4((pressure2!! - pressure1 + term3 + term4 - term1) / (density * G))
             }
 
-            // Solve for p₂: p₂ = p₁ + ½ρv₁² + ρgy₁ - ½ρv₂² - ρgy₂
+            // Solve for p₂
             if (pressure2 == null) {
                 val term1: Double = 0.5 * density * (velocity1 * velocity1)
                 val term2: Double = density * G * height1
@@ -515,7 +492,7 @@ class Chapter14 : PhysicsChapter(
                 return round4(pressure1 - term3 - term4 + term1 + term2)
             }
 
-            // Solve for v₂: v₂ = √[(p₁ - p₂ + ½ρv₁² + ρgy₁ - ρgy₂) / (½ρ)]
+            // Solve for v₂
             if (velocity2 == null) {
                 val term1: Double = 0.5 * density * (velocity1 * velocity1)
                 val term2: Double = density * G * height1
@@ -528,7 +505,7 @@ class Chapter14 : PhysicsChapter(
                 return round4(sqrt(radicand / coeff))
             }
 
-            // Solve for y₂: y₂ = (p₁ - p₂ + ½ρv₁² + ρgy₁ - ½ρv₂²) / (ρg)
+            // Solve for y₂
             if (height2 == null) {
                 val term1: Double = 0.5 * density * (velocity1 * velocity1)
                 val term2: Double = density * G * height1
@@ -540,10 +517,7 @@ class Chapter14 : PhysicsChapter(
             return 0.0
         }
 
-        /**
-         * η = FL/(vA) (viscosity between parallel plates). Pass every value except
-         * the unknown; leave that one `null`.
-         */
+        /** η = FL/(vA) (viscosity between parallel plates). Pass null for the unknown. */
         fun viscocity(
             viscocity: Double? = null,
             force: Double? = null,
@@ -555,17 +529,17 @@ class Chapter14 : PhysicsChapter(
                 throw IllegalArgumentException("Dimensions of length and area cannot be less than or equal to zero.")
             }
 
-            // Solve for F: F = ηvA/L
+            // Solve for F
             if (force == null) {
                 return round4(viscocity!! * ((velocity!! * area!!) / distance!!))
             }
 
-            // Solve for L: L = ηvA/F
+            // Solve for L
             if (distance == null) {
                 return round4(viscocity!! * ((velocity!! * area!!) / force))
             }
 
-            // Solve for A: A = FL/(ηv)
+            // Solve for A
             if (area == null) {
                 if (velocity == 0.0 || viscocity == 0.0) {
                     throw IllegalArgumentException("Division by zero is undefined.")
@@ -573,24 +547,20 @@ class Chapter14 : PhysicsChapter(
                 return round4((force * distance) / (viscocity!! * velocity!!))
             }
 
-            // Solve for v: v = FL/(ηA)
+            // Solve for v
             if (velocity == null) {
                 if (viscocity == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
                 return round4((force * distance) / (viscocity!! * area))
             }
 
-            // Solve for η (viscosity) — the default case
-            // (The Python source checked the unknown `viscocity` here; the denominator is vA,
-            //  so velocity is the correct value to guard against zero.)
+            // Solve for η
+            // Corrected from upstream: guard v (the denominator), not the unknown η.
             if (velocity == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
 
             return round4((force * distance) / (velocity * area))
         }
 
-        /**
-         * R = 8ηl/(πr⁴) (Poiseuille's law for resistance). Pass every value except
-         * the unknown; leave that one `null`.
-         */
+        /** R = 8ηl/(πr⁴) (Poiseuille's law for resistance). Pass null for the unknown. */
         fun poiseuillesLawResistance(
             resistance: Double? = null,
             viscocity: Double? = null,
@@ -601,34 +571,30 @@ class Chapter14 : PhysicsChapter(
                 throw IllegalArgumentException("Dimensions of length and radius cannot be less than or equal to zero.")
             }
 
-            // Solve for η: η = Rπr⁴/(8l)
+            // Solve for η
             if (viscocity == null) {
                 return round4((resistance!! * PI * radius!!.pow(4)) / (8.0 * length!!))
             }
 
-            // Solve for l: l = Rπr⁴/(8η)
+            // Solve for l
             if (length == null) {
                 return round4((resistance!! * PI * radius!!.pow(4)) / (8.0 * viscocity))
             }
 
-            // Solve for r: r = [8ηl/(πR)]^(1/4)
+            // Solve for r
             if (radius == null) {
                 if (resistance == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
                 val radicand: Double = (8.0 * viscocity * length) / (PI * resistance!!)
                 return round4(radicand.pow(0.25))
             }
 
-            // Solve for R — the default case
+            // Solve for R
             return round4((8.0 * viscocity * length) / (PI * radius.pow(4)))
         }
 
         /**
-         * Q = (p₁ - p₂)πr⁴/(8ηl) (Poiseuille's law). Pass every value except the
-         * unknown; leave that one `null`.
-         *
-         * Note: the Python source used (p₂ - p₁) in several branches, contradicting both
-         * the displayed formula and the standard form of Poiseuille's law; the correct
-         * (p₁ - p₂) convention is used consistently here.
+         * Q = (p₁ - p₂)πr⁴/(8ηl) (Poiseuille's law). Pass null for the unknown.
+         * Corrected from upstream: (p₁ - p₂) is used consistently, matching the displayed formula.
          */
         fun poiseuillesLaw(
             flow: Double? = null,
@@ -642,7 +608,7 @@ class Chapter14 : PhysicsChapter(
                 throw IllegalArgumentException("Dimensions of length and radius cannot be less than or equal to zero.")
             }
 
-            // Solve for η: η = (p₁ - p₂)πr⁴/(8lQ)
+            // Solve for η
             if (viscocity == null) {
                 if (flow == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
                 val numerator: Double = (pressure1!! - pressure2!!) * (PI * radius!!.pow(4))
@@ -650,7 +616,7 @@ class Chapter14 : PhysicsChapter(
                 return round4(numerator / denominator)
             }
 
-            // Solve for l: l = (p₁ - p₂)πr⁴/(8ηQ)
+            // Solve for l
             if (length == null) {
                 if (viscocity == 0.0 || flow == 0.0) {
                     throw IllegalArgumentException("Division by zero is undefined.")
@@ -660,7 +626,7 @@ class Chapter14 : PhysicsChapter(
                 return round4(numerator / denominator)
             }
 
-            // Solve for r: r = [8ηlQ/((p₁ - p₂)π)]^(1/4)
+            // Solve for r
             if (radius == null) {
                 val numerator: Double = flow!! * 8.0 * viscocity * length
                 val denominator: Double = (pressure1!! - pressure2!!) * PI
@@ -668,21 +634,21 @@ class Chapter14 : PhysicsChapter(
                 return round4(radicand.pow(0.25))
             }
 
-            // Solve for p₁: p₁ = 8ηlQ/(πr⁴) + p₂
+            // Solve for p₁
             if (pressure1 == null) {
                 val numerator: Double = flow!! * 8.0 * viscocity * length
                 val denominator: Double = PI * radius.pow(4)
                 return round4((numerator / denominator) + pressure2!!)
             }
 
-            // Solve for p₂: p₂ = p₁ - 8ηlQ/(πr⁴)
+            // Solve for p₂
             if (pressure2 == null) {
                 val numerator: Double = -flow!! * 8.0 * viscocity * length
                 val denominator: Double = PI * radius.pow(4)
                 return round4((numerator / denominator) + pressure1)
             }
 
-            // Solve for Q — the default case
+            // Solve for Q
             val numerator: Double = (pressure1 - pressure2) * PI * radius.pow(4)
             val denominator: Double = 8.0 * viscocity * length
             return round4(numerator / denominator)

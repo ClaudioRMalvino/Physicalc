@@ -6,12 +6,8 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 /*
- * Smoke tests for Chapter 8 (Potential Energy & Conservation of Energy).
- *
- * The Python source has NO tests and NO calculation functions for this chapter —
- * every equation is reference-only. So instead of solver tests (there is nothing to
- * solve), this suite pins down the chapter's structure: titles, counts, variable
- * keys, and the guarantee that no equation claims to be calculable.
+ * Structure tests for Chapter8 (Potential Energy & Conservation of Energy).
+ * The chapter is reference-only (no calculations), so titles, counts, and variable keys are pinned.
  */
 class Chapter8Test {
 
@@ -34,7 +30,6 @@ class Chapter8Test {
 
     @Test
     fun noEquationIsCalculable() {
-        // Mirrors the Python chapter, where no Equation has a `calculation`.
         for (eq in chapter.equations) {
             assertNull(eq.calculation, "Equation '${eq.name}' should be reference-only")
         }
@@ -80,8 +75,7 @@ class Chapter8Test {
 
     @Test
     fun variableKeysAndFormulasAreBmpOnly() {
-        // Non-BMP characters (e.g. mathematical-alphanumeric letters like 𝐅) render as
-        // tofu on Android, so neither variable keys nor formulas may contain them.
+        // Non-BMP characters (e.g. 𝐅) render as tofu on Android, so keys and formulas must avoid them.
         for (eq in chapter.equations) {
             assertTrue(eq.formula.none { it.isSurrogate() }, "Non-BMP char in formula of '${eq.name}'")
             for (symbol in eq.variables.keys) {

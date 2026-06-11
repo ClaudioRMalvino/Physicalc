@@ -1,11 +1,8 @@
 package io.github.claudiormalvino.physicalc.ui
 
 /*
- * Quote of the day — fully offline.
- *
- * A curated list of physics quotes; the day's quote is picked deterministically
- * from the date (epoch day modulo list size), so it rotates at UTC midnight,
- * needs no network, and every user sees the same quote on the same day.
+ * Offline quote of the day, picked deterministically from the date
+ * (epoch day modulo list size) — rotates at UTC midnight, no network.
  */
 
 data class PhysicsQuote(val text: String, val author: String)

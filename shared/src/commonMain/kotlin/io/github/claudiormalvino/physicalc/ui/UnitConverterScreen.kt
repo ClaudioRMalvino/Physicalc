@@ -54,25 +54,19 @@ import kotlin.math.abs
 import kotlin.math.round
 
 /*
- * Unit converter — the upgrade of your TUI's UnitConverterScreen.
- *
- * The big difference from the Textual version: there is NO Convert button.
- * The result is *derived state* — computed directly from (value, fromUnit, toUnit)
- * on every recomposition — so it updates live as you type. This is the
- * "Google-style" instant conversion you originally wanted in the TUI.
+ * Unit converter. The result is derived state — recomputed from
+ * (value, fromUnit, toUnit) on every recomposition — so it updates live as you type.
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun UnitConverterScreen(onBack: () -> Unit) {
     val colors = MaterialTheme.colorScheme
 
-    // --- State -----------------------------------------------------------------
     var quantity by remember { mutableStateOf(UnitConverters.all.first()) }
     var valueText by remember { mutableStateOf("") }
     var fromUnit by remember { mutableStateOf(quantity.baseUnit) }
     var toUnit by remember { mutableStateOf(quantity.units.keys.first { it != quantity.baseUnit }) }
 
-    // --- Derived result (no button!) ---------------------------------------------
     val parsed = valueText.trim().toDoubleOrNull()
     val result = parsed?.let { quantity.convert(it, fromUnit, toUnit) }
 
@@ -207,10 +201,7 @@ fun UnitConverterScreen(onBack: () -> Unit) {
     }
 }
 
-/**
- * A read-only text field that opens a dropdown of unit options —
- * Material 3's ExposedDropdownMenuBox pattern.
- */
+/** Read-only text field that opens a dropdown of unit options. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun UnitDropdown(

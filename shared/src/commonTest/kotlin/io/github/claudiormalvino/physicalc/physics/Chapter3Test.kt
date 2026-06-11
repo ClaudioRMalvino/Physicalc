@@ -5,16 +5,8 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 /*
- * These tests are a direct port of your Python `tests/chapter3_calc_test.py`.
- *
- * Kotlin test notes:
- *  - `@Test` marks a test function, just like Python's unittest methods.
- *  - `assertEquals(expected, actual, tolerance)` is the float-comparison form, the
- *    equivalent of `assertAlmostEqual`. The tolerance below matches the Python `places`:
- *    places=2 -> 0.005, places=4 -> 0.00005, places=7 -> 5e-8.
- *  - `assertFailsWith<IllegalArgumentException> { ... }` checks that the block throws,
- *    the equivalent of `with self.assertRaises(ValueError)`. We use IllegalArgumentException
- *    because that is Kotlin's idiomatic "bad argument" exception (Python used ValueError).
+ * Tests for the Chapter3 solvers (1D kinematics and free fall).
+ * Error messages are asserted byte-for-byte (typos included).
  */
 class Chapter3Test {
 

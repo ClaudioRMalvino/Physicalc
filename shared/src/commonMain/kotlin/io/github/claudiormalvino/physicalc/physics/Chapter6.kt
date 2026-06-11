@@ -7,7 +7,7 @@ import kotlin.math.sqrt
 import kotlin.math.tan
 
 /**
- * Chapter on Applications of Newton's Laws — the Kotlin twin of your Python `chapter6.py`.
+ * Chapter 6: applications of Newton's laws — friction, drag, and circular motion.
  */
 class Chapter6 : PhysicsChapter(
     title = "Ch.6 - Applications of Newton's Laws",
@@ -42,8 +42,8 @@ class Chapter6 : PhysicsChapter(
                 "v" to "Tangential velocity (m/s)",
                 "r" to "Radius (m)",
             ),
-            // NOTE: the Python source wired this equation to the *angular*-velocity
-            // solver (and vice versa). The wiring here matches the formula shown.
+            // Corrected from upstream: Python wired this to the angular-velocity solver
+            // (and vice versa); the wiring here matches the formula shown.
             calculation = { v ->
                 Calculate.centripetalForceTangVel(
                     centripetalF = v["F_c"],
@@ -161,21 +161,14 @@ class Chapter6 : PhysicsChapter(
         Definition("terminal velocity", "constant velocity achieved by a falling object, which occurs when the weight of the object is balanced by the upward drag force"),
     )
 
-    /**
-     * Holds the calculation functions for Chapter 6 — the twin of your nested
-     * Python `class Calculate`.
-     */
+    /** Calculation functions for Chapter 6. */
     object Calculate {
 
         /** Gravitational acceleration on Earth [m/s²]. */
         const val G: Double = 9.82
 
-        /*
-         * The Python source wrapped the messages below across lines with a backslash
-         * continuation INSIDE the string literal, so the trailing space plus the next
-         * line's indentation (20 or 24 spaces) are part of the message. They are kept
-         * verbatim here, typos included, because the tests assert them exactly.
-         */
+        // The embedded spacing comes from Python line-continuations inside the original
+        // string literals; kept verbatim (typos included) because tests assert them exactly.
         private const val MASS_ERROR =
             "We are operating with massive objects. " +
                 "                    Mass must be greater than zero."
@@ -201,13 +194,10 @@ class Chapter6 : PhysicsChapter(
             "Velocity cannot be less than or euqal to 0. " +
                 "                        This makes viscosity a negative value."
 
-        /** Rounds to 4 decimal places, matching Python's `round(x, 4)`. */
+        /** Delegates to roundResult; see PhysicsModels.kt. */
         private fun round4(value: Double): Double = roundResult(value)
 
-        /**
-         * F(c) = mv²/r. Pass every value except the one you want solved for;
-         * leave that one as `null`.
-         */
+        /** F_c = mv²/r. Pass null for the unknown. */
         fun centripetalForceTangVel(
             centripetalF: Double? = null,
             mass: Double? = null,
@@ -220,7 +210,7 @@ class Chapter6 : PhysicsChapter(
                 throw IllegalArgumentException("Radius must be greater than zero.")
             }
 
-            // Solve for m (mass)
+            // Solve for m
             if (mass == null) {
                 if (velocity == 0.0) throw IllegalArgumentException("Divison by zero is undefined.")
 
@@ -230,7 +220,7 @@ class Chapter6 : PhysicsChapter(
                 return round4(massResult)
             }
 
-            // Solve for v (tangential velocity)
+            // Solve for v
             if (velocity == null) {
                 val radicand: Double = (centripetalF!! * radius!!) / mass
 
@@ -238,7 +228,7 @@ class Chapter6 : PhysicsChapter(
                 return round4(sqrt(radicand))
             }
 
-            // Solve for r (radius)
+            // Solve for r
             if (radius == null) {
                 if (centripetalF == 0.0) throw IllegalArgumentException("Divison by zero is undefined.")
 
@@ -250,14 +240,11 @@ class Chapter6 : PhysicsChapter(
                 return round4(radiusResult)
             }
 
-            // Solve for F(c) (centripetal force) — the default case
+            // Solve for F_c
             return round4((mass * (velocity * velocity)) / radius)
         }
 
-        /**
-         * F(c) = mrω². Pass every value except the one you want solved for;
-         * leave that one as `null`.
-         */
+        /** F_c = mrω². Pass null for the unknown. */
         fun centripetalForceAngVel(
             centripetalF: Double? = null,
             mass: Double? = null,
@@ -270,7 +257,7 @@ class Chapter6 : PhysicsChapter(
                 throw IllegalArgumentException("Radius must be greater than zero.")
             }
 
-            // Solve for m (mass)
+            // Solve for m
             if (mass == null) {
                 if (angularVel == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
 
@@ -281,7 +268,7 @@ class Chapter6 : PhysicsChapter(
                 return round4(centripetalF / (radius!! * (angularVel * angularVel)))
             }
 
-            // Solve for ω (angular velocity)
+            // Solve for ω
             if (angularVel == null) {
                 val radicand: Double = centripetalF!! / (mass * radius!!)
 
@@ -291,7 +278,7 @@ class Chapter6 : PhysicsChapter(
                 return round4(sqrt(radicand))
             }
 
-            // Solve for r (radius)
+            // Solve for r
             if (radius == null) {
                 if (angularVel == 0.0) throw IllegalArgumentException("Divison by zero is undefined.")
 
@@ -302,14 +289,11 @@ class Chapter6 : PhysicsChapter(
                 return round4(centripetalF / (mass * (angularVel * angularVel)))
             }
 
-            // Solve for F(c) (centripetal force) — the default case
+            // Solve for F_c
             return round4(mass * (angularVel * angularVel) * radius)
         }
 
-        /**
-         * tan θ = v²/(rg). Pass every value except the one you want solved for;
-         * leave that one as `null`. Theta is taken and returned in degrees.
-         */
+        /** tan θ = v²/(rg). Pass null for the unknown. θ in degrees. */
         fun idealAngBankedCurve(
             theta: Double? = null,
             velocity: Double? = null,
@@ -321,7 +305,6 @@ class Chapter6 : PhysicsChapter(
                     throw IllegalArgumentException("Reconsider if theta can physically be a negative value.")
                 }
 
-                // Converts degrees into radians
                 thetaRadians = theta * (PI / 180)
             }
 
@@ -329,7 +312,7 @@ class Chapter6 : PhysicsChapter(
                 throw IllegalArgumentException("Radius cannot be less than or equal to zero.")
             }
 
-            // Solve for v (velocity)
+            // Solve for v
             if (velocity == null) {
                 if (theta == 90.0 || theta == 270.0) {
                     throw IllegalArgumentException("Tangent function is undefined at 90.0 and 270.0 degrees.")
@@ -340,25 +323,23 @@ class Chapter6 : PhysicsChapter(
                 return round4(sqrt(radicand))
             }
 
-            // Solve for r (radius)
+            // Solve for r
             if (radius == null) {
                 if (velocity == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
 
-                // NOTE: the Python source computed ((v²)/g)·tan θ, which is the wrong
-                // inversion of tan θ = v²/(rg). The correct solution is r = v²/(g·tan θ).
+                // Corrected from upstream: Python computed (v²/g)·tanθ; r = v²/(g·tanθ).
                 return round4((velocity * velocity) / (G * tan(thetaRadians)))
             }
 
-            // Solve for θ (ideal angle) — the default case
+            // Solve for θ
             val argument: Double = (velocity * velocity) / (radius * G)
 
             return round4(atan(argument) * (180 / PI))
         }
 
         /**
-         * F(D) = ½CρAv². Pass every value except the one you want solved for;
-         * leave that one as `null`. The drag force itself is returned negative
-         * (it opposes the motion), exactly like the Python source.
+         * F_D = ½CρAv². Pass null for the unknown.
+         * The drag force is returned negative (it opposes the motion).
          */
         fun dragForce(
             dragF: Double? = null,
@@ -379,7 +360,7 @@ class Chapter6 : PhysicsChapter(
                 throw IllegalArgumentException("Fluid density cannot be less than or equal to zero.")
             }
 
-            // Solve for C (drag coefficient)
+            // Solve for C
             if (dragCoeff == null) {
                 if (velocity == 0.0) throw IllegalArgumentException("Divison by zero is undefined.")
                 if (velocity!! < 0) throw IllegalArgumentException(DRAG_COEFF_SIGN_ERROR)
@@ -387,7 +368,7 @@ class Chapter6 : PhysicsChapter(
                 return round4(dragF!! / (0.5 * fluidDens!! * area!! * (velocity * velocity)))
             }
 
-            // Solve for ρ (fluid density)
+            // Solve for ρ
             if (fluidDens == null) {
                 if (velocity == 0.0) throw IllegalArgumentException("Divison by zero is undefined.")
                 if (velocity!! < 0) throw IllegalArgumentException(FLUID_DENS_SIGN_ERROR)
@@ -395,7 +376,7 @@ class Chapter6 : PhysicsChapter(
                 return round4(dragF!! / (0.5 * dragCoeff * area!! * (velocity * velocity)))
             }
 
-            // Solve for A (area)
+            // Solve for A
             if (area == null) {
                 if (velocity == 0.0) throw IllegalArgumentException("Divison by zero is undefined.")
                 if (velocity!! < 0) throw IllegalArgumentException(AREA_SIGN_ERROR)
@@ -403,20 +384,19 @@ class Chapter6 : PhysicsChapter(
                 return round4(dragF!! / (0.5 * dragCoeff * fluidDens * (velocity * velocity)))
             }
 
-            // Solve for v (velocity)
+            // Solve for v
             if (velocity == null) {
                 val radicand: Double = dragF!! / (0.5 * dragCoeff * fluidDens * area)
                 return round4(sqrt(radicand))
             }
 
-            // Solve for F(D) (drag force) — the default case
+            // Solve for F_D
             return round4(-0.5 * dragCoeff * fluidDens * area * (velocity * velocity))
         }
 
         /**
-         * Fₛ = 6πrηv. Pass every value except the one you want solved for;
-         * leave that one as `null`. The Stokes force itself is returned negative
-         * (it opposes the motion), exactly like the Python source.
+         * Fₛ = 6πrηv. Pass null for the unknown.
+         * The Stokes force is returned negative (it opposes the motion).
          */
         fun stokesLaw(
             dragFs: Double? = null,
@@ -424,7 +404,7 @@ class Chapter6 : PhysicsChapter(
             viscosity: Double? = null,
             velocity: Double? = null,
         ): Double {
-            val coefficient: Double = 6 * PI // Constant coefficient
+            val coefficient: Double = 6 * PI
 
             if (radius != null && radius <= 0) {
                 throw IllegalArgumentException("Radius cannot be less than zero or equal to zero.")
@@ -434,7 +414,7 @@ class Chapter6 : PhysicsChapter(
                 throw IllegalArgumentException("Viscocity cannot be a negative value.")
             }
 
-            // Solve for r (radius)
+            // Solve for r
             if (radius == null) {
                 if (velocity == 0.0 || viscosity == 0.0) {
                     throw IllegalArgumentException("Divison by zero is undefined.")
@@ -444,26 +424,23 @@ class Chapter6 : PhysicsChapter(
                 return round4(dragFs!! / (coefficient * viscosity!! * velocity))
             }
 
-            // Solve for η (viscosity)
+            // Solve for η
             if (viscosity == null) {
                 if (velocity!! <= 0) throw IllegalArgumentException(VISCOSITY_VELOCITY_ERROR)
 
                 return round4(dragFs!! / (coefficient * radius * velocity))
             }
 
-            // Solve for v (velocity)
+            // Solve for v
             if (velocity == null) {
                 return round4(dragFs!! / (coefficient * radius * viscosity))
             }
 
-            // Solve for Fₛ (Stokes force) — the default case
+            // Solve for Fₛ
             return round4(-coefficient * radius * viscosity * velocity)
         }
 
-        /**
-         * vₜ = √(2mg/(ρCA)). Pass every value except the one you want solved for;
-         * leave that one as `null`.
-         */
+        /** vₜ = √(2mg/(ρCA)). Pass null for the unknown. */
         fun terminalVelocity(
             terminalVel: Double? = null,
             mass: Double? = null,
@@ -485,37 +462,35 @@ class Chapter6 : PhysicsChapter(
 
             if (mass != null && mass <= 0) throw IllegalArgumentException(MASS_ERROR)
 
-            // NOTE: the Python source used sqrt(vₜ) in the three inversions below; the
-            // correct inversion of vₜ = √(2mg/(ρCA)) uses vₜ² instead.
+            // Corrected from upstream: Python used √vₜ in the inversions below; vₜ² is correct.
 
-            // Solve for m (mass)
+            // Solve for m
             if (mass == null) {
                 return round4((terminalVel!! * terminalVel) * ((dragCoeff!! * area!! * fluidDens!!) / (2 * G)))
             }
 
-            // Solve for C (drag coefficient)
+            // Solve for C
             if (dragCoeff == null) {
                 return round4((2 * mass * G) / ((terminalVel!! * terminalVel) * area!! * fluidDens!!))
             }
 
-            // Solve for A (area)
+            // Solve for A
             if (area == null) {
                 if (dragCoeff == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
 
                 return round4((2 * mass * G) / ((terminalVel!! * terminalVel) * dragCoeff * fluidDens!!))
             }
 
-            // Solve for ρ (fluid density)
-            // NOTE: the Python source tested `fluid_dens == 0` here, which is unreachable
-            // (zero already raises above and None == 0 is False), so its fluid-density
-            // solver could never run. Translated as the intended null check.
+            // Solve for ρ
+            // Corrected from upstream: Python's `fluid_dens == 0` test made this branch
+            // unreachable; translated as the intended null check.
             if (fluidDens == null) {
                 if (dragCoeff == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
 
                 return round4((2 * mass * G) / ((terminalVel!! * terminalVel) * dragCoeff * area))
             }
 
-            // Solve for vₜ (terminal velocity) — the default case
+            // Solve for vₜ
             val radicand: Double = (2 * mass * G) / (fluidDens * dragCoeff * area)
 
             return round4(sqrt(radicand))

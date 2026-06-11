@@ -5,27 +5,13 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 /*
- * These tests are a direct port of your Python `tests/chapter6_cal_test.py`.
- *
- * Kotlin test notes:
- *  - `assertEquals(expected, actual, tolerance)` is the float-comparison form, the
- *    equivalent of `assertAlmostEqual`. The tolerance below matches the Python `places`:
- *    places=1 -> 0.05, places=2 -> 0.005.
- *  - The `expected` lists mix error-message Strings and Doubles, mirroring the Python
- *    lists that mixed ValueError instances and floats. A String entry means "expect an
- *    IllegalArgumentException with exactly this message".
- *  - Two expectation sets were corrected relative to the Python tests because the
- *    Python implementation had math bugs (see comments at those tests).
+ * Tests for the Chapter6 solvers (circular motion, drag, Stokes' law, terminal velocity).
+ * Error messages are asserted byte-for-byte, including line-continuation whitespace and typos.
  */
 class Chapter6Test {
 
     private val calc = Chapter6.Calculate
 
-    /*
-     * Python wrapped the messages below across lines with a backslash continuation
-     * inside the string literal, so the trailing space plus the next line's
-     * indentation (20 or 24 spaces) are part of the message.
-     */
     private val massError =
         "We are operating with massive objects. " +
             "                    Mass must be greater than zero."
@@ -325,10 +311,7 @@ class Chapter6Test {
         val theta = listOf(31.64, -83.77, 31.64, 15.0)
         val velocity = listOf(0.0, 11.0, 11.0, 22.0)
 
-        // The Python tests expected 7.59 and 13.206, which came from the buggy
-        // inversion ((v²)/g)·tan θ. The correct r = v²/(g·tan θ) gives the values
-        // below (note the third row round-trips with bankedCurveSolvingForTheta:
-        // v=11, r=20 -> θ=31.64).
+        // Expected values use the corrected r = v²/(g·tan θ); the Python inversion was buggy.
         val expected = listOf<Any>(
             "Division by zero is undefined.",
             "Reconsider if theta can physically be a negative value.",
@@ -610,10 +593,7 @@ class Chapter6Test {
         val area = listOf(2.5, 2.5, 2.5)
         val fluidDens = listOf(1.225, 1.225, 70.0)
 
-        // The Python tests expected [0.861, 1.216, 49.14], which came from the buggy
-        // m = √(vₜ)·ρCA/(2g). The correct m = vₜ²·ρCA/(2g) gives the values below
-        // (note the first row round-trips with terminalVelocitySolvingForTerminalVel:
-        // m=65.7 -> vₜ=18.0).
+        // Expected values use the corrected m = vₜ²·ρCA/(2g); the Python inversion was buggy.
         val expected = listOf(65.6785, 262.7138, 3753.055)
 
         for (i in expected.indices) {

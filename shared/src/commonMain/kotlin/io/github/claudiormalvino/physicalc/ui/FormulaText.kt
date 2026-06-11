@@ -18,23 +18,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.em
 
 /*
- * FormulaText — a lightweight physics-formula renderer.
- *
- * Renders a TeX-lite markup into properly typeset Compose text:
+ * FormulaText — lightweight TeX-lite physics-formula renderer.
  *
  *   x_0          subscript                  v_{max}      multi-char subscript
  *   t^2          superscript                e^{-kt}      multi-char superscript
  *   \hat{i}      bold unit vector + hat     \vec{F}      bold vector
  *   \frac{a}{b}  inline fraction a/b        \Delta       named symbols (greek etc.)
  *
- * Typesetting conventions applied automatically to plain text:
- *   - single letters are italic (physics variables: x, v, t, ω ...)
- *   - differentials stay italic (dx, dt, dθ)
- *   - multi-letter words are upright (sin, cos, Total, distance ...)
- *
- * Everything is plain Compose text — no images, no WebView, no dependencies —
- * so it works identically on Android and desktop, scrolls like ordinary
- * text, and obeys the Material theme color/typography.
+ * Plain text: short letter runs and differentials are italic (x, vt, dx);
+ * function names and longer words are upright (sin, Total). Pure Compose
+ * text — no images or WebView — identical on Android and desktop.
  */
 
 @Composable

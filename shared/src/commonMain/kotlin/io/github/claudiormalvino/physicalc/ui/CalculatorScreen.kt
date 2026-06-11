@@ -53,11 +53,8 @@ import androidx.compose.ui.unit.dp
 import io.github.claudiormalvino.physicalc.physics.PhysicsChapter
 
 /*
- * The interactive solver.
- *
- * Flow: pick which variable to solve for (chips) -> type the known values ->
- * Solve. The chosen unknown is passed to the chapter's calculation as `null`,
- * exactly like leaving an argument as None in your Python code.
+ * Interactive solver: pick the unknown (chips), enter the knowns, solve.
+ * The unknown is passed to the chapter's calculation as `null`.
  */
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -71,15 +68,11 @@ fun CalculatorScreen(
     val equation = chapter.equations[equationIndex]
     val symbols = equation.variables.keys.toList()
 
-    // --- Screen state ---------------------------------------------------------
-    // `mutableStateOf` makes a value observable: writing to it re-runs exactly the
-    // composables that read it. `remember` keeps it alive across re-runs.
     var target by remember { mutableStateOf(symbols.last()) }   // variable to solve for
     val inputs = remember { mutableStateMapOf<String, String>() } // text typed per symbol
     var result by remember { mutableStateOf<Double?>(null) }
     var error by remember { mutableStateOf<String?>(null) }
 
-    // Local helper that runs the actual physics. Reads/writes the state above.
     fun solve() {
         error = null
         result = null
@@ -158,7 +151,6 @@ fun CalculatorScreen(
                     color = colors.onSurfaceVariant,
                 )
                 Spacer(Modifier.height(8.dp))
-                // FlowRow wraps chips onto new lines when they run out of width.
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     symbols.forEach { symbol ->
                         FilterChip(

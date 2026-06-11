@@ -7,19 +7,12 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 
 /*
- * Approximate heliocentric planet positions, good to well under a degree for
- * 1800-2050 AD — far more precision than a home-screen visualization needs.
- *
- * Method (JPL "Approximate Positions of the Planets", E.M. Standish):
- *   1. Each planet has Keplerian orbital elements at epoch J2000 plus linear
- *      drift rates per Julian century.
- *   2. For a given date: mean longitude L and longitude of perihelion ϖ give
- *      the mean anomaly M = L - ϖ.
- *   3. Solve Kepler's equation  E - e·sin(E) = M  for the eccentric anomaly
- *      (Newton's method — the same equation as the app's gravitation chapter).
- *   4. Convert to the true anomaly ν, then the heliocentric ecliptic
- *      longitude λ = ν + ϖ. (Inclinations are a few degrees at most, so the
- *      2-D projection onto the ecliptic is visually exact.)
+ * Approximate heliocentric planet positions (JPL "Approximate Positions of the
+ * Planets", E.M. Standish), good to well under a degree for 1800-2050 AD.
+ * Per planet: J2000 Keplerian elements + linear drift per Julian century give
+ * the mean anomaly M = L - ϖ; solve Kepler's equation E - e·sin(E) = M by
+ * Newton's method, convert to true anomaly ν, then ecliptic longitude
+ * λ = ν + ϖ (inclinations are a few degrees, so the 2-D projection is visually exact).
  */
 
 /** Visual + orbital description of one planet. */

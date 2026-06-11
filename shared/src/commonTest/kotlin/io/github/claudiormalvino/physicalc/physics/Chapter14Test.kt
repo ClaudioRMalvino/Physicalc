@@ -6,14 +6,8 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 /*
- * Smoke tests for Chapter 14 (Fluid Dynamics).
- *
- * The Python project has no tests for this chapter, so each calculation function gets:
- *  - at least one default-solve-path test (all knowns given, the natural output left null),
- *    with the expected value hand-derived from the formula in a comment, and
- *  - at least one error-branch test where the function defines one.
- *
- * Tolerance is 0.005 unless the arithmetic is exact.
+ * Smoke tests for the Chapter14 solvers (Fluid Dynamics); g = 9.82.
+ * Error messages are asserted byte-for-byte ("Divison" typos included).
  */
 class Chapter14Test {
 
@@ -96,7 +90,7 @@ class Chapter14Test {
 
     @Test
     fun continuityArea1DivisionByZeroThrows() {
-        // Solving for A₁ with v₁ = 0 divides by zero. (Message typo is verbatim from Python.)
+        // Solving for A₁ with v₁ = 0 divides by zero.
         val ex = assertFailsWith<IllegalArgumentException> {
             calc.continuityConstDensity(velocity1 = 0.0, area2 = 1.5, velocity2 = 4.0)
         }
@@ -148,12 +142,7 @@ class Chapter14Test {
 
     @Test
     fun bernoulliSolvingForPressure2() {
-        // With ρ=1000, p₁=200000, v₁=2, y₁=10, v₂=4, y₂=2 (g = 9.82):
-        //   ½ρv₁² = 0.5*1000*4   = 2000
-        //   ρgy₁  = 1000*9.82*10 = 98200
-        //   ½ρv₂² = 0.5*1000*16  = 8000
-        //   ρgy₂  = 1000*9.82*2  = 19640
-        // p₂ = 200000 + 2000 + 98200 - 8000 - 19640 = 272560.0
+        // p₂ = p₁ + ½ρv₁² + ρgy₁ - ½ρv₂² - ρgy₂ = 200000 + 2000 + 98200 - 8000 - 19640 = 272560.0
         val result = calc.bernoullisEquation(
             density = 1000.0, pressure1 = 200000.0, velocity1 = 2.0, height1 = 10.0,
             velocity2 = 4.0, height2 = 2.0,
@@ -163,9 +152,7 @@ class Chapter14Test {
 
     @Test
     fun bernoulliSolvingForVelocity1() {
-        // Same state as above, now solving for v₁ (expected 2.0):
-        // radicand = p₂ - p₁ + ½ρv₂² + ρgy₂ - ρgy₁ = 72560 + 8000 + 19640 - 98200 = 2000
-        // v₁ = √(2000 / (0.5*1000)) = √4 = 2.0
+        // v₁ = √((p₂ - p₁ + ½ρv₂² + ρgy₂ - ρgy₁)/(½ρ)) = √(2000/500) = 2.0
         val result = calc.bernoullisEquation(
             density = 1000.0, pressure1 = 200000.0, height1 = 10.0,
             pressure2 = 272560.0, velocity2 = 4.0, height2 = 2.0,
@@ -175,8 +162,7 @@ class Chapter14Test {
 
     @Test
     fun bernoulliSolvingForDensity() {
-        // ρ = (p₂ - p₁)/(½v₁² + gy₁ - ½v₂² - gy₂)
-        //   = 72560 / (2 + 98.2 - 8 - 19.64) = 72560/72.56 = 1000.0
+        // ρ = (p₂ - p₁)/(½v₁² + gy₁ - ½v₂² - gy₂) = 72560/72.56 = 1000.0
         val result = calc.bernoullisEquation(
             pressure1 = 200000.0, velocity1 = 2.0, height1 = 10.0,
             pressure2 = 272560.0, velocity2 = 4.0, height2 = 2.0,
@@ -197,8 +183,7 @@ class Chapter14Test {
 
     @Test
     fun bernoulliNegativeRadicandThrows() {
-        // Solving for v₁ with p₁ > p₂, equal heights, v₂ = 0:
-        // radicand = 200000 - 300000 + 0 + 0 - 0 = -100000 < 0
+        // Solving for v₁ with p₁ > p₂, equal heights, v₂ = 0: radicand = -100000 < 0
         val ex = assertFailsWith<IllegalArgumentException> {
             calc.bernoullisEquation(
                 density = 1000.0, pressure1 = 300000.0, height1 = 0.0,

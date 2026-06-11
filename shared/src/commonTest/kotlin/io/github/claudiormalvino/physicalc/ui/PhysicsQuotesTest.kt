@@ -5,6 +5,9 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
+/*
+ * Tests for the PhysicsQuotes day-keyed quote rotation.
+ */
 class PhysicsQuotesTest {
 
     private val dayMs = 86_400_000L

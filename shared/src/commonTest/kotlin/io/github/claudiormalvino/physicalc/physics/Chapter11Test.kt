@@ -5,20 +5,13 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 /*
- * Smoke tests for Chapter 11 (Angular Momentum).
- *
- * The Python project has NO tests for this chapter, so these were written for the port:
- * every calculation function gets at least one default-solve-path test with hand-derived
- * expected values (derivations in comments), plus error-branch tests.
- *
- * g = 9.82 m/s² throughout (the chapter's constant).
+ * Smoke tests for the Chapter11 solvers (Angular Momentum); g = 9.82 m/s².
+ * Error messages are asserted byte-for-byte, including line-continuation whitespace and typos.
  */
 class Chapter11Test {
 
     private val calc = Chapter11.Calculate
 
-    // The two messages below replicate the Python originals exactly, including the runs
-    // of spaces produced by Python's backslash line-continuation inside the string.
     private val massError =
         "We are operating with massive objects." +
             " ".repeat(21) +
@@ -41,7 +34,6 @@ class Chapter11Test {
     @Test
     fun accelSolvingForMass() {
         // a = 2.455, θ=30° : g·sinθ/a = 4.91/2.455 = 2, so m = I/(r²·(2−1)) = 3/1 = 3
-        // (check: a = 3·4.91/(3 + 3/1²) = 14.73/6 = 2.455 ✓)
         val result = calc.accelWithoutSlipping(accel = 2.455, momentInertia = 3.0, radius = 1.0, theta = 30.0)
         assertEquals(3.0, result, 0.005)
     }
@@ -62,8 +54,7 @@ class Chapter11Test {
 
     @Test
     fun accelSolvingForTheta() {
-        // a = 2.455, m=2, I=2, r=1 : arg = a·(m + I/r²)/(m·g) = 2.455·4/19.64 = 0.5
-        // θ = asin(0.5) = 30°
+        // a = 2.455, m=2, I=2, r=1 : θ = asin(a·(m + I/r²)/(m·g)) = asin(0.5) = 30°
         val result = calc.accelWithoutSlipping(accel = 2.455, mass = 2.0, momentInertia = 2.0, radius = 1.0)
         assertEquals(30.0, result, 0.005)
     }
@@ -154,7 +145,6 @@ class Chapter11Test {
         val ex = assertFailsWith<IllegalArgumentException> {
             calc.angMomentumRigidBody(angularMomentum = 6.0, momentInertia = 0.0)
         }
-        // "Divison" typo preserved from the Python source.
         assertEquals("Divison by zero is undefined.", ex.message)
     }
 

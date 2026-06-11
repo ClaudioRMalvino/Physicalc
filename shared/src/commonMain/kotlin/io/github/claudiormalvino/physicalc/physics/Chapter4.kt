@@ -9,7 +9,7 @@ import kotlin.math.sqrt
 import kotlin.math.tan
 
 /**
- * Chapter on two and three dimensional motion — the Kotlin twin of your Python `chapter4.py`.
+ * Chapter 4: motion in two and three dimensions.
  */
 class Chapter4 : PhysicsChapter(
     title = "Ch.4 - Motion in Two and Three Dimensions",
@@ -199,29 +199,24 @@ class Chapter4 : PhysicsChapter(
         Definition("velocity vector", "Vector that gives the instantaneous speed and direction of a particle; tangent to the trajectory."),
     )
 
-    /**
-     * Holds the calculation functions for Chapter 4 — the twin of the nested
-     * Python `class Calculate`.
-     */
+    /** Calculation functions for Chapter 4. */
     object Calculate {
 
         /** Gravitational acceleration on Earth [m/s²]. */
         const val G: Double = 9.82
 
-        /** Rounds to 4 decimal places, matching Python's `round(x, 4)`. */
+        /** Delegates to roundResult; see PhysicsModels.kt. */
         private fun round4(value: Double): Double = roundResult(value)
 
         /**
-         * T = 2v₀sinθ / g. Pass every value except the one you want solved for;
-         * leave that one as `null`. Theta is always required — this equation cannot
-         * be inverted for theta without complex numbers.
+         * T = 2v₀sinθ / g. Pass null for the unknown. θ (degrees) is always
+         * required — the equation cannot be inverted for θ without complex numbers.
          */
         fun timeOfFlight(
             v0: Double? = null,
             theta: Double? = null,
             t: Double? = null,
         ): Double {
-            // Theta is mandatory; convert degrees to radians
             if (theta == null) {
                 throw IllegalArgumentException(
                     "Cannot solve for theta with this equation. Yields complex numbers. \n Please input a value for theta."
@@ -231,18 +226,18 @@ class Chapter4 : PhysicsChapter(
 
             if (t != null && t < 0) throw IllegalArgumentException("Time cannot be a negative value")
 
-            // Solve for v₀ (initial velocity)
+            // Solve for v₀
             if (v0 == null) {
                 return round4((t!! * G) / (2.0 * sin(thetaRadians)))
             }
 
-            // Solve for T (time of flight) — the default case
+            // Solve for T
             return round4((2 * v0 * sin(thetaRadians)) / G)
         }
 
         /**
-         * y = (tanθ)x − (g / (2(v₀cosθ)²))x². Pass every value except the unknown;
-         * leave that one `null`. Theta is always required.
+         * y = (tanθ)x − (g / (2(v₀cosθ)²))x². Pass null for the unknown.
+         * θ (degrees) is always required.
          */
         fun trajectory(
             theta: Double? = null,
@@ -250,7 +245,6 @@ class Chapter4 : PhysicsChapter(
             x: Double? = null,
             y: Double? = null,
         ): Double {
-            // Theta is mandatory; convert degrees to radians
             if (theta == null) {
                 throw IllegalArgumentException(
                     "Cannot solve for theta with this equation. Please input a value for theta."
@@ -258,7 +252,7 @@ class Chapter4 : PhysicsChapter(
             }
             val thetaRadian: Double = theta * (PI / 180)
 
-            // Solve for v₀ (initial velocity)
+            // Solve for v₀
             if (v0 == null) {
                 if (y == 0.0) throw IllegalArgumentException("Division by zero is undefined")
 
@@ -282,20 +276,18 @@ class Chapter4 : PhysicsChapter(
                 throw IllegalArgumentException("Division by zero is undefined")
             }
 
-            // Solve for y (vertical position) — the default case
+            // Solve for y
             val vCos: Double = v0 * cos(thetaRadian)
             return round4(tan(thetaRadian) * x - ((G / (2 * vCos * vCos)) * (x * x)))
         }
 
-        /**
-         * R = (v₀²sin2θ) / g. Pass every value except the unknown; leave that one `null`.
-         */
+        /** R = (v₀²sin2θ) / g. Pass null for the unknown. */
         fun projectileRange(
             rTotal: Double? = null,
             v0: Double? = null,
             theta: Double? = null,
         ): Double {
-            // Solve for v₀ (initial velocity)
+            // Solve for v₀
             if (v0 == null) {
                 if (theta == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
 
@@ -308,7 +300,7 @@ class Chapter4 : PhysicsChapter(
                 return round4(sqrt(radicand))
             }
 
-            // Solve for θ (launch angle)
+            // Solve for θ
             if (theta == null) {
                 if (v0 == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
 
@@ -324,14 +316,12 @@ class Chapter4 : PhysicsChapter(
                 return round4((asin(argument) / 2.0) * (180 / PI))
             }
 
-            // Solve for R (range) — the default case
+            // Solve for R
             val thetaRadian: Double = theta * (PI / 180.0)
             return round4(((v0 * v0) * sin(2 * thetaRadian)) / G)
         }
 
-        /**
-         * a_c = v² / r. Pass every value except the unknown; leave that one `null`.
-         */
+        /** a_c = v² / r. Pass null for the unknown. */
         fun centripetalAccel(
             accel: Double? = null,
             velocity: Double? = null,
@@ -341,7 +331,7 @@ class Chapter4 : PhysicsChapter(
                 throw IllegalArgumentException("Radius cannot be less than or equal to zero.")
             }
 
-            // Solve for v (velocity)
+            // Solve for v
             if (velocity == null) {
                 val radicand: Double = accel!! * radius!!
 
@@ -352,14 +342,14 @@ class Chapter4 : PhysicsChapter(
                 return round4(sqrt(radicand))
             }
 
-            // Solve for r (radius)
+            // Solve for r
             if (radius == null) {
                 if (accel == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
 
                 return round4((velocity * velocity) / accel!!)
             }
 
-            // Solve for a_c (centripetal acceleration) — the default case
+            // Solve for a_c
             return round4((velocity * velocity) / radius)
         }
     }

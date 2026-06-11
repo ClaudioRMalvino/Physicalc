@@ -6,6 +6,9 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
+/*
+ * Tests for SolarSystemModel's Kepler-orbit planet positions.
+ */
 class SolarSystemModelTest {
 
     @Test
@@ -30,9 +33,8 @@ class SolarSystemModelTest {
 
     @Test
     fun earthLongitudeMatchesEphemerisForJune2026() {
-        // 2026-06-11 00:00 UTC == JD 2461202.5.
-        // The Sun's geocentric longitude that day is ~80.4° (mid-Gemini), so the
-        // Earth's HELIOCENTRIC longitude must be ~260.4°. Allow a generous ±4°.
+        // JD 2461202.5 = 2026-06-11 00:00 UTC: the Sun's geocentric longitude is ~80.4°,
+        // so Earth's heliocentric longitude must be ~260.4°. Allow a generous ±4°.
         val states = SolarSystemModel.positions(2_461_202.5)
         val earth = states.first { it.spec.name == "Earth" }
         assertTrue(abs(earth.longitudeDeg - 260.4) < 4.0, "Earth at ${earth.longitudeDeg}° (expected ~260.4°)")

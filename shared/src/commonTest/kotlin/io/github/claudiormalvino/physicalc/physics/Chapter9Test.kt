@@ -5,20 +5,14 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 /*
- * These tests are a port of the Python `tests/chapter9_calc_test.py`, plus smoke tests
- * for every calculation branch the (very small) Python suite did not cover.
- *
- * Note: the Python file also declared `test_solving_for_mass_2`, but its body was
- * incomplete (an empty `expected` list and no assertions), so there was nothing to port;
- * the Kotlin smoke test below covers that branch instead.
- *
- * Tolerances follow the Python `places` convention: places=2 -> 0.005, places=4 -> 5e-5.
+ * Tests for the Chapter9 solvers (collisions and the rocket equation).
+ * Error messages are asserted byte-for-byte, including line-continuation whitespace and typos.
  */
 class Chapter9Test {
 
     private val calc = Chapter9.Calculate
 
-    // ---- inelastic_collision_momentum (ported from Python) ----
+    // ---- inelastic_collision_momentum ----
 
     @Test
     fun inelasticSolvingForMass1() {
@@ -63,8 +57,7 @@ class Chapter9Test {
     }
 
     // ---- inelastic_collision_momentum (smoke tests) ----
-    // Consistent data set: m1=10, v1=10, m2=10, v2=30, M=20, v=20
-    // since m1*v1 + m2*v2 = 100 + 300 = 400 = M*v = 20*20.
+    // Shared data set: m1=10, v1=10, m2=10, v2=30, M=20, v=20 (m1*v1 + m2*v2 = 400 = M*v)
 
     @Test
     fun inelasticSolvingForMass2() {
@@ -132,9 +125,7 @@ class Chapter9Test {
     }
 
     // ---- elastic_collision_momentum (smoke tests) ----
-    // Consistent 1D elastic data set: m1=2, m2=4, v_i1=6, v_i2=0 gives
-    // v_f1 = (m1-m2)/(m1+m2)*v_i1 = -2 and v_f2 = 2m1/(m1+m2)*v_i1 = 4.
-    // Momentum check: 2*6 + 4*0 = 12 = 2*(-2) + 4*4.
+    // Shared 1D elastic data set: m1=2, m2=4, v_i1=6, v_i2=0 → v_f1=-2, v_f2=4
 
     @Test
     fun elasticSolvingForMass1() {
@@ -224,9 +215,7 @@ class Chapter9Test {
     }
 
     // ---- rocket_equation (smoke tests) ----
-    // Data set: u=100, m_i=200, m=100 => Δv = 100*ln(2) = 69.31471805599453,
-    // round4 -> 69.3147. The inverse solves below feed Δv = 69.3147 back in;
-    // the tiny rounding error vanishes again under round4.
+    // Shared data set: u=100, m_i=200, m=100 => Δv = 100*ln(2) -> 69.3147 after round4
 
     @Test
     fun rocketSolvingForDeltaV() {

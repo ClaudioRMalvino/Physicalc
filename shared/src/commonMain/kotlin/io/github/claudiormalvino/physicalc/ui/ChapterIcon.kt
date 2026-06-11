@@ -16,12 +16,8 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 /*
- * Hand-drawn vector glyphs for the chapter cards — one tiny "essence of the
- * chapter" pictogram each, drawn with Canvas so they are crisp at any size,
- * tint with the theme, and work identically on Android and desktop.
- *
- * All coordinates are fractions of the canvas size (0..1), so the glyphs scale
- * with whatever size the badge gives them.
+ * Hand-drawn Canvas glyphs for the chapter cards, tinted by the theme.
+ * All coordinates are fractions of the canvas size (0..1), so glyphs scale freely.
  */
 
 @Composable
@@ -176,7 +172,7 @@ private fun DrawScope.balanceScale(c: Color, sw: Float) {
 }
 
 /** Ch.13 — top-down solar system: rayed sun in the center, planet on its orbit.
- *  The rays are what keep this from reading as an atom — nuclei don't shine. */
+ *  The rays keep it from reading as an atom diagram. */
 private fun DrawScope.orbit(c: Color, sw: Float) {
     val center = p(0.5f, 0.5f)
     // Sun

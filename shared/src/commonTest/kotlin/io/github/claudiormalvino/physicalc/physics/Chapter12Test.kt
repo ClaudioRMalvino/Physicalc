@@ -5,11 +5,8 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 /*
- * Smoke tests for Chapter 12 (Static Equilibrium and Elasticity).
- *
- * The Python source has no test suite for this chapter, so these tests were written
- * from the formulas directly; each expected value is hand-derived in a comment.
- * Structure mirrors Chapter3Test.kt.
+ * Smoke tests for the Chapter12 solvers (Static Equilibrium and Elasticity).
+ * Error messages are asserted byte-for-byte ("Divison" typos included).
  */
 class Chapter12Test {
 
@@ -79,7 +76,7 @@ class Chapter12Test {
 
     @Test
     fun youngModulusDeltaLengthDivisionByZero() {
-        // Solving for ΔL with Y = 0 divides by zero (Python message typo kept verbatim)
+        // Solving for ΔL with Y = 0 divides by zero
         val ex = assertFailsWith<IllegalArgumentException> {
             calc.youngModulus(youngMod = 0.0, force = 100.0, crossSection = 0.5, initLength = 2.0)
         }
@@ -113,8 +110,7 @@ class Chapter12Test {
 
     @Test
     fun bulkModulusSolvingForInitVolume() {
-        // V₀ = −B·ΔV / Δp = −(20000 × (−0.01)) / 100 = 200 / 100 = 2
-        // (uses the corrected formula; the Python branch was buggy and returned −B)
+        // V₀ = −B·ΔV / Δp = 200 / 100 = 2 (corrected formula; the buggy Python branch returned −B)
         val result = calc.bulkModulus(bulkMod = 20000.0, deltaPressure = 100.0, deltaVolume = -0.01)
         assertEquals(2.0, result, 0.005)
     }
@@ -225,7 +221,7 @@ class Chapter12Test {
 
     @Test
     fun shearModulusDeltaLayersDivisionByZero() {
-        // Solving for Δx with S = 0 divides by zero (Python message typo kept verbatim)
+        // Solving for Δx with S = 0 divides by zero
         val ex = assertFailsWith<IllegalArgumentException> {
             calc.shearModulus(shearMod = 0.0, force = 50.0, crossSection = 0.25, initLength = 4.0)
         }

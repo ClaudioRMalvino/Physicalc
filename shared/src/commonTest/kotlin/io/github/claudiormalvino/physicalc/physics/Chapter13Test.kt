@@ -6,34 +6,20 @@ import kotlin.test.assertTrue
 import kotlin.test.assertFailsWith
 
 /*
- * Smoke tests for Chapter 13 (Gravitation).
- *
- * The Python source has NO tests for this chapter, so these were written from
- * scratch: for every calculation function there is at least one test of each
- * solve path with hand-derived expected values (the derivation is shown in a
- * comment), plus at least one error branch where one exists.
- *
- * G = 6.674e-11 and c = 2.998e8 throughout (the chapter's constants).
- *
- * The expected error messages reproduce the Python ValueError strings verbatim,
- * including the whitespace runs that Python's backslash line-continuations
- * embedded into them (hence the `" ".repeat(n)` below).
+ * Smoke tests for the Chapter13 solvers (Gravitation); G = 6.674e-11, c = 2.998e8.
+ * Error messages are asserted byte-for-byte, including line-continuation whitespace and typos.
  */
 class Chapter13Test {
 
     @Test
     fun tinyForcesSurviveRounding() {
-        // Two 70 kg people 1 m apart: F = G·m1·m2/r² ≈ 3.27e-7 N.
-        // Plain 4-decimal rounding used to collapse this to 0.0; significant-
-        // figure rounding for small magnitudes must preserve it.
+        // Two 70 kg people 1 m apart: F ≈ 3.27e-7 N — significant-figure rounding must not collapse it to 0.0.
         val f = Chapter13.Calculate.lawOfGravitation(mass1 = 70.0, mass2 = 70.0, distance = 1.0)
         assertTrue(f > 3.2e-7 && f < 3.4e-7, "F = $f")
     }
 
-
     private val calc = Chapter13.Calculate
 
-    // Verbatim Python error messages (see Chapter13.kt for the whitespace explanation).
     private val msgMassiveObjects21 =
         "We are operating with massive objects." + " ".repeat(21) +
             "Make sure all objects have a mass greater than zero."
@@ -177,9 +163,7 @@ class Chapter13Test {
 
     @Test
     fun conservationSolvingForMassBody() {
-        // M = ½(v₁² - v₂²)/(G(1/r₁ - 1/r₂))
-        //   = 0.5·(14000² - 10000²)/(6.674e-11·(1/1e6 - 1/2e6))
-        //   = 4.8e7/(6.674e-11 · 5e-7) = 4.8e7/3.337e-17 ≈ 1.438418e24 kg
+        // M = ½(v₁² - v₂²)/(G(1/r₁ - 1/r₂)) ≈ 1.438418e24 kg
         val result = calc.conservationOfGravEnergy(
             massObject = 100.0, velocity1 = 14000.0, velocity2 = 10000.0,
             distance1 = 1e6, distance2 = 2e6,
@@ -199,9 +183,7 @@ class Chapter13Test {
 
     @Test
     fun conservationSolvingForVelocity2() {
-        // v₂ = √(v₁² - 2GM/r₁ + 2GM/r₂), GM = 6.674e13
-        //    = √(20000² - 2·6.674e13/1e6 + 2·6.674e13/2e6)
-        //    = √(4e8 - 1.3348e8 + 6.674e7) = √(3.3326e8) ≈ 18255.4102 m/s
+        // v₂ = √(v₁² - 2GM/r₁ + 2GM/r₂) = √(3.3326e8) ≈ 18255.4102 m/s
         val result = calc.conservationOfGravEnergy(
             massObject = 100.0, massBody = 1e24, velocity1 = 20000.0,
             distance1 = 1e6, distance2 = 2e6,
@@ -354,8 +336,7 @@ class Chapter13Test {
 
     @Test
     fun orbitalPeriodSolvingForT() {
-        // GM = 6.674e-11 · 5.972e24 = 3.985713e14; r³ = (6.371e6)³ = 2.58597e20
-        // T = 2π√(2.58597e20/3.985713e14) = 2π√(648815.7…) ≈ 5061.0226 s
+        // T = 2π√(r³/GM) = 2π√((6.371e6)³/3.985713e14) ≈ 5061.0226 s
         val result = calc.orbitalPeriod(distance = 6.371e6, massBody = 5.972e24)
         assertEquals(5061.0226, result, 1e-3)
     }
@@ -441,8 +422,7 @@ class Chapter13Test {
 
     @Test
     fun keplerSolvingForPeriod() {
-        // T = √(4π²a³/(GM)) with a = 1.496e11, M = 1.989e30 (Earth-Sun)
-        //   = √(4π² · 3.34827e33 / 1.327459e20) ≈ 3.15549e7 s (≈ one year)
+        // T = √(4π²a³/(GM)) with a = 1.496e11, M = 1.989e30 (Earth-Sun) ≈ 3.15549e7 s (≈ one year)
         val result = calc.keplersThirdLaw(semiMajorAxis = 1.496e11, massBody = 1.989e30)
         assertEquals(31554896.9288, result, 1e-2)
     }
@@ -473,8 +453,7 @@ class Chapter13Test {
 
     @Test
     fun schwarzschildSolvingForRadius() {
-        // R(S) = 2GM/c² = 2 · 6.674e-11 · 1.989e30 / (2.998e8)²
-        //      = 2.654919e20 / 8.98800e16 ≈ 2953.8451 m (the Sun)
+        // R(S) = 2GM/c² = 2 · 6.674e-11 · 1.989e30 / (2.998e8)² ≈ 2953.8451 m (the Sun)
         val result = calc.schwarzschildRadius(massBody = 1.989e30)
         assertEquals(2953.8451, result, 1e-3)
     }

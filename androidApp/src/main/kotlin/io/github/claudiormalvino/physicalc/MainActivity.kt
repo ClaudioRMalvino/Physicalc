@@ -16,9 +16,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            // Status/navigation bar icon color must follow the APP theme, not the
-            // device theme: white icons on our dark palette, dark icons on light.
-            // LaunchedEffect re-runs whenever the user flips the theme toggle.
+            // System bar icon style must follow the app theme, not the device
+            // theme; re-applied whenever the theme toggle flips.
             val darkTheme = AppSettings.darkTheme
             LaunchedEffect(darkTheme) {
                 val style = if (darkTheme) {

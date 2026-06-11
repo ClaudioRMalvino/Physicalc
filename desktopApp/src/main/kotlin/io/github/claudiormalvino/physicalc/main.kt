@@ -9,8 +9,7 @@ fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
         title = "Physicalc",
-        // Phone-like default proportions; the layout also caps content width,
-        // so maximizing the window stays readable instead of stretching.
+        // Phone-like default size; content width is capped, so maximizing stays readable.
         state = rememberWindowState(width = 480.dp, height = 920.dp),
     ) {
         App()

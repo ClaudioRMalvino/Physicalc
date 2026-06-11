@@ -23,12 +23,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
-/**
- * Settings + About, presented as a Material 3 modal bottom sheet.
- *
- * The theme toggle writes to [AppSettings]; because `darkTheme` is Compose state,
- * the entire app (including this sheet) retints instantly when flipped.
- */
+/** Settings + About, presented as a Material 3 modal bottom sheet. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsSheet(onDismiss: () -> Unit) {
@@ -96,7 +91,7 @@ fun SettingsSheet(onDismiss: () -> Unit) {
 
             Spacer(Modifier.height(12.dp))
 
-            // GitHub link — LocalUriHandler opens the platform browser.
+            // GitHub link
             Surface(
                 onClick = { uriHandler.openUri(AppInfo.REPO_URL) },
                 shape = RoundedCornerShape(12.dp),

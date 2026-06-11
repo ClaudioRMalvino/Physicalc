@@ -1,10 +1,8 @@
 package io.github.claudiormalvino.physicalc.physics
 
 /**
- * The single place that knows which chapters exist.
- *
- * As you port more chapters from Python, add them to this list and the whole
- * UI (chapter list, detail screens, calculators) picks them up automatically.
+ * The single place that knows which chapters exist. New chapters added here
+ * are picked up automatically by the UI.
  */
 object ChapterRegistry {
     val all: List<PhysicsChapter> = listOf(

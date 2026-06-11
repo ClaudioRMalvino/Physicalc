@@ -6,7 +6,7 @@ import kotlin.math.cos
 import kotlin.math.round
 
 /**
- * Chapter on Newton's Laws of Motion — the Kotlin twin of your Python `chapter5.py`.
+ * Chapter 5: Newton's laws of motion.
  */
 class Chapter5 : PhysicsChapter(
     title = "Ch.5 - Newton's Laws of Motion",
@@ -129,22 +129,16 @@ class Chapter5 : PhysicsChapter(
         Definition("weight", "force due to gravity acting on an object of mass m"),
     )
 
-    /**
-     * Holds the calculation functions for Chapter 5 — the twin of the nested
-     * Python `class Calculate`.
-     */
+    /** Calculation functions for Chapter 5. */
     object Calculate {
 
         /** Gravitational acceleration on Earth [m/s²]. */
         const val G: Double = 9.82
 
-        /** Rounds to 4 decimal places, matching Python's `round(x, 4)`. */
+        /** Delegates to roundResult; see PhysicsModels.kt. */
         private fun round4(value: Double): Double = roundResult(value)
 
-        /**
-         * N = mg·cosθ. Pass every value except the one you want solved for;
-         * leave that one as `null`. `theta` is given in degrees.
-         */
+        /** N = mg·cosθ. Pass null for the unknown. θ in degrees. */
         fun normalForce(
             normalF: Double? = null,
             mass: Double? = null,
@@ -152,16 +146,15 @@ class Chapter5 : PhysicsChapter(
         ): Double {
             if (mass != null && mass < 0) throw IllegalArgumentException("Mass cannot be negative.")
 
-            // Solve for θ (angle), returned in degrees
+            // Solve for θ, returned in degrees
             if (theta == null) {
                 val arg: Double = normalF!! / (mass!! * G)
                 return round4(acos(arg) * (180.0 / PI))
             }
 
-            // Converts degrees to radians
             val thetaRadians: Double = theta * (PI / 180.0)
 
-            // Solve for m (mass)
+            // Solve for m
             if (mass == null) {
                 if (theta == 90.0 || theta == 270.0) {
                     throw IllegalArgumentException("Division by zero is undefined.")
@@ -171,13 +164,11 @@ class Chapter5 : PhysicsChapter(
                 return round4(result)
             }
 
-            // Solve for N (normal force) — the default case
+            // Solve for N
             return round4(mass * G * cos(thetaRadians))
         }
 
-        /**
-         * F = -kx (Hooke's law). Pass every value except the unknown; leave that one `null`.
-         */
+        /** F = -kx (Hooke's law). Pass null for the unknown. */
         fun hookesLaw(
             force: Double? = null,
             springConst: Double? = null,
@@ -187,13 +178,13 @@ class Chapter5 : PhysicsChapter(
                 throw IllegalArgumentException("Spring constant (k) cannot be a negative value.")
             }
 
-            // Solve for k (spring constant)
+            // Solve for k
             if (springConst == null) {
                 if (displacement == 0.0) throw IllegalArgumentException("Divison by zero is undefined.")
 
                 val result = -force!! / displacement!!
                 if (result < 0) {
-                    // Message spacing matches the Python line-continuation string verbatim.
+                    // Spacing matches the Python line-continuation string; tests assert it verbatim.
                     throw IllegalArgumentException(
                         "Spring constant cannot be negative. " +
                             "                        Consider the relation between the direction " +
@@ -203,13 +194,13 @@ class Chapter5 : PhysicsChapter(
                 return round4(result)
             }
 
-            // Solve for x (displacement)
+            // Solve for x
             if (displacement == null) {
                 if (springConst == 0.0) throw IllegalArgumentException("Divison by zero is undefined.")
                 return round4(-force!! / springConst)
             }
 
-            // Solve for F (restorative force) — the default case
+            // Solve for F
             return round4(-springConst * displacement)
         }
     }

@@ -7,6 +7,9 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
+/*
+ * Tests for FormulaParser's LaTeX-lite to AnnotatedString rendering.
+ */
 class FormulaParserTest {
 
     private fun styleAt(parsed: AnnotatedString, index: Int) =

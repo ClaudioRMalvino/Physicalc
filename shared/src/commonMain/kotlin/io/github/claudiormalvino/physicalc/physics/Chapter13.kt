@@ -8,14 +8,10 @@ import kotlin.math.round
 import kotlin.math.sqrt
 
 /**
- * Chapter on gravitation — the Kotlin twin of your Python `chapter13.py`.
+ * Chapter 13 — Newtonian gravitation, orbits, and Kepler's laws.
  *
- * Several calculation branches in the Python source contained bugs (undefined
- * variables, `sqrt` where a square was needed, operator-precedence slips,
- * `cbrt` where `sqrt` was needed, and a duplicated unreachable branch). The
- * CORRECT physics is implemented here; the original error-message strings are
- * preserved verbatim — including the literal whitespace runs that Python's
- * backslash line-continuations embedded in them.
+ * Error messages (typos and whitespace runs included) are preserved verbatim from the
+ * original implementation because tests assert them; deliberate math fixes are noted inline.
  */
 class Chapter13 : PhysicsChapter(
     title = "Ch.13 - Gravitation",
@@ -244,10 +240,7 @@ class Chapter13 : PhysicsChapter(
         Definition("universal gravitational constant", "constant representing the strength of the gravitational force, that is believed to be the same throughout the universe"),
     )
 
-    /**
-     * Holds the calculation functions for Chapter 13 — the twin of the nested
-     * Python `class Calculate`.
-     */
+    /** Calculation functions for Chapter 13. */
     object Calculate {
 
         /** Newton's gravitational constant [m³ kg⁻¹ s⁻²]. */
@@ -256,12 +249,8 @@ class Chapter13 : PhysicsChapter(
         /** Speed of light in a vacuum [m/s]. */
         const val C: Double = 2.998e8
 
-        /*
-         * Error messages reproduced VERBATIM from the Python source. The Python
-         * strings were written with backslash line-continuations, which embed the
-         * next line's leading indentation into the string — hence the explicit
-         * `" ".repeat(n)` whitespace runs (which differ per call site).
-         */
+        // The " ".repeat runs reproduce indentation that backslash line-continuations embedded
+        // in the original messages (the run length differs per call site); tests assert them.
         private val MSG_MASSIVE_OBJECTS_21 =
             "We are operating with massive objects." + " ".repeat(21) +
                 "Make sure all objects have a mass greater than zero."
@@ -286,15 +275,12 @@ class Chapter13 : PhysicsChapter(
         private val MSG_DISTANCE_NEG_CHECK =
             "Distance cannot be negative." + " ".repeat(25) + "Check your values."
         private const val MSG_DIV_ZERO = "Division by zero is undefined."
-        private const val MSG_DIV_ZERO_TYPO = "Divison by zero is undefined." // typo kept from Python
+        private const val MSG_DIV_ZERO_TYPO = "Divison by zero is undefined." // typo preserved deliberately
         private const val MSG_DISTANCE_LE_ZERO_SHORT = "Distance cannot be less than or equal to zero."
 
-        /** Rounds to 4 decimal places, matching Chapter3's helper. */
         private fun round4(value: Double): Double = roundResult(value)
 
-        /**
-         * F = G·m₁·m₂/r². Pass every value except the unknown; leave it `null`.
-         */
+        /** F = G·m₁·m₂/r². Pass null for the unknown. */
         fun lawOfGravitation(
             force12: Double? = null,
             mass1: Double? = null,
@@ -309,32 +295,30 @@ class Chapter13 : PhysicsChapter(
                 throw IllegalArgumentException(MSG_DISTANCE_NEGATIVE)
             }
 
-            // Solve for m₁ (mass of object 1)
+            // Solve for m₁
             if (mass1 == null) {
                 return round4((force12!! * (distance!! * distance)) / (G * mass2!!))
             }
 
-            // Solve for m₂ (mass of object 2)
+            // Solve for m₂
             if (mass2 == null) {
                 return round4((force12!! * (distance!! * distance)) / (G * mass1))
             }
 
-            // Solve for r (distance between the two bodies)
+            // Solve for r
             if (distance == null) {
                 val radicand: Double = (G * mass1 * mass2) / force12!!
                 if (radicand < 0) throw IllegalArgumentException(MSG_NEG_RADICAND_24)
                 return round4(sqrt(radicand))
             }
 
-            // Solve for F (gravitational force) — the default case
+            // Solve for F
             return round4((G * mass1 * mass2) / (distance * distance))
         }
 
         /**
-         * g = GM/r². Pass every value except the unknown; leave it `null`.
-         *
-         * Python bug fixed: the original referenced an undefined `radius`
-         * variable in two branches; the parameter is `distance`.
+         * g = GM/r². Pass null for the unknown.
+         * Corrected from upstream: two branches referenced an undefined `radius` variable.
          */
         fun gravitationalAcceleration(
             g: Double? = null,
@@ -345,25 +329,23 @@ class Chapter13 : PhysicsChapter(
                 throw IllegalArgumentException(MSG_DISTANCE_LE_ZERO)
             }
 
-            // Solve for M (mass of the stellar body)
+            // Solve for M
             if (massBody == null) {
                 return round4((g!! * (distance!! * distance)) / G)
             }
 
-            // Solve for r (radius of the stellar body)
+            // Solve for r
             if (distance == null) {
                 val radicand: Double = (G * massBody) / g!!
                 if (radicand < 0.0) throw IllegalArgumentException(MSG_DISTANCE_NEGATIVE)
                 return round4(sqrt(radicand))
             }
 
-            // Solve for g (acceleration due to gravity) — the default case
+            // Solve for g
             return round4((G * massBody) / (distance * distance))
         }
 
-        /**
-         * U = -GMm/r. Pass every value except the unknown; leave it `null`.
-         */
+        /** U = -GMm/r. Pass null for the unknown. */
         fun gravitationalPotential(
             potentialEnergy: Double? = null,
             massBody: Double? = null,
@@ -378,38 +360,34 @@ class Chapter13 : PhysicsChapter(
                 throw IllegalArgumentException(MSG_MASSIVE_OBJECTS_17)
             }
 
-            // Solve for M (mass of the stellar body)
+            // Solve for M
             if (massBody == null) {
                 val result: Double = -(potentialEnergy!! * distance!!) / (G * massObject!!)
                 if (result < 0.0) throw IllegalArgumentException(MSG_MASS_NEGATIVE)
                 return round4(result)
             }
 
-            // Solve for m (mass of the orbiting object)
+            // Solve for m
             if (massObject == null) {
                 val result: Double = -(potentialEnergy!! * distance!!) / (G * massBody)
                 if (result < 0.0) throw IllegalArgumentException(MSG_MASS_NEGATIVE)
                 return round4(result)
             }
 
-            // Solve for r (distance between the two bodies)
+            // Solve for r
             if (distance == null) {
                 val result: Double = -(G * massBody * massObject) / potentialEnergy!!
                 if (result < 0.0) throw IllegalArgumentException(MSG_DISTANCE_NEG_CHECK)
                 return round4(result)
             }
 
-            // Solve for U (potential energy) — the default case
+            // Solve for U
             return round4(-(G * massBody * massObject) / distance)
         }
 
         /**
-         * ½mv₁² - GMm/r₁ = ½mv₂² - GMm/r₂. Pass every value except the unknown;
-         * leave it `null`.
-         *
-         * Python bugs fixed: the r₁/r₂ branches computed dimensionally wrong
-         * expressions; the v₂ branch was guarded by a duplicated (unreachable)
-         * `velocity_1 == None` check. Correct algebra is used here.
+         * ½mv₁² - GMm/r₁ = ½mv₂² - GMm/r₂. Pass null for the unknown.
+         * Corrected from upstream: r₁/r₂ branch algebra and the v₂ branch condition.
          */
         fun conservationOfGravEnergy(
             massObject: Double? = null,
@@ -427,7 +405,7 @@ class Chapter13 : PhysicsChapter(
                 throw IllegalArgumentException(MSG_MASSIVE_OBJECTS_21)
             }
 
-            // Solve for M (mass of the stellar body)
+            // Solve for M
             if (massBody == null) {
                 val numerator: Double = 0.5 * ((velocity1!! * velocity1) - (velocity2!! * velocity2))
                 val denominator: Double = G * ((-1.0 / distance2!!) + (1.0 / distance1!!))
@@ -435,12 +413,12 @@ class Chapter13 : PhysicsChapter(
                 return round4(numerator / denominator)
             }
 
-            // m (mass of the orbiting body) cancels out of the equation
+            // m cancels out of the equation
             if (massObject == null) {
                 throw IllegalArgumentException(MSG_MASS_CANCELS)
             }
 
-            // Solve for r₂: r₂ = GM / (½v₂² - ½v₁² + GM/r₁)
+            // Solve for r₂
             if (distance2 == null) {
                 if (velocity1 == 0.0 || velocity2 == 0.0) {
                     throw IllegalArgumentException(MSG_DIV_ZERO)
@@ -450,7 +428,7 @@ class Chapter13 : PhysicsChapter(
                 return round4((G * massBody) / denominator)
             }
 
-            // Solve for r₁: r₁ = GM / (½v₁² - ½v₂² + GM/r₂)
+            // Solve for r₁
             if (distance1 == null) {
                 if (velocity1 == 0.0 || velocity2 == 0.0) {
                     throw IllegalArgumentException(MSG_DIV_ZERO)
@@ -460,7 +438,7 @@ class Chapter13 : PhysicsChapter(
                 return round4((G * massBody) / denominator)
             }
 
-            // Solve for v₁: v₁ = √(v₂² + 2GM/r₁ - 2GM/r₂)
+            // Solve for v₁
             if (velocity1 == null) {
                 val term1: Double = 0.5 * massObject * (velocity2!! * velocity2)
                 val term2: Double = (G * massBody * massObject) / distance1
@@ -472,7 +450,7 @@ class Chapter13 : PhysicsChapter(
                 return round4(sqrt(radicand))
             }
 
-            // Solve for v₂: v₂ = √(v₁² - 2GM/r₁ + 2GM/r₂)
+            // Solve for v₂
             if (velocity2 == null) {
                 val term1: Double = 0.5 * massObject * (velocity1 * velocity1)
                 val term2: Double = (G * massBody * massObject) / distance1
@@ -484,15 +462,13 @@ class Chapter13 : PhysicsChapter(
                 return round4(sqrt(radicand))
             }
 
-            // All values supplied — nothing to solve for (matches the Python fallthrough).
+            // All values provided; nothing to solve.
             return 0.0
         }
 
         /**
-         * v(esc) = √(2GM/R). Pass every value except the unknown; leave it `null`.
-         *
-         * Python bugs fixed: the M and R branches used `sqrt(escape_vel)` where
-         * the algebra requires `escape_vel²`.
+         * v(esc) = √(2GM/R). Pass null for the unknown.
+         * Corrected from upstream: the M and R branches used √v where v² is required.
          */
         fun escapeVelocity(
             escapeVel: Double? = null,
@@ -507,31 +483,28 @@ class Chapter13 : PhysicsChapter(
                 throw IllegalArgumentException(MSG_RADIUS_GT_ZERO)
             }
 
-            // Solve for M (mass of the stellar body): M = v²R/(2G)
+            // Solve for M
             if (massBody == null) {
                 if (escapeVel!! < 0.0) throw IllegalArgumentException(MSG_NEG_SQRT)
                 return round4(((escapeVel * escapeVel) * radius!!) / (2.0 * G))
             }
 
-            // Solve for R (radius of the stellar body): R = 2GM/v²
+            // Solve for R
             if (radius == null) {
                 if (escapeVel!! < 0.0) throw IllegalArgumentException(MSG_NEG_SQRT)
                 if (escapeVel == 0.0) throw IllegalArgumentException(MSG_DIV_ZERO_TYPO)
                 return round4((2.0 * G * massBody) / (escapeVel * escapeVel))
             }
 
-            // Solve for v(esc) — the default case
+            // Solve for v(esc)
             val radicand: Double = (2.0 * G * massBody) / radius
             if (radicand < 0.0) throw IllegalArgumentException(MSG_NEG_SQRT)
             return round4(sqrt(radicand))
         }
 
         /**
-         * v(orb) = √(GM/r). Pass every value except the unknown; leave it `null`.
-         *
-         * Python bugs fixed: the distance guard referenced an undefined `radius`
-         * variable, and the M and r branches used `sqrt(orbital_vel)` where the
-         * algebra requires `orbital_vel²`.
+         * v(orb) = √(GM/r). Pass null for the unknown.
+         * Corrected from upstream: undefined `radius` guard; √v where v² is required.
          */
         fun orbitalVelocity(
             orbitalVel: Double? = null,
@@ -546,31 +519,28 @@ class Chapter13 : PhysicsChapter(
                 throw IllegalArgumentException(MSG_RADIUS_GT_ZERO)
             }
 
-            // Solve for M (mass of the stellar body): M = v²r/G
+            // Solve for M
             if (massBody == null) {
                 if (orbitalVel!! < 0.0) throw IllegalArgumentException(MSG_NEG_SQRT)
                 return round4(((orbitalVel * orbitalVel) * distance!!) / G)
             }
 
-            // Solve for r (orbital distance): r = GM/v²
+            // Solve for r
             if (distance == null) {
                 if (orbitalVel!! < 0.0) throw IllegalArgumentException(MSG_NEG_SQRT)
                 if (orbitalVel == 0.0) throw IllegalArgumentException(MSG_DIV_ZERO_TYPO)
                 return round4((G * massBody) / (orbitalVel * orbitalVel))
             }
 
-            // Solve for v(orb) — the default case
+            // Solve for v(orb)
             val radicand: Double = (G * massBody) / distance
             if (radicand < 0.0) throw IllegalArgumentException(MSG_NEG_SQRT)
             return round4(sqrt(radicand))
         }
 
         /**
-         * T = 2π√(r³/GM). Pass every value except the unknown; leave it `null`.
-         *
-         * Python bugs fixed: `pi` was never imported (NameError on every call),
-         * and the r branch wrote `period / 2 * pi` (precedence) instead of
-         * `period / (2π)`.
+         * T = 2π√(r³/GM). Pass null for the unknown.
+         * Corrected from upstream: missing pi import; precedence slip in the r branch (T/(2π)).
          */
         fun orbitalPeriod(
             period: Double? = null,
@@ -581,31 +551,28 @@ class Chapter13 : PhysicsChapter(
                 throw IllegalArgumentException(MSG_MASSIVE_OBJECTS_17)
             }
 
-            // Solve for M (mass of the stellar body): M = (2π/T)²·r³/G
+            // Solve for M
             if (massBody == null) {
                 if (period == 0.0) throw IllegalArgumentException(MSG_DIV_ZERO)
                 val factor: Double = (2.0 * PI) / period!!
                 return round4((factor * factor) * (distance!! * distance * distance) / G)
             }
 
-            // Solve for r (orbital distance): r = ∛((T/2π)²·GM)
+            // Solve for r
             if (distance == null) {
                 val factor: Double = period!! / (2.0 * PI)
                 val radicand: Double = (factor * factor) * (G * massBody)
                 return round4(cbrt(radicand))
             }
 
-            // Solve for T (orbital period) — the default case
+            // Solve for T
             val radicand: Double = (distance * distance * distance) / (G * massBody)
             return round4(2.0 * PI * sqrt(radicand))
         }
 
         /**
-         * α/r = 1 + e·cosθ. Pass every value except the unknown; leave it `null`.
-         *
-         * Note: as in the Python source, θ is accepted and returned in DEGREES
-         * (it is converted to radians internally), even though the equation's
-         * variable description says "(rads)".
+         * α/r = 1 + e·cosθ. Pass null for the unknown.
+         * θ is in degrees (converted internally), despite the equation's "(rads)" description.
          */
         fun orbitalEquation(
             semiLatusRectum: Double? = null,
@@ -619,41 +586,39 @@ class Chapter13 : PhysicsChapter(
                 throw IllegalArgumentException(MSG_DISTANCE_LE_ZERO_SHORT)
             }
 
-            // Solve for α (semi-latus rectum)
+            // Solve for α
             if (semiLatusRectum == null) {
                 return round4(distance!! * (1 + eccentricity!! * cos(thetaRadians!!)))
             }
 
-            // Solve for e (eccentricity)
+            // Solve for e
             if (eccentricity == null) {
                 if (cos(thetaRadians!!) == 0.0) throw IllegalArgumentException(MSG_DIV_ZERO)
                 return round4(((semiLatusRectum / distance!!) - 1) / cos(thetaRadians))
             }
 
-            // Solve for r (distance from focus)
+            // Solve for r
             if (distance == null) {
                 val denominator: Double = 1 + eccentricity * cos(thetaRadians!!)
                 if (denominator == 0.0) throw IllegalArgumentException(MSG_DIV_ZERO_TYPO)
                 return round4(semiLatusRectum / denominator)
             }
 
-            // Solve for θ (angle from periapsis, in degrees)
+            // Solve for θ
             if (theta == null) {
                 if (eccentricity == 0.0) throw IllegalArgumentException(MSG_DIV_ZERO_TYPO)
                 val argument: Double = ((semiLatusRectum / distance) - 1) / eccentricity
                 return round4(acos(argument) * 180.0 / PI)
             }
 
-            // All values supplied — nothing to solve for (matches the Python fallthrough).
+            // All values provided; nothing to solve.
             return 0.0
         }
 
         /**
-         * T² = (4π²/GM)a³. Pass every value except the unknown; leave it `null`.
-         *
-         * Python bugs fixed: `pi` was never imported, `period_sq` was computed
-         * from an undefined `orbital_period` variable, and the T branch used
-         * `cbrt` where the algebra requires `sqrt`.
+         * T² = (4π²/GM)a³. Pass null for the unknown.
+         * Corrected from upstream: missing pi import, undefined `orbital_period` variable,
+         * and cbrt where sqrt is required in the T branch.
          */
         fun keplersThirdLaw(
             period: Double? = null,
@@ -668,27 +633,25 @@ class Chapter13 : PhysicsChapter(
                 throw IllegalArgumentException(MSG_MASSIVE_OBJECTS_17)
             }
 
-            // Solve for a (semi-major axis): a = ∛(T²·GM/4π²)
+            // Solve for a
             if (semiMajorAxis == null) {
                 val argument: Double = periodSq!! * (G * massBody!!) / fourPiSquared
                 return round4(cbrt(argument))
             }
 
-            // Solve for M (mass of the stellar body): M = 4π²a³/(G·T²)
+            // Solve for M
             if (massBody == null) {
                 if (periodSq == 0.0) throw IllegalArgumentException(MSG_DIV_ZERO_TYPO)
                 return round4((fourPiSquared * semiMajorAxis * semiMajorAxis * semiMajorAxis) / (G * periodSq!!))
             }
 
-            // Solve for T (orbital period): T = √(a³·4π²/(GM)) — the default case
+            // Solve for T
             val argument: Double =
                 (semiMajorAxis * semiMajorAxis * semiMajorAxis) * (fourPiSquared / (G * massBody))
             return round4(sqrt(argument))
         }
 
-        /**
-         * R(S) = 2GM/c². Pass every value except the unknown; leave it `null`.
-         */
+        /** R(S) = 2GM/c². Pass null for the unknown. */
         fun schwarzschildRadius(
             schwarzRadius: Double? = null,
             massBody: Double? = null,
@@ -697,12 +660,12 @@ class Chapter13 : PhysicsChapter(
                 throw IllegalArgumentException(MSG_MASSIVE_OBJECTS_17)
             }
 
-            // Solve for M (mass of the stellar body): M = R(S)·c²/(2G)
+            // Solve for M
             if (massBody == null) {
                 return round4(schwarzRadius!! * ((C * C) / (2.0 * G)))
             }
 
-            // Solve for R(S) — the default case
+            // Solve for R(S)
             return round4((2.0 * G * massBody) / (C * C))
         }
     }

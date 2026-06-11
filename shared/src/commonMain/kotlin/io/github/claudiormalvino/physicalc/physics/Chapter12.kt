@@ -2,9 +2,7 @@ package io.github.claudiormalvino.physicalc.physics
 
 import kotlin.math.round
 
-/**
- * Chapter on static equilibrium and elasticity — the Kotlin twin of your Python `chapter12.py`.
- */
+/** Chapter 12 — Static equilibrium and the elasticity of materials. */
 class Chapter12 : PhysicsChapter(
     title = "Ch.12 - Static Equilibrium and Elasticity",
     description = "Conditions for equilibrium and the elasticity of materials.",
@@ -107,19 +105,12 @@ class Chapter12 : PhysicsChapter(
         ),
     )
 
-    /**
-     * Holds the calculation functions for Chapter 12 — the twin of the nested
-     * Python `class Calculate`.
-     */
+    /** Calculation functions for Chapter 12. */
     object Calculate {
 
-        /** Rounds to 4 decimal places, matching Python's `round(x, 4)`. */
         private fun round4(value: Double): Double = roundResult(value)
 
-        /**
-         * Y = (F/A) × (L₀/ΔL). Pass every value except the one you want solved for;
-         * leave that one as `null`.
-         */
+        /** Y = (F/A) × (L₀/ΔL). Pass null for the unknown. */
         fun youngModulus(
             youngMod: Double? = null,
             force: Double? = null,
@@ -139,12 +130,12 @@ class Chapter12 : PhysicsChapter(
                 throw IllegalArgumentException("The change in length cannot be less than zero.")
             }
 
-            // Solve for F (applied force): F = ΔL·A·Y / L₀
+            // Solve for F
             if (force == null) {
                 return round4((deltaLength!! * crossSection!! * youngMod!!) / initLength!!)
             }
 
-            // Solve for A (cross sectional area): A = L₀·F / (Y·ΔL)
+            // Solve for A
             if (crossSection == null) {
                 if (youngMod == 0.0 || deltaLength == 0.0) {
                     throw IllegalArgumentException("Division by zero is undefined.")
@@ -152,25 +143,23 @@ class Chapter12 : PhysicsChapter(
                 return round4((initLength!! * force) / (youngMod!! * deltaLength!!))
             }
 
-            // Solve for L₀ (initial length): L₀ = Y·ΔL·A / F
+            // Solve for L₀
             if (initLength == null) {
                 if (force == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
                 return round4((youngMod!! * deltaLength!! * crossSection) / force)
             }
 
-            // Solve for ΔL (change in length): ΔL = L₀·F / (Y·A)
+            // Solve for ΔL
             if (deltaLength == null) {
                 if (youngMod == 0.0) throw IllegalArgumentException("Divison by zero is undefined.")
                 return round4((initLength * force) / (youngMod!! * crossSection))
             }
 
-            // Solve for Y (Young's modulus) — the default case
+            // Solve for Y
             return round4((force / crossSection) * (initLength / deltaLength))
         }
 
-        /**
-         * B = −Δp × (V₀/ΔV). Pass every value except the unknown; leave that one `null`.
-         */
+        /** B = −Δp × (V₀/ΔV). Pass null for the unknown. */
         fun bulkModulus(
             bulkMod: Double? = null,
             deltaPressure: Double? = null,
@@ -181,14 +170,13 @@ class Chapter12 : PhysicsChapter(
                 throw IllegalArgumentException("The volume of the object must be greater than zero.")
             }
 
-            // Solve for Δp (change in pressure): Δp = −B·ΔV / V₀
+            // Solve for Δp
             if (deltaPressure == null) {
                 return round4(-(bulkMod!! * deltaVolume!!) / initVolume!!)
             }
 
-            // Solve for V₀ (initial volume): V₀ = −B·ΔV / Δp
-            // (The Python source divided bulk_mod * delta_pressure by delta_pressure here,
-            //  which just yields -B; the correct physics uses delta_volume in the numerator.)
+            // Solve for V₀
+            // Corrected from upstream: numerator is −B·ΔV, not −B·Δp.
             if (initVolume == null) {
                 if (deltaPressure == 0.0) {
                     throw IllegalArgumentException("Division by zero is undefined.")
@@ -196,20 +184,18 @@ class Chapter12 : PhysicsChapter(
                 return round4(-(bulkMod!! * deltaVolume!!) / deltaPressure)
             }
 
-            // Solve for ΔV (change in volume): ΔV = −Δp·V₀ / B
+            // Solve for ΔV
             if (deltaVolume == null) {
                 if (bulkMod == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
                 return round4((-deltaPressure * initVolume) / bulkMod!!)
             }
 
-            // Solve for B (bulk modulus) — the default case
+            // Solve for B
             if (deltaVolume == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
             return round4((-deltaPressure * initVolume) / deltaVolume)
         }
 
-        /**
-         * S = (F/A) × (L₀/Δx). Pass every value except the unknown; leave that one `null`.
-         */
+        /** S = (F/A) × (L₀/Δx). Pass null for the unknown. */
         fun shearModulus(
             shearMod: Double? = null,
             force: Double? = null,
@@ -229,12 +215,12 @@ class Chapter12 : PhysicsChapter(
                 throw IllegalArgumentException("The change in length cannot be less than zero.")
             }
 
-            // Solve for F (applied force): F = Δx·A·S / L₀
+            // Solve for F
             if (force == null) {
                 return round4((deltaLayers!! * crossSection!! * shearMod!!) / initLength!!)
             }
 
-            // Solve for A (cross sectional area): A = L₀·F / (S·Δx)
+            // Solve for A
             if (crossSection == null) {
                 if (shearMod == 0.0 || deltaLayers == 0.0) {
                     throw IllegalArgumentException("Division by zero is undefined.")
@@ -242,19 +228,19 @@ class Chapter12 : PhysicsChapter(
                 return round4((initLength!! * force) / (shearMod!! * deltaLayers!!))
             }
 
-            // Solve for L₀ (initial length): L₀ = S·Δx·A / F
+            // Solve for L₀
             if (initLength == null) {
                 if (force == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
                 return round4((shearMod!! * deltaLayers!! * crossSection) / force)
             }
 
-            // Solve for Δx (shift of layers): Δx = L₀·F / (S·A)
+            // Solve for Δx
             if (deltaLayers == null) {
                 if (shearMod == 0.0) throw IllegalArgumentException("Divison by zero is undefined.")
                 return round4((initLength * force) / (shearMod!! * crossSection))
             }
 
-            // Solve for S (shear modulus) — the default case
+            // Solve for S
             return round4((force / crossSection) * (initLength / deltaLayers))
         }
     }

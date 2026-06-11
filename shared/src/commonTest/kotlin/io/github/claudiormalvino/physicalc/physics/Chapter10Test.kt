@@ -5,11 +5,8 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 /*
- * Smoke tests for Chapter 10 (Fixed-Axis Rotation).
- *
- * The Python source has no tests for this chapter, so each calculation function
- * gets at least one default-solve-path test (with the expected value hand-derived
- * from the formula in a comment) and one error-branch test where an error branch exists.
+ * Smoke tests for the Chapter10 solvers (Fixed-Axis Rotation); expected values hand-derived.
+ * Error messages are asserted byte-for-byte (typos included).
  */
 class Chapter10Test {
 

@@ -1,14 +1,8 @@
 package io.github.claudiormalvino.physicalc.physics
 
 /**
- * Unit conversion — the Kotlin twin of your Python `unit_converter.py`.
- *
- * Same design: every unit maps to a conversion factor relative to a base unit,
- * and converting is `value * factor[from] / factor[to]`.
- *
- * Where Python used one subclass per quantity (Length, Mass, ...), Kotlin lets us
- * use plain instances of a single `Quantity` class — the subclasses carried no
- * behavior, only data, so a data class + instances is the more idiomatic shape.
+ * Unit conversion. Every unit maps to a factor relative to a base unit;
+ * converting is `value * factor[from] / factor[to]`.
  */
 data class Quantity(
     val name: String,
@@ -22,7 +16,7 @@ data class Quantity(
     }
 }
 
-/** All available quantities — the twin of the list you build in UnitConverterScreen. */
+/** All available quantities. */
 object UnitConverters {
 
     val length = Quantity(
@@ -54,7 +48,7 @@ object UnitConverters {
             "second" to 1.0,
             "minute" to 60.0,
             "hour" to 3600.0,
-            "day" to 8.64E+4,      // fixed: Python had 8.64E+5 (a 10-day "day")
+            "day" to 8.64E+4,      // Corrected from upstream: was 8.64E+5
             "week" to 6.048E+5,
             "month" to 2.628E+6,
             "year" to 3.15576E+7,
@@ -70,7 +64,7 @@ object UnitConverters {
             "microgram" to 1.0E-6,
             "milligram" to 1.0E-3,
             "centigram" to 1.0E-2,
-            "decigram" to 1.0E-1,  // fixed typo: was "decimgram"
+            "decigram" to 1.0E-1,  // Corrected from upstream typo "decimgram"
             "gram" to 1.0,
             "kilogram" to 1.0E+3,
             "ounce" to 28.349,
@@ -92,7 +86,7 @@ object UnitConverters {
             "kilonewton" to 1.0E+3,
             "meganewton" to 1.0E+6,
             "pound-force" to 4.44822,
-            "ounce-force" to 0.27801, // fixed typo: was "ounce-fource"
+            "ounce-force" to 0.27801, // Corrected from upstream typo "ounce-fource"
         ),
     )
 
@@ -110,8 +104,8 @@ object UnitConverters {
             "megajoule" to 1.0E+6,
             "watt-hour" to 3.6E+3,
             "kilowatt-hour" to 3.6E+6,
-            "megawatt-hour" to 3.6E+9, // fixed: Python had 3.6E+6 (same as kWh)
-            "calorie" to 4.1868,       // fixed: Python's 4186.8 is a kilocalorie
+            "megawatt-hour" to 3.6E+9, // Corrected from upstream: was 3.6E+6 (same as kWh)
+            "calorie" to 4.1868,       // Corrected from upstream: 4186.8 is a kilocalorie
             "kilocalorie" to 4186.8,
             "electron-volt" to 1.60217E-19,
             "kiloelectron-volt" to 1.60217E-16,
@@ -166,6 +160,6 @@ object UnitConverters {
         ),
     )
 
-    /** Same order as your TUI's quantity_list. */
+    /** Display order. */
     val all: List<Quantity> = listOf(length, time, mass, force, energy, pressure, speed)
 }

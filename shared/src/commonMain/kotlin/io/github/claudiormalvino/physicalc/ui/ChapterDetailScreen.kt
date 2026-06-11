@@ -58,9 +58,8 @@ import io.github.claudiormalvino.physicalc.physics.Equation
 import io.github.claudiormalvino.physicalc.physics.PhysicsChapter
 
 /*
- * Chapter detail: a top bar, two tabs (Equations / Definitions), and animated
- * content that slides as you switch tabs. Equation cards expand on tap to reveal
- * their variables, and calculable ones offer an "Open solver" button.
+ * Chapter detail: Equations / Definitions tabs. Equation cards expand to
+ * reveal their variables; calculable ones offer an "Open solver" button.
  */
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -103,8 +102,6 @@ fun ChapterDetailScreen(
                 Tab(selected = tab == 1, onClick = { tab = 1 }, text = { Text("Definitions") })
             }
 
-            // AnimatedContent swaps its children with a transition whenever
-            // `targetState` changes — here, a directional slide + fade.
             AnimatedContent(
                 targetState = tab,
                 transitionSpec = {
@@ -146,14 +143,8 @@ private fun EquationsTab(
 }
 
 /**
- * One equation card.
- *
- * Cards only behave as expandable — and only show the chevron — when there is
- * actually something to reveal (variables and/or a solver button). A reference-only
- * formula renders as a plain, non-clickable card so the affordance never lies.
- *
- * `animateContentSize()` is the star here: when `expanded` flips and the card
- * gains/loses content, it smoothly animates its height instead of snapping.
+ * One equation card. Expandable — with chevron — only when there is something
+ * to reveal; reference-only formulas render as plain, non-clickable cards.
  */
 @Composable
 private fun EquationCard(

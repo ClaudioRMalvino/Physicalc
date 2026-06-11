@@ -5,14 +5,8 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 /*
- * These tests are a direct port of your Python `tests/chapter7_cal_test.py`.
- *
- * Tolerances follow the Python `places`:
- * places=1 -> 0.05, places=2 -> 0.005.
- *
- * Note: the long "massive objects" message used by work_by_gravity contains the
- * whitespace produced by the Python source's backslash line-continuation inside the
- * string literal (17 spaces between "objects." and "Mass"), reproduced verbatim.
+ * Tests for the Chapter7 solvers (work and energy).
+ * Error messages are asserted byte-for-byte, including line-continuation whitespace.
  */
 class Chapter7Test {
 
@@ -236,8 +230,7 @@ class Chapter7Test {
         val work = listOf(500.0, 100.0)
         val springConst = listOf(10.0, 1000.0)
         val initialXpos = listOf(0.0, -10.0)
-        // First case: x₂² = -2W/k + x₁² = -100 — no real solution, must throw.
-        // Second: sqrt(99.8) ≈ 9.99.
+        // x₂ = sqrt(-2W/k + x₁²): first case radicand is -100 (throws), second sqrt(99.8) ≈ 9.99
         val expected = listOf(null, 9.99)
 
         for (i in expected.indices) {

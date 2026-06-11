@@ -6,15 +6,9 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-/*
- * App-wide Material 3 theme.
- *
- * Material 3 works from a "color scheme" — a set of named roles (primary, surface,
- * background, ...) that every component reads from. Change a color here and the
- * entire app updates. This replaces your appearance.tcss from the TUI.
- */
+/* App-wide Material 3 theme. */
 
-// A deep-space palette: dark blue-black background, periwinkle primary, violet accents.
+// Deep-space palette: dark blue-black background, periwinkle primary, violet accents.
 private val SpaceDark = darkColorScheme(
     primary = Color(0xFF8AB4FF),            // interactive elements, formulas
     onPrimary = Color(0xFF062B52),
@@ -57,8 +51,7 @@ fun PhysicsTheme(
     )
 }
 
-// Light counterpart: same blue/violet brand on warm cream "paper" neutrals
-// (the calm off-white used by Zen / Babbel), not clinical white.
+// Light counterpart: same blue/violet brand on warm paper-cream neutrals, not clinical white.
 private val SpaceLight = lightColorScheme(
     primary = Color(0xFF2F5DA8),
     onPrimary = Color(0xFFFFFFFF),

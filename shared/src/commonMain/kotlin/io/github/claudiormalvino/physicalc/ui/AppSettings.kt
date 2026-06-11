@@ -6,14 +6,8 @@ import androidx.compose.runtime.setValue
 import com.russhwolf.settings.Settings
 
 /**
- * User preferences, persisted across launches.
- *
- * `Settings()` (multiplatform-settings) stores values in the platform's native
- * key-value store: SharedPreferences on Android, java.util.prefs on desktop —
- * no platform glue needed here.
- *
- * `darkTheme` is also Compose state (`mutableStateOf`), so flipping it instantly
- * recomposes everything that reads it — the whole app retints live.
+ * User preferences, persisted via multiplatform-settings (SharedPreferences / java.util.prefs).
+ * `darkTheme` is also Compose state, so toggling it retints the whole app live.
  */
 object AppSettings {
     private val store = Settings()

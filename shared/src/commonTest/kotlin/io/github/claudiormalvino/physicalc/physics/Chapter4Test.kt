@@ -5,10 +5,8 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 /*
- * These tests are a direct port of your Python `tests/chapter4_calc_test.py`.
- *
- * Tolerances follow the Python `places` convention:
- * places=1 -> 0.05, places=2 -> 0.005.
+ * Tests for the Chapter4 solvers (projectile motion and centripetal acceleration).
+ * Error messages are asserted byte-for-byte (whitespace and typos included).
  */
 class Chapter4Test {
 

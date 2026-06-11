@@ -62,13 +62,8 @@ import io.github.claudiormalvino.physicalc.physics.PhysicsChapter
 import kotlin.math.roundToInt
 
 /*
- * Flashcards tool — Babbel-style self-graded recall.
- *
- * Flow: choose Equations or Definitions -> choose a chapter -> the deck is
- * shuffled (equivalent to drawing randomly without replacement) and presented
- * one card at a time. Tap to flip (3-D rotation), then self-declare with
- * ✗ / ✓ whether you remembered. Quit anytime with the X; finishing shows a
- * score based on the correct/total ratio.
+ * Flashcards tool: choose Equations or Definitions, choose a chapter, then
+ * study a shuffled deck one card at a time — tap to flip, self-grade with ✗ / ✓.
  */
 
 enum class FlashcardMode(val label: String) {
@@ -262,12 +257,9 @@ fun FlashcardsSessionScreen(
 
                 Spacer(Modifier.height(24.dp))
 
-                // Cards advance with a slide. This also fixes an answer-leak race:
-                // without it, judging swapped the card's CONTENT while the flip
-                // animation was still returning from 180°, flashing the next
-                // card's answer. Here the outgoing card stays frozen on its own
-                // (already revealed) back and slides away, while the incoming
-                // card is composed fresh on its front.
+                // Keying on index fixes an answer leak: the outgoing card stays
+                // frozen on its revealed back and slides away while the incoming
+                // card composes fresh on its front, instead of swapping content mid-flip.
                 AnimatedContent(
                     targetState = index,
                     transitionSpec = {
@@ -278,8 +270,7 @@ fun FlashcardsSessionScreen(
                     FlipCard(
                         card = deck[cardIndex],
                         mode = mode,
-                        // The exiting instance (cardIndex != index) keeps showing
-                        // its back; only the live card follows the flip state.
+                        // Exiting instances stay pinned on their back; only the live card follows the flip state.
                         flipped = if (cardIndex == index) flipped else true,
                         onFlip = { if (cardIndex == index) flipped = !flipped },
                     )

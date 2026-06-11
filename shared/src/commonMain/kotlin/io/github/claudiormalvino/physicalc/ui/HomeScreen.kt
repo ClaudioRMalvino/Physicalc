@@ -50,12 +50,8 @@ import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 /*
- * Landing page: a live model of the solar system.
- *
- * Radial distances are compressed (Neptune is 30 AU out; nobody has a phone
- * that tall), but the ANGLES are real — each planet sits at its true
- * heliocentric ecliptic longitude for the current date, via SolarSystemModel.
- * Ambient animation: twinkling starfield + a gently pulsing sun.
+ * Landing page: a live solar system. Radial distances are compressed, but each
+ * planet sits at its true heliocentric ecliptic longitude for the current date.
  */
 
 @OptIn(ExperimentalTime::class)
@@ -77,9 +73,8 @@ private fun generateStars(count: Int): List<Star> {
             y = next(),
             size = 0.6f + next() * 1.6f,
             phase = next(),
-            // WHOLE cycles per animation loop (1..3). Integer speeds make the
-            // loop seam invisible: sin(2π(k + φ)) == sin(2πφ) exactly, so a
-            // star's brightness is identical on both sides of the restart.
+            // Whole cycles per loop (1..3): integer speeds make the loop seam
+            // invisible, since sin(2π(k + φ)) == sin(2πφ) exactly.
             speed = (1 + (next() * 3f).toInt().coerceAtMost(2)).toFloat(),
         )
     }
@@ -89,9 +84,7 @@ private fun generateStars(count: Int): List<Star> {
 fun HomeScreen(onSettingsClick: () -> Unit) {
     val colors = MaterialTheme.colorScheme
 
-    // Planet positions are computed when the screen opens and then refreshed
-    // every 20 minutes — even Mercury only moves ~0.06° in that window, far
-    // below one pixel at this scale, so more frequent updates are pure waste.
+    // Refresh positions every 20 minutes; even Mercury moves well under a pixel in that window.
     var epochMillis by remember { mutableLongStateOf(nowMillis()) }
     LaunchedEffect(Unit) {
         while (true) {
@@ -113,8 +106,7 @@ fun HomeScreen(onSettingsClick: () -> Unit) {
     val pulse by transition.animateFloat(
         initialValue = 0.88f,
         targetValue = 1.12f,
-        // Sine easing has zero slope at both endpoints, so the Reverse turn-around
-        // is velocity-continuous — the sun "breathes" without a kink.
+        // Sine easing has zero slope at the endpoints, so the Reverse turnaround is velocity-continuous.
         animationSpec = infiniteRepeatable(tween(durationMillis = 2600, easing = EaseInOutSine), repeatMode = RepeatMode.Reverse),
     )
 
@@ -205,9 +197,7 @@ fun HomeScreen(onSettingsClick: () -> Unit) {
             Icon(Icons.Default.MoreVert, contentDescription = "Settings", tint = colors.onSurfaceVariant)
         }
 
-        // Quote of the day (offline, deterministic by date) — set in the empty
-        // sky above the solar system. Horizontal padding keeps it clear of the
-        // settings button in the top-right corner.
+        // Quote of the day (offline, deterministic by date); padding keeps it clear of the settings button.
         Column(
             modifier = Modifier
                 .align(Alignment.TopCenter)

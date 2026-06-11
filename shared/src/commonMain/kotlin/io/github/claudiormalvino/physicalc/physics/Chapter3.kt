@@ -4,23 +4,13 @@ import kotlin.math.round
 import kotlin.math.sqrt
 
 /**
- * Chapter on one-dimensional motion — the Kotlin twin of your Python `chapter3.py`.
- *
- * `class Chapter3 : PhysicsChapter(...)` is Kotlin's syntax for "Chapter3 extends
- * PhysicsChapter", and the `(...)` immediately calls the parent constructor — the
- * equivalent of Python's `super().__init__(...)`.
- *
- * `override val` provides the `equations`/`definitions` that the abstract parent demands.
+ * Chapter 3: motion along a straight line (one-dimensional kinematics).
  */
 class Chapter3 : PhysicsChapter(
     title = "Ch.3 - Motion Along a Straight Line",
     description = "Study of motion along one dimension.",
 ) {
 
-    /**
-     * `listOf(...)` builds a read-only list (like a Python list literal).
-     * `mapOf("k" to "v")` builds a read-only map; `"k" to "v"` is a key/value Pair.
-     */
     override val equations: List<Equation> = listOf(
         Equation(
             name = "Displacement",
@@ -98,10 +88,6 @@ class Chapter3 : PhysicsChapter(
                 "a" to "Acceleration (m/s²)",
                 "x" to "Final Position (m)",
             ),
-            // This lambda bridges the generic UI (which only knows display symbols)
-            // to the strongly-typed solver below. It pulls each value out of the map
-            // by its symbol and forwards it to the function. A `null` value means
-            // "this is the unknown to solve for".
             calculation = { v ->
                 Calculate.positionFromVelAndAccel(
                     x0 = v["x₀"],
@@ -204,31 +190,18 @@ class Chapter3 : PhysicsChapter(
         Definition("two-body pursuit problem", "a kinematics problem in which the unknowns are calculated by solving the kinematic equations simultaneously for two moving objects"),
     )
 
-    /**
-     * Holds the calculation functions for Chapter 3 — the twin of your nested
-     * Python `class Calculate`.
-     *
-     * `object` declares a singleton: there is exactly one `Calculate`, and you call it as
-     * `Chapter3.Calculate.positionFromVelAndAccel(...)`. It's how Kotlin expresses what
-     * you did in Python with `@staticmethod` inside a nested class.
-     */
+    /** Calculation functions for Chapter 3. */
     object Calculate {
 
-        /** Gravitational acceleration on Earth [m/s²]. (`const` = compile-time constant.) */
+        /** Gravitational acceleration on Earth [m/s²]. */
         const val G: Double = -9.82
 
-        /**
-         * Rounds to 4 decimal places, matching Python's `round(x, 4)`.
-         * Kotlin has no built-in "round to N decimals", so we scale, round, and unscale.
-         * `private` means only code inside this object can call it.
-         */
+        /** Delegates to roundResult; see PhysicsModels.kt. */
         private fun round4(value: Double): Double = roundResult(value)
 
         /**
-         * Solves a quadratic equation ax² + bx + c = 0 accurately in all cases.
-         *
-         * Returns a `Pair<Double, Double>` of the two roots, or `null` if the discriminant
-         * is negative (no real roots) — the equivalent of returning `None` in Python.
+         * Solves ax² + bx + c = 0. Returns the two roots, or null if the
+         * discriminant is negative.
          */
         fun quadraticEq(a: Double, b: Double, c: Double): Pair<Double, Double>? {
             val discriminant: Double = (b * b) - 4 * a * c
@@ -248,14 +221,7 @@ class Chapter3 : PhysicsChapter(
             }
         }
 
-        /**
-         * x(t) = x₀ + v₀t + ½at². Pass every value except the one you want solved for;
-         * leave that one as `null`.
-         *
-         * Note on `!!`: the "not-null assertion". `xf!!` means "I guarantee xf is not null
-         * here; crash if I'm wrong." It's safe in each branch because exactly one argument
-         * is null (the unknown), so all the others are known to be present.
-         */
+        /** x(t) = x₀ + v₀t + ½at². Pass null for the unknown. */
         fun positionFromVelAndAccel(
             x0: Double? = null,
             v0: Double? = null,
@@ -265,18 +231,18 @@ class Chapter3 : PhysicsChapter(
         ): Double {
             if (t != null && t < 0) throw IllegalArgumentException("Time cannot be a negative value")
 
-            // Solve for x₀ (initial position)
+            // Solve for x₀
             if (x0 == null) {
                 return round4(xf!! - (v0!! * t!!) - (0.5 * accel!! * (t * t)))
             }
 
-            // Solve for v₀ (initial velocity)
+            // Solve for v₀
             if (v0 == null) {
                 if (t == 0.0) throw IllegalArgumentException("Division by zero is undefined")
                 return round4((xf!! - x0 - (0.5 * accel!! * (t!! * t))) / t)
             }
 
-            // Solve for t (elapsed time)
+            // Solve for t
             if (t == null) {
                 if (accel == 0.0 && v0 == 0.0) {
                     throw IllegalArgumentException("v₀ and a cannot both be equal to zero")
@@ -292,19 +258,17 @@ class Chapter3 : PhysicsChapter(
                 return round4(minOf(roots.first, roots.second))
             }
 
-            // Solve for a (acceleration)
+            // Solve for a
             if (accel == null) {
                 if (t == 0.0) throw IllegalArgumentException("Divison by zero is undefined.")
                 return round4((xf!! - x0 - (v0 * t)) * (2.0 / (t * t)))
             }
 
-            // Solve for x (final position) — the default case
+            // Solve for x
             return round4(x0 + (v0 * t) + (0.5 * accel * (t * t)))
         }
 
-        /**
-         * v² = v₀² + 2a(x - x₀). Pass every value except the unknown; leave that one `null`.
-         */
+        /** v² = v₀² + 2a(x - x₀). Pass null for the unknown. */
         fun velocityFromDistance(
             x0: Double? = null,
             v0: Double? = null,
@@ -312,40 +276,38 @@ class Chapter3 : PhysicsChapter(
             xf: Double? = null,
             vf: Double? = null,
         ): Double {
-            // Solve for x₀ (initial position)
+            // Solve for x₀
             if (x0 == null) {
                 if (accel == 0.0) throw IllegalArgumentException("acceleration cannot be equal to zero")
                 return round4(-((((vf!! * vf) - (v0!! * v0)) / (2 * accel!!)) - xf!!))
             }
 
-            // Solve for v₀ (initial velocity)
+            // Solve for v₀
             if (v0 == null) {
                 val discriminant = (vf!! * vf) - (2 * accel!! * (xf!! - x0))
                 if (discriminant < 0) throw IllegalArgumentException("The discriminant cannot be negative")
                 return round4(sqrt(discriminant))
             }
 
-            // Solve for a (acceleration)
+            // Solve for a
             if (accel == null) {
                 if (xf == 0.0 && x0 == 0.0) throw IllegalArgumentException("x_f and x_0 cannot both be equal to zero")
                 return round4(((vf!! * vf) - (v0 * v0)) / (2 * (xf!! - x0)))
             }
 
-            // Solve for x (final position)
+            // Solve for x
             if (xf == null) {
                 if (accel == 0.0) throw IllegalArgumentException("acceleration cannot be equal to zero")
                 return round4((((vf!! * vf) - (v0 * v0)) / (2 * accel)) - x0)
             }
 
-            // Solve for v (final velocity) — the default case
+            // Solve for v
             val discriminant = (v0 * v0) + 2 * accel * (xf - x0)
             if (discriminant < 0) throw IllegalArgumentException("The discriminant cannot be negative")
             return round4(sqrt(discriminant))
         }
 
-        /**
-         * y(t) = y₀ + v₀t + ½gt² (free fall). Pass every value except the unknown; leave it `null`.
-         */
+        /** y(t) = y₀ + v₀t + ½gt² (free fall). Pass null for the unknown. */
         fun heightOfFreeFall(
             y0: Double? = null,
             v0: Double? = null,
@@ -354,18 +316,18 @@ class Chapter3 : PhysicsChapter(
         ): Double {
             if (t != null && t < 0) throw IllegalArgumentException("Time cannot be a negative value")
 
-            // Solve for y₀ (initial position)
+            // Solve for y₀
             if (y0 == null) {
                 return round4(yf!! - (v0!! * t!!) - (0.5 * G * (t * t)))
             }
 
-            // Solve for v₀ (initial velocity)
+            // Solve for v₀
             if (v0 == null) {
                 if (t == 0.0) throw IllegalArgumentException("Cannot solve for v_0 when t=0")
                 return round4((yf!! - y0 - (0.5 * G * (t!! * t))) / t)
             }
 
-            // Solve for t (elapsed time)
+            // Solve for t
             if (t == null) {
                 val c = y0 - yf!!
                 val b = v0
@@ -379,37 +341,35 @@ class Chapter3 : PhysicsChapter(
                 return round4(validRoots.min())
             }
 
-            // Solve for y (final position) — the default case
+            // Solve for y
             return round4(y0 + (v0 * t) + (0.5 * G * (t * t)))
         }
 
-        /**
-         * v² = v₀² + 2g(y - y₀) (free fall). Pass every value except the unknown; leave it `null`.
-         */
+        /** v² = v₀² + 2g(y - y₀) (free fall). Pass null for the unknown. */
         fun velFreeFallFromHeight(
             y0: Double? = null,
             v0: Double? = null,
             yf: Double? = null,
             vf: Double? = null,
         ): Double {
-            // Solve for y₀ (initial height)
+            // Solve for y₀
             if (y0 == null) {
                 return round4(-((((vf!! * vf) - (v0!! * v0)) / (2 * G)) - yf!!))
             }
 
-            // Solve for v₀ (initial velocity)
+            // Solve for v₀
             if (v0 == null) {
                 val discriminant = (vf!! * vf) - (2 * G * (yf!! - y0))
                 if (discriminant < 0) throw IllegalArgumentException("The discriminant cannot be negative")
                 return round4(sqrt(discriminant))
             }
 
-            // Solve for y (final position)
+            // Solve for y
             if (yf == null) {
                 return round4((((vf!! * vf) - (v0 * v0)) / (2 * G)) - y0)
             }
 
-            // Solve for v (final velocity) — the default case
+            // Solve for v
             val discriminant = (v0 * v0) + 2 * G * (yf - y0)
             if (discriminant < 0) throw IllegalArgumentException("The discriminant cannot be negative")
             return round4(sqrt(discriminant))

@@ -6,9 +6,7 @@ import kotlin.math.round
 import kotlin.math.sin
 import kotlin.math.sqrt
 
-/**
- * Chapter on Angular Momentum — the Kotlin twin of your Python `chapter11.py`.
- */
+/** Chapter 11 — Angular momentum, its conservation, rolling motion, and precession. */
 class Chapter11 : PhysicsChapter(
     title = "Ch.11 - Angular Momentum",
     description = "Angular momentum, its conservation, and rolling motion.",
@@ -101,8 +99,7 @@ class Chapter11 : PhysicsChapter(
         ),
         Equation(
             name = "Conservation of angular momentum",
-            // Python wrote "I(N)" here — an obvious typo for the Nth particle's angular
-            // momentum l_N (matching the equation three entries above).
+            // Corrected from upstream: "I(N)" was a typo for l_N.
             formula = "L = l_1 + l_2 + ... + l_N = constant",
         ),
         Equation(
@@ -146,20 +143,14 @@ class Chapter11 : PhysicsChapter(
         ),
     )
 
-    /**
-     * Holds the calculation functions for Chapter 11 — the twin of the nested
-     * Python `class Calculate`.
-     */
+    /** Calculation functions for Chapter 11. */
     object Calculate {
 
-        /** Gravitational acceleration on Earth [m/s²]. (`const` = compile-time constant.) */
+        /** Gravitational acceleration on Earth [m/s²]. */
         const val G: Double = 9.82
 
-        /**
-         * The runs of spaces inside these two messages replicate the Python source exactly:
-         * the original strings were written with a backslash line-continuation, so the
-         * indentation of the second source line became part of the message itself.
-         */
+        // The " ".repeat runs reproduce indentation that backslash line-continuations embedded
+        // in the original messages; tests assert the exact strings.
         private val MASS_ERROR: String =
             "We are operating with massive objects." +
                 " ".repeat(21) +
@@ -170,15 +161,11 @@ class Chapter11 : PhysicsChapter(
                 " ".repeat(25) +
                 "Check your values."
 
-        /** Rounds to 4 decimal places, matching Python's `round(x, 4)`. */
         private fun round4(value: Double): Double = roundResult(value)
 
         /**
-         * a = (mg·sinθ) / (m + I/r²) — acceleration of a body rolling without slipping.
-         *
-         * Pass every value except the one you want solved for; leave that one `null`.
-         * NOTE: `theta` is taken in DEGREES and converted to radians internally
-         * (and returned in degrees when solving for θ), exactly as in the Python source.
+         * a = (mg·sinθ) / (m + I/r²), rolling without slipping. Pass null for the unknown.
+         * θ is in degrees (converted internally).
          */
         fun accelWithoutSlipping(
             accel: Double? = null,
@@ -199,10 +186,8 @@ class Chapter11 : PhysicsChapter(
                 throw IllegalArgumentException("Radius cannot be less than or equal to zero.")
             }
 
-            // Solve for m (mass).
-            // NOTE: the Python source computed m = ((a/(g·sinθ)) − 1)·I / r², which is
-            // mathematically wrong (it even yields negative masses). The correct
-            // inversion of a = mg·sinθ/(m + I/r²) is m = I / (r²·((g·sinθ/a) − 1)).
+            // Solve for m
+            // Corrected from upstream: m = I / (r²·((g·sinθ/a) − 1)).
             if (mass == null) {
                 if (accel == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
 
@@ -212,7 +197,7 @@ class Chapter11 : PhysicsChapter(
                 return round4(momentInertia!! / denominator)
             }
 
-            // Solve for I (moment of inertia)
+            // Solve for I
             if (momentInertia == null) {
                 if (accel == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
 
@@ -222,7 +207,7 @@ class Chapter11 : PhysicsChapter(
                 return round4(terms * coefficient)
             }
 
-            // Solve for r (radius)
+            // Solve for r
             if (radius == null) {
                 if (accel == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
 
@@ -236,14 +221,14 @@ class Chapter11 : PhysicsChapter(
                 return round4(sqrt(radicand))
             }
 
-            // Solve for θ (angle, returned in degrees)
+            // Solve for θ
             if (theta == null) {
                 val numerator: Double = accel!! * (mass + (momentInertia / (radius * radius)))
                 val denominator: Double = mass * G
                 val argument: Double = numerator / denominator
 
-                // Python's math.asin raises ValueError("math domain error") outside [-1, 1];
-                // Kotlin's asin would silently return NaN, so we throw to match.
+                // asin would return NaN out of domain; throw instead. Message preserved
+                // verbatim from the original implementation; tests assert it.
                 if (argument < -1.0 || argument > 1.0) {
                     throw IllegalArgumentException("math domain error")
                 }
@@ -251,17 +236,14 @@ class Chapter11 : PhysicsChapter(
                 return round4(asin(argument) * (180.0 / PI))
             }
 
-            // Solve for a (acceleration) — the default case
+            // Solve for a
             val numerator: Double = mass * G * sin(thetaRadians!!)
             val denominator: Double = mass + (momentInertia / (radius * radius))
 
             return round4(numerator / denominator)
         }
 
-        /**
-         * L = Iω — angular momentum of a rotating rigid body.
-         * Pass every value except the unknown; leave that one `null`.
-         */
+        /** L = Iω, angular momentum of a rotating rigid body. Pass null for the unknown. */
         fun angMomentumRigidBody(
             angularMomentum: Double? = null,
             momentInertia: Double? = null,
@@ -271,29 +253,24 @@ class Chapter11 : PhysicsChapter(
                 throw IllegalArgumentException("The moment of inertia cannot be a negative value.")
             }
 
-            // Solve for I (moment of inertia)
+            // Solve for I
             if (momentInertia == null) {
                 if (angularVel == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
                 return round4(angularMomentum!! / angularVel!!)
             }
 
-            // Solve for ω (angular velocity).
-            // NOTE: the Python source tested `angular_vel == 0.0` here instead of
-            // `angular_vel == None`, which made solving for ω crash with a TypeError.
-            // The intended branch condition is "ω is the unknown".
+            // Solve for ω
+            // Corrected from upstream: branch condition tested == 0.0 instead of null.
             if (angularVel == null) {
                 if (momentInertia == 0.0) throw IllegalArgumentException("Divison by zero is undefined.")
                 return round4(angularMomentum!! / momentInertia)
             }
 
-            // Solve for L (angular momentum) — the default case
+            // Solve for L
             return round4(momentInertia * angularVel)
         }
 
-        /**
-         * ωₚ = (rMg)/(Iω) — precessional angular velocity of a spinning rigid body.
-         * Pass every value except the unknown; leave that one `null`.
-         */
+        /** ωₚ = (rMg)/(Iω), precessional angular velocity. Pass null for the unknown. */
         fun processionalAngVel(
             processionalAngVel: Double? = null,
             radius: Double? = null,
@@ -311,7 +288,7 @@ class Chapter11 : PhysicsChapter(
                 throw IllegalArgumentException("Radius cannot be less than or equal to zero.")
             }
 
-            // Solve for r (distance from pivot point to center of mass)
+            // Solve for r
             if (radius == null) {
                 val numerator: Double = momentInertia!! * angularVel!!
                 val denominator: Double = mass!! * G
@@ -319,7 +296,7 @@ class Chapter11 : PhysicsChapter(
                 return round4(processionalAngVel!! * (numerator / denominator))
             }
 
-            // Solve for M (mass)
+            // Solve for M
             if (mass == null) {
                 val numerator: Double = momentInertia!! * angularVel!!
                 val denominator: Double = radius * G
@@ -327,7 +304,7 @@ class Chapter11 : PhysicsChapter(
                 return round4(processionalAngVel!! * (numerator / denominator))
             }
 
-            // Solve for I (moment of inertia)
+            // Solve for I
             if (momentInertia == null) {
                 if (angularVel == 0.0 || processionalAngVel == 0.0) {
                     throw IllegalArgumentException("Division by zero is undefined.")
@@ -339,10 +316,8 @@ class Chapter11 : PhysicsChapter(
                 return round4(numerator / denominator)
             }
 
-            // Solve for ω (angular velocity).
-            // NOTE: the Python source guarded `if angular_vel == 0.0` INSIDE the branch
-            // where angular_vel is None — an unreachable check. The meaningful guard is
-            // that neither ωₚ nor I may be zero, matching the sibling branches.
+            // Solve for ω
+            // Corrected from upstream: guard ωₚ and I against zero, not the unknown ω.
             if (angularVel == null) {
                 if (processionalAngVel == 0.0 || momentInertia == 0.0) {
                     throw IllegalArgumentException("Division by zero is undefined.")
@@ -354,7 +329,7 @@ class Chapter11 : PhysicsChapter(
                 return round4(numerator / denominator)
             }
 
-            // Solve for ωₚ (precessional angular velocity) — the default case
+            // Solve for ωₚ
             if (angularVel == 0.0 || momentInertia == 0.0) {
                 throw IllegalArgumentException("Division by zero is undefined.")
             }

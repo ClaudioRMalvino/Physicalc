@@ -5,17 +5,13 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 /*
- * These tests are a direct port of your Python `tests/chapter5_calc_test.py`.
- *
- * Tolerances match the Python `places`:
- *   places=1 -> 0.05, places=2 -> 0.005.
+ * Tests for the Chapter5 solvers (normal force and Hooke's law).
+ * Error messages are asserted byte-for-byte, including line-continuation whitespace and typos.
  */
 class Chapter5Test {
 
     private val calc = Chapter5.Calculate
 
-    // The Python ValueError message includes the indentation of its line
-    // continuations, so the expected string is reproduced verbatim here.
     private val springConstNegativeMessage =
         "Spring constant cannot be negative. " +
             "                        Consider the relation between the direction " +

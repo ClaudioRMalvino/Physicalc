@@ -41,13 +41,8 @@ import io.github.claudiormalvino.physicalc.ui.ToolsScreen
 import io.github.claudiormalvino.physicalc.ui.UnitConverterScreen
 
 /*
- * App entry point + navigation.
- *
- * Two layers:
- *  - Root tabs (bottom navigation bar): Tools | Home | Chapters. Home is the
- *    animated solar-system landing page.
- *  - A push stack of detail screens (chapter detail, solver, converter) that
- *    cover the tabs full-screen; the bottom bar hides while one is open.
+ * App entry point: root tabs (Tools | Home | Chapters) plus a push stack of
+ * full-screen detail screens; the bottom bar hides while one is open.
  */
 
 /** The three root tabs, in bar order. */
@@ -97,10 +92,9 @@ fun App() {
             SettingsSheet(onDismiss = { showSettings = false })
         }
 
-        // Current screen: the top of the push stack, or the active tab's root.
         val current: Any = stack.lastOrNull() ?: tab
 
-        // Content renders edge-to-edge and feeds the glass bar's backdrop blur.
+        // Feeds the glass bar's backdrop blur.
         val hazeState = remember { HazeState() }
 
         Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
@@ -124,10 +118,7 @@ fun App() {
                     enter togetherWith exit
                 },
             ) { state ->
-                // On wide windows (desktop, tablets) cap and center the content
-                // column so cards keep readable proportions. The Home solar
-                // system intentionally stays full-bleed — it scales with the
-                // window and benefits from the space.
+                // Cap content width on wide windows; the Home solar system stays full-bleed.
                 val frameModifier = if (state == RootTab.Home) {
                     Modifier.fillMaxSize()
                 } else {

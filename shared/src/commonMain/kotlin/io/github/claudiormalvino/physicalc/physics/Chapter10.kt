@@ -6,9 +6,7 @@ import kotlin.math.round
 import kotlin.math.sin
 import kotlin.math.sqrt
 
-/**
- * Chapter on Fixed-Axis Rotation — the Kotlin twin of your Python `chapter10.py`.
- */
+/** Chapter 10 — Fixed-axis rotation: rotational kinematics, moment of inertia, and torque. */
 class Chapter10 : PhysicsChapter(
     title = "Ch.10 - Fixed-Axis Rotation",
     description = "Rotational kinematics, moment of inertia, and torque.",
@@ -207,7 +205,7 @@ class Chapter10 : PhysicsChapter(
         ),
         Equation(
             name = "Moment of inertia of a continuous object",
-            // Python wrote "I = ∫rdm"; the correct physics is r squared.
+            // Corrected from upstream: integrand is r², not r.
             formula = "I = ∫r^2dm",
             variables = mapOf(
                 "I" to "Moment of inertia (kg⋅m²)",
@@ -331,21 +329,12 @@ class Chapter10 : PhysicsChapter(
         Definition("total linear acceleration", "vector sum of the centripetal acceleration vector and the tangential acceleration vector"),
     )
 
-    /**
-     * Holds the calculation functions for Chapter 10 — the twin of the nested
-     * Python `class Calculate`.
-     */
+    /** Calculation functions for Chapter 10. */
     object Calculate {
 
-        /** Rounds to 4 decimal places, matching Python's `round(x, 4)`. */
         private fun round4(value: Double): Double = roundResult(value)
 
-        /**
-         * Solves a quadratic equation ax² + bx + c = 0 accurately in all cases.
-         *
-         * Returns a `Pair<Double, Double>` of the two roots, or `null` if the discriminant
-         * is negative (no real roots).
-         */
+        /** Solves ax² + bx + c = 0. Returns both roots, or null if the discriminant is negative. */
         fun quadraticEq(a: Double, b: Double, c: Double): Pair<Double, Double>? {
             val discriminant: Double = (b * b) - 4 * a * c
 
@@ -364,9 +353,7 @@ class Chapter10 : PhysicsChapter(
             }
         }
 
-        /**
-         * θ = s/r. Pass every value except the unknown; leave that one `null`.
-         */
+        /** θ = s/r. Pass null for the unknown. */
         fun angularPosition(
             theta: Double? = null,
             arcLength: Double? = null,
@@ -380,24 +367,22 @@ class Chapter10 : PhysicsChapter(
                 throw IllegalArgumentException("An arc length cannot be a negative value.")
             }
 
-            // Solve for s (arc length traversed)
+            // Solve for s
             if (arcLength == null) {
                 return round4(theta!! * radius!!)
             }
 
-            // Solve for r (radius)
+            // Solve for r
             if (radius == null) {
                 if (theta == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
                 return round4(arcLength / theta!!)
             }
 
-            // Solve for θ (angular position) — the default case
+            // Solve for θ
             return round4(arcLength / radius)
         }
 
-        /**
-         * v(t) = rω. Pass every value except the unknown; leave that one `null`.
-         */
+        /** v(t) = rω. Pass null for the unknown. */
         fun tangentialSpeed(
             tangSpeed: Double? = null,
             radius: Double? = null,
@@ -407,46 +392,42 @@ class Chapter10 : PhysicsChapter(
                 throw IllegalArgumentException("Radius must be greater than zero.")
             }
 
-            // Solve for r (radius)
+            // Solve for r
             if (radius == null) {
                 if (angularVel == 0.0) throw IllegalArgumentException("Divison by zero is undefined.")
                 return round4(tangSpeed!! / angularVel!!)
             }
 
-            // Solve for ω (angular velocity)
+            // Solve for ω
             if (angularVel == null) {
                 return round4(tangSpeed!! / radius)
             }
 
-            // Solve for v(t) (tangential speed) — the default case
+            // Solve for v(t)
             return round4(radius * angularVel)
         }
 
-        /**
-         * ω(ave) = (ω₀ + ω(f))/2. Pass every value except the unknown; leave that one `null`.
-         */
+        /** ω(ave) = (ω₀ + ω(f))/2. Pass null for the unknown. */
         fun averageAngularVel(
             aveAngularVel: Double? = null,
             initAngularVel: Double? = null,
             finalAngularVel: Double? = null,
         ): Double {
-            // Solve for ω₀ (initial angular velocity)
+            // Solve for ω₀
             if (initAngularVel == null) {
                 return round4((2.0 * aveAngularVel!!) - finalAngularVel!!)
             }
 
-            // Solve for ω(f) (final angular velocity)
+            // Solve for ω(f)
             if (finalAngularVel == null) {
                 return round4((2.0 * aveAngularVel!!) - initAngularVel)
             }
 
-            // Solve for ω(ave) (average angular velocity) — the default case
+            // Solve for ω(ave)
             return round4((initAngularVel + finalAngularVel) / 2.0)
         }
 
-        /**
-         * θ(f) = θ₀ + ω(ave)t. Pass every value except the unknown; leave that one `null`.
-         */
+        /** θ(f) = θ₀ + ω(ave)t. Pass null for the unknown. */
         fun angularDisplacement(
             thetaFinal: Double? = null,
             thetaInit: Double? = null,
@@ -455,30 +436,28 @@ class Chapter10 : PhysicsChapter(
         ): Double {
             if (time != null && time < 0) throw IllegalArgumentException("Time cannot be a negative value.")
 
-            // Solve for θ₀ (initial angular position)
+            // Solve for θ₀
             if (thetaInit == null) {
                 return round4(thetaFinal!! - (aveAngularVel!! * time!!))
             }
 
-            // Solve for ω(ave) (average angular velocity)
+            // Solve for ω(ave)
             if (aveAngularVel == null) {
                 if (time == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
                 return round4((thetaFinal!! - thetaInit) / time!!)
             }
 
-            // Solve for t (time)
+            // Solve for t
             if (time == null) {
                 if (aveAngularVel == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
                 return round4((thetaFinal!! - thetaInit) / aveAngularVel)
             }
 
-            // Solve for θ(f) (final angular position) — the default case
+            // Solve for θ(f)
             return round4(thetaInit + (aveAngularVel * time))
         }
 
-        /**
-         * ω(f) = ω₀ + αt. Pass every value except the unknown; leave that one `null`.
-         */
+        /** ω(f) = ω₀ + αt. Pass null for the unknown. */
         fun angularVelConstAccel(
             finalAngularVel: Double? = null,
             initAngularVel: Double? = null,
@@ -487,31 +466,28 @@ class Chapter10 : PhysicsChapter(
         ): Double {
             if (time != null && time < 0) throw IllegalArgumentException("Time cannot be a negative value.")
 
-            // Solve for ω₀ (initial angular velocity)
+            // Solve for ω₀
             if (initAngularVel == null) {
                 return round4(finalAngularVel!! - (constAngularAccel!! * time!!))
             }
 
-            // Solve for α (constant angular acceleration)
+            // Solve for α
             if (constAngularAccel == null) {
                 if (time == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
                 return round4((finalAngularVel!! - initAngularVel) / time!!)
             }
 
-            // Solve for t (time) — missing in the Python source, added here so the
-            // equation's "t" chip can actually be solved for.
+            // Solve for t (absent upstream; added so the equation's "t" chip is solvable)
             if (time == null) {
                 if (constAngularAccel == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
                 return round4((finalAngularVel!! - initAngularVel) / constAngularAccel)
             }
 
-            // Solve for ω(f) (final angular velocity) — the default case
+            // Solve for ω(f)
             return round4(initAngularVel + (constAngularAccel * time))
         }
 
-        /**
-         * θ(f) = θ₀ + ω₀t + ½αt². Pass every value except the unknown; leave that one `null`.
-         */
+        /** θ(f) = θ₀ + ω₀t + ½αt². Pass null for the unknown. */
         fun angularDisplacementConstAccel(
             thetaFinal: Double? = null,
             thetaInit: Double? = null,
@@ -521,14 +497,14 @@ class Chapter10 : PhysicsChapter(
         ): Double {
             if (time != null && time < 0) throw IllegalArgumentException("Time cannot be a negative value.")
 
-            // Solve for θ₀ (initial angular position)
+            // Solve for θ₀
             if (thetaInit == null) {
                 return round4(
                     thetaFinal!! - (initAngularVel!! * time!!) - (0.5 * constAngularAccel!! * (time * time))
                 )
             }
 
-            // Solve for ω₀ (initial angular velocity)
+            // Solve for ω₀
             if (initAngularVel == null) {
                 if (time == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
                 return round4(
@@ -536,7 +512,7 @@ class Chapter10 : PhysicsChapter(
                 )
             }
 
-            // Solve for α (constant angular acceleration)
+            // Solve for α
             if (constAngularAccel == null) {
                 if (time == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
                 return round4(
@@ -544,7 +520,7 @@ class Chapter10 : PhysicsChapter(
                 )
             }
 
-            // Solve for t (time)
+            // Solve for t
             if (time == null) {
                 val c: Double = thetaInit - thetaFinal!!
                 val b: Double = initAngularVel
@@ -558,22 +534,20 @@ class Chapter10 : PhysicsChapter(
                 return round4(validRoots.min())
             }
 
-            // Solve for θ(f) (final angular position) — the default case
+            // Solve for θ(f)
             return round4(
                 thetaInit + (initAngularVel * time) + (0.5 * (constAngularAccel * (time * time)))
             )
         }
 
-        /**
-         * ω(f)² = ω₀² + 2α(Δθ). Pass every value except the unknown; leave that one `null`.
-         */
+        /** ω(f)² = ω₀² + 2α(Δθ). Pass null for the unknown. */
         fun changeAngularVelocity(
             finalAngularVel: Double? = null,
             initAngularVel: Double? = null,
             constAngularAccel: Double? = null,
             deltaTheta: Double? = null,
         ): Double {
-            // Solve for ω₀ (initial angular velocity)
+            // Solve for ω₀
             if (initAngularVel == null) {
                 val radicand: Double =
                     (finalAngularVel!! * finalAngularVel) - (2 * constAngularAccel!! * deltaTheta!!)
@@ -583,7 +557,7 @@ class Chapter10 : PhysicsChapter(
                 return round4(sqrt(radicand))
             }
 
-            // Solve for α (constant angular acceleration)
+            // Solve for α
             if (constAngularAccel == null) {
                 if (deltaTheta == 0.0) throw IllegalArgumentException("Divison by zero is undefined.")
                 return round4(
@@ -591,7 +565,7 @@ class Chapter10 : PhysicsChapter(
                 )
             }
 
-            // Solve for Δθ (change in angular position)
+            // Solve for Δθ
             if (deltaTheta == null) {
                 if (constAngularAccel == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
                 return round4(
@@ -599,7 +573,7 @@ class Chapter10 : PhysicsChapter(
                 )
             }
 
-            // Solve for ω(f) (final angular velocity) — the default case
+            // Solve for ω(f)
             val radicand: Double =
                 (initAngularVel * initAngularVel) + 2 * constAngularAccel * deltaTheta
             if (radicand < 0.0) {
@@ -608,9 +582,7 @@ class Chapter10 : PhysicsChapter(
             return round4(sqrt(radicand))
         }
 
-        /**
-         * K = ½Iω². Pass every value except the unknown; leave that one `null`.
-         */
+        /** K = ½Iω². Pass null for the unknown. */
         fun rotationalKE(
             kineticEnergy: Double? = null,
             momentInertia: Double? = null,
@@ -620,13 +592,13 @@ class Chapter10 : PhysicsChapter(
                 throw IllegalArgumentException("The moment of inertia cannot be a negative value.")
             }
 
-            // Solve for I (moment of inertia)
+            // Solve for I
             if (momentInertia == null) {
                 if (angularVel == 0.0) throw IllegalArgumentException("Divison by zero is undefined.")
                 return round4((2.0 * kineticEnergy!!) / (angularVel!! * angularVel))
             }
 
-            // Solve for ω (angular velocity)
+            // Solve for ω
             if (angularVel == null) {
                 if (momentInertia == 0.0) throw IllegalArgumentException("Divison by zero is undefined.")
 
@@ -637,16 +609,11 @@ class Chapter10 : PhysicsChapter(
                 return round4(sqrt(radicand))
             }
 
-            // Solve for K (kinetic energy) — the default case
+            // Solve for K
             return round4(0.5 * momentInertia * (angularVel * angularVel))
         }
 
-        /**
-         * |τ| = rFsinθ. Pass every value except the unknown; leave that one `null`.
-         *
-         * Note: as in the Python source, θ is taken and returned in DEGREES and is
-         * converted to radians internally.
-         */
+        /** |τ| = rFsinθ. Pass null for the unknown. θ is in degrees (converted internally). */
         fun magnitudeOfTorque(
             torque: Double? = null,
             radius: Double? = null,
@@ -659,27 +626,27 @@ class Chapter10 : PhysicsChapter(
                 throw IllegalArgumentException("The length of the center of axis to applied force cannot be less than or equal to zero.")
             }
 
-            // Solve for r (distance from axis of rotation to applied force)
+            // Solve for r
             if (radius == null) {
                 return round4(torque!! / (force!! * sin(thetaRadians!!)))
             }
 
-            // Solve for F (applied force)
+            // Solve for F
             if (force == null) {
                 return round4(torque!! / (radius * sin(thetaRadians!!)))
             }
 
-            // Solve for θ (angle, in degrees)
+            // Solve for θ
             if (theta == null) {
                 if (force == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
 
                 val argument: Double = torque!! / (radius * force)
-                // Python's math.asin raises ValueError("math domain error") here.
+                // "math domain error" preserved verbatim from the original implementation; tests assert it.
                 if (argument < -1.0 || argument > 1.0) throw IllegalArgumentException("math domain error")
                 return round4(asin(argument) * (180 / PI))
             }
 
-            // Solve for |τ| (magnitude of torque) — the default case
+            // Solve for |τ|
             return round4(radius * force * sin(thetaRadians!!))
         }
     }

@@ -1,5 +1,6 @@
 package io.github.claudiormalvino.physicalc.ui
 
+import androidx.compose.animation.core.EaseInOutSine
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -67,7 +68,16 @@ private fun generateStars(count: Int): List<Star> {
         return ((seed ushr 33) and 0x7FFFFFFF).toFloat() / 0x7FFFFFFF
     }
     return List(count) {
-        Star(x = next(), y = next(), size = 0.6f + next() * 1.6f, phase = next(), speed = 0.5f + next() * 1.5f)
+        Star(
+            x = next(),
+            y = next(),
+            size = 0.6f + next() * 1.6f,
+            phase = next(),
+            // WHOLE cycles per animation loop (1..3). Integer speeds make the
+            // loop seam invisible: sin(2π(k + φ)) == sin(2πφ) exactly, so a
+            // star's brightness is identical on both sides of the restart.
+            speed = (1 + (next() * 3f).toInt().coerceAtMost(2)).toFloat(),
+        )
     }
 }
 
@@ -94,12 +104,14 @@ fun HomeScreen(onSettingsClick: () -> Unit) {
     val twinkle by transition.animateFloat(
         initialValue = 0f,
         targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(durationMillis = 8000, easing = LinearEasing)),
+        animationSpec = infiniteRepeatable(tween(durationMillis = 10_000, easing = LinearEasing)),
     )
     val pulse by transition.animateFloat(
         initialValue = 0.88f,
         targetValue = 1.12f,
-        animationSpec = infiniteRepeatable(tween(durationMillis = 2600), repeatMode = RepeatMode.Reverse),
+        // Sine easing has zero slope at both endpoints, so the Reverse turn-around
+        // is velocity-continuous — the sun "breathes" without a kink.
+        animationSpec = infiniteRepeatable(tween(durationMillis = 2600, easing = EaseInOutSine), repeatMode = RepeatMode.Reverse),
     )
 
     val stars = remember { generateStars(80) }

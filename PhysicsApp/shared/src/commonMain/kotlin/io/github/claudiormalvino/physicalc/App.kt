@@ -8,7 +8,10 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.ui.unit.dp
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -112,7 +115,18 @@ fun App() {
                     enter togetherWith exit
                 },
             ) { state ->
-                when (state) {
+                // On wide windows (desktop, tablets) cap and center the content
+                // column so cards keep readable proportions. The Home solar
+                // system intentionally stays full-bleed — it scales with the
+                // window and benefits from the space.
+                val frameModifier = if (state == RootTab.Home) {
+                    Modifier.fillMaxSize()
+                } else {
+                    Modifier.fillMaxHeight().widthIn(max = 640.dp)
+                }
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
+                    Box(modifier = frameModifier) {
+                        when (state) {
                     RootTab.Home -> HomeScreen(onSettingsClick = { showSettings = true })
 
                     RootTab.Tools -> ToolsScreen(
@@ -138,6 +152,8 @@ fun App() {
                     )
 
                     is Screen.UnitConverter -> UnitConverterScreen(onBack = ::pop)
+                        }
+                    }
                 }
             }
 

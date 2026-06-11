@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -66,6 +67,8 @@ fun GlassBottomBar(
         modifier = modifier
             .navigationBarsPadding()
             .padding(start = 24.dp, end = 24.dp, bottom = 10.dp)
+            // Cap the dock width so it stays a compact pill on desktop/tablets.
+            .widthIn(max = 440.dp)
             .fillMaxWidth()
             .height(62.dp)
             .clip(shape)

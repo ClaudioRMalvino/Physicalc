@@ -29,11 +29,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -64,6 +66,8 @@ import kotlin.math.roundToInt
 /*
  * Flashcards tool: choose Equations or Definitions, choose a chapter, then
  * study a shuffled deck one card at a time — tap to flip, self-grade with ✗ / ✓.
+ * Every grade feeds an SM-2 schedule (see ReviewStore); due counts appear on
+ * the mode and chapter pickers, and a "due only" toggle deals just those cards.
  */
 
 enum class FlashcardMode(val label: String) {
@@ -88,6 +92,7 @@ private fun cardsFor(mode: FlashcardMode, chapter: PhysicsChapter): List<Flashca
 @Composable
 fun FlashcardsModeScreen(
     onSelect: (FlashcardMode) -> Unit,
+    onSettingsClick: () -> Unit,
     onBack: () -> Unit,
 ) {
     val colors = MaterialTheme.colorScheme
@@ -101,6 +106,11 @@ fun FlashcardsModeScreen(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
+                actions = {
+                    IconButton(onClick = onSettingsClick) {
+                        Icon(Icons.Default.MoreVert, contentDescription = "Settings")
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
             )
         },
@@ -112,6 +122,15 @@ fun FlashcardsModeScreen(
                 .padding(horizontal = 20.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            // Recomputed when a session records grades (revision bump).
+            val revision = ReviewStore.revision
+            val dueByMode = remember(revision) {
+                val today = ReviewStore.todayEpochDay()
+                FlashcardMode.entries.associateWith { mode ->
+                    ChapterRegistry.all.sumOf { ReviewStore.dueCount(mode, it, today) }
+                }
+            }
+
             Text(
                 text = "What do you want to study?",
                 style = MaterialTheme.typography.bodyLarge,
@@ -121,11 +140,13 @@ fun FlashcardsModeScreen(
             ModeCard(
                 title = "Equations",
                 subtitle = "See the equation's name, recall its formula",
+                due = dueByMode.getValue(FlashcardMode.Equations),
                 onClick = { onSelect(FlashcardMode.Equations) },
             )
             ModeCard(
                 title = "Definitions",
                 subtitle = "See the term, recall its meaning",
+                due = dueByMode.getValue(FlashcardMode.Definitions),
                 onClick = { onSelect(FlashcardMode.Definitions) },
             )
         }
@@ -133,7 +154,7 @@ fun FlashcardsModeScreen(
 }
 
 @Composable
-private fun ModeCard(title: String, subtitle: String, onClick: () -> Unit) {
+private fun ModeCard(title: String, subtitle: String, due: Int, onClick: () -> Unit) {
     val colors = MaterialTheme.colorScheme
     Card(
         onClick = onClick,
@@ -146,6 +167,15 @@ private fun ModeCard(title: String, subtitle: String, onClick: () -> Unit) {
             Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold, color = colors.primary)
             Spacer(Modifier.height(4.dp))
             Text(subtitle, style = MaterialTheme.typography.bodyMedium, color = colors.onSurfaceVariant)
+            if (due > 0) {
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    text = "$due due for review today",
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.SemiBold,
+                    color = colors.tertiary,
+                )
+            }
         }
     }
 }
@@ -156,10 +186,18 @@ private fun ModeCard(title: String, subtitle: String, onClick: () -> Unit) {
 @Composable
 fun FlashcardsChaptersScreen(
     mode: FlashcardMode,
-    onChapterClick: (Int) -> Unit,
+    onChapterClick: (Int, Boolean) -> Unit,
     onBack: () -> Unit,
 ) {
     val colors = MaterialTheme.colorScheme
+
+    var dueOnly by remember { mutableStateOf(false) }
+    val revision = ReviewStore.revision
+    val dueCounts = remember(revision) {
+        val today = ReviewStore.todayEpochDay()
+        ChapterRegistry.all.map { ReviewStore.dueCount(mode, it, today) }
+    }
+
     Scaffold(
         containerColor = colors.background,
         topBar = {
@@ -179,11 +217,20 @@ fun FlashcardsChaptersScreen(
             contentPadding = PaddingValues(bottom = 28.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            item {
+                FilterChip(
+                    selected = dueOnly,
+                    onClick = { dueOnly = !dueOnly },
+                    label = { Text("Due cards only") },
+                    modifier = Modifier.padding(horizontal = 20.dp),
+                )
+            }
             itemsIndexed(ChapterRegistry.all) { index, chapter ->
                 ChapterCard(
                     chapter = chapter,
-                    onClick = { onChapterClick(index) },
+                    onClick = { onChapterClick(index, dueOnly) },
                     modifier = Modifier.padding(horizontal = 20.dp),
+                    dueCount = dueCounts[index],
                 )
             }
         }
@@ -197,13 +244,21 @@ fun FlashcardsChaptersScreen(
 fun FlashcardsSessionScreen(
     mode: FlashcardMode,
     chapter: PhysicsChapter,
+    dueOnly: Boolean,
     onExit: () -> Unit,
 ) {
     val colors = MaterialTheme.colorScheme
 
     // sessionKey re-seeds everything for "Study again".
     var sessionKey by remember { mutableIntStateOf(0) }
-    val deck = remember(sessionKey) { cardsFor(mode, chapter).shuffled() }
+    val deck = remember(sessionKey) {
+        val all = cardsFor(mode, chapter)
+        val today = ReviewStore.todayEpochDay()
+        val dealt = if (dueOnly) {
+            all.filter { ReviewStore.isDue(mode, chapter.title, it.front, today) }
+        } else all
+        dealt.shuffled()
+    }
     var index by remember(sessionKey) { mutableIntStateOf(0) }
     var correct by remember(sessionKey) { mutableIntStateOf(0) }
     var flipped by remember(sessionKey) { mutableStateOf(false) }
@@ -211,6 +266,7 @@ fun FlashcardsSessionScreen(
     val finished = index >= deck.size
 
     fun judge(remembered: Boolean) {
+        ReviewStore.record(mode, chapter.title, deck[index].front, remembered)
         if (remembered) correct++
         index++
         flipped = false
@@ -242,7 +298,35 @@ fun FlashcardsSessionScreen(
                 .padding(horizontal = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            if (finished) {
+            if (deck.isEmpty()) {
+                // Only reachable with the due-only filter: nothing is scheduled today.
+                Column(
+                    modifier = Modifier.fillMaxSize().padding(top = 64.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        text = "All caught up!",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color = colors.primary,
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        text = "No cards in this chapter are due for review.",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = colors.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                    )
+                    Spacer(Modifier.height(36.dp))
+                    OutlinedButton(
+                        onClick = onExit,
+                        shape = RoundedCornerShape(16.dp),
+                        modifier = Modifier.fillMaxWidth().height(52.dp),
+                    ) {
+                        Text("Done", style = MaterialTheme.typography.titleMedium)
+                    }
+                }
+            } else if (finished) {
                 ScoreView(
                     correct = correct,
                     total = deck.size,

@@ -24,9 +24,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,6 +45,8 @@ import androidx.compose.ui.unit.dp
 fun ToolsScreen(
     onConverterClick: () -> Unit,
     onFlashcardsClick: () -> Unit,
+    onVectorsClick: () -> Unit,
+    onSettingsClick: () -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier
@@ -53,15 +57,28 @@ fun ToolsScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item {
-            Text(
-                text = "Tools",
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground,
+            Row(
                 modifier = Modifier
+                    .fillMaxWidth()
                     .statusBarsPadding()
-                    .padding(start = 24.dp, top = 16.dp, bottom = 4.dp),
-            )
+                    .padding(start = 24.dp, top = 16.dp, bottom = 4.dp, end = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = "Tools",
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.weight(1f),
+                )
+                IconButton(onClick = onSettingsClick) {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = "Settings",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
         }
 
         item {
@@ -70,6 +87,16 @@ fun ToolsScreen(
                 subtitle = "Length, time, mass, force, energy, pressure, speed",
                 glyph = "⇄",
                 onClick = onConverterClick,
+                modifier = Modifier.padding(horizontal = 20.dp),
+            )
+        }
+
+        item {
+            ToolCard(
+                title = "Vectors",
+                subtitle = "Add, subtract, and visualize vectors in 2D and 3D",
+                glyph = "↗",
+                onClick = onVectorsClick,
                 modifier = Modifier.padding(horizontal = 20.dp),
             )
         }

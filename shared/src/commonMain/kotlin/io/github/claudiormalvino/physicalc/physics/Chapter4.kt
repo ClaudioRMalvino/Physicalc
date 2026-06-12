@@ -56,11 +56,13 @@ class Chapter4 : PhysicsChapter(
             variables = mapOf(
                 "v₀" to "Initial velocity (m/s)",
                 "θ" to "Launch angle (degrees)",
+                "T_{tot}" to "Total time of flight (s)"
             ),
             calculation = { v ->
                 Calculate.timeOfFlight(
                     v0 = v["v₀"],
                     theta = v["θ"],
+                    t = v["T_{tot}"]
                 )
             },
         ),

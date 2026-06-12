@@ -6,6 +6,31 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
+/**
+ * Stroke colors for the vector canvas. The Material accent roles are too close
+ * in hue and darkness to tell three arrows apart on the light theme, so each
+ * theme gets a dedicated hue-separated trio. The light set is the high-contrast
+ * Okabe–Ito subset (deep blue / vermilion / bluish green) — colorblind-safe and
+ * the classic navy / terracotta / forest pairing for a cream background.
+ */
+data class VectorAccents(val a: Color, val b: Color, val resultant: Color)
+
+private val VectorAccentsDark = VectorAccents(
+    a = Color(0xFF8AB4FF),         // periwinkle, matches dark primary
+    b = Color(0xFFBCA6FF),         // violet, matches dark secondary
+    resultant = Color(0xFF77D9C9), // teal, matches dark tertiary
+)
+
+private val VectorAccentsLight = VectorAccents(
+    a = Color(0xFF0072B2),         // deep blue
+    b = Color(0xFFD55E00),         // vermilion
+    resultant = Color(0xFF009E73), // bluish green
+)
+
+@Composable
+fun vectorAccents(): VectorAccents =
+    if (AppSettings.darkTheme) VectorAccentsDark else VectorAccentsLight
+
 /* App-wide Material 3 theme. */
 
 // Deep-space palette: dark blue-black background, periwinkle primary, violet accents.

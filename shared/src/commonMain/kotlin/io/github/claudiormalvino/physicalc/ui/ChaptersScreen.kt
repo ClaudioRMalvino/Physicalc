@@ -26,9 +26,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,7 +46,10 @@ import io.github.claudiormalvino.physicalc.physics.PhysicsChapter
 
 /** Chapters tab: every chapter as a tappable card with its topic glyph. */
 @Composable
-fun ChaptersScreen(onChapterClick: (Int) -> Unit) {
+fun ChaptersScreen(
+    onChapterClick: (Int) -> Unit,
+    onSettingsClick: () -> Unit,
+) {
     val chapters = ChapterRegistry.all
 
     LazyColumn(
@@ -56,15 +61,28 @@ fun ChaptersScreen(onChapterClick: (Int) -> Unit) {
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item {
-            Text(
-                text = "Chapters",
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground,
+            Row(
                 modifier = Modifier
+                    .fillMaxWidth()
                     .statusBarsPadding()
-                    .padding(start = 24.dp, top = 16.dp, bottom = 4.dp),
-            )
+                    .padding(start = 24.dp, top = 16.dp, bottom = 4.dp, end = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = "Chapters",
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.weight(1f),
+                )
+                IconButton(onClick = onSettingsClick) {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = "Settings",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
         }
 
         itemsIndexed(chapters) { index, chapter ->
@@ -83,6 +101,7 @@ internal fun ChapterCard(
     chapter: PhysicsChapter,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    dueCount: Int? = null,
 ) {
     val colors = MaterialTheme.colorScheme
 
@@ -153,6 +172,15 @@ internal fun ChapterCard(
                     style = MaterialTheme.typography.labelMedium,
                     color = colors.tertiary,
                 )
+                if (dueCount != null && dueCount > 0) {
+                    Spacer(Modifier.height(2.dp))
+                    Text(
+                        text = "$dueCount due for review",
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = colors.primary,
+                    )
+                }
             }
 
             Icon(

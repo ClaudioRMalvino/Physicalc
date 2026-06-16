@@ -21,6 +21,8 @@ First-year undergraduate physics students (and anyone reviewing the fundamentals
 - **Interactive solvers** — pick the variable you want, fill in the rest, get the answer with proper error handling (no real roots, division by zero, negative time, etc.)
 - **Definitions** — the key terms of each chapter in plain language
 - **Unit converter** — length, time, mass, force, energy, pressure, and speed, converting live as you type
+- **Vector calculator** — add and subtract vectors in **2D and 3D**, with a live tip-to-tail diagram, dot product, cross product, and the angle between them; the 3D view orbits, zooms, and drops lines to the floor plane so depth reads clearly
+- **Flashcards** — self-graded recall of equations and definitions, with spaced repetition (SM-2) scheduling reviews so the right cards resurface at the right time
 
 ## Screenshots
 
@@ -35,6 +37,14 @@ First-year undergraduate physics students (and anyone reviewing the fundamentals
 |                                                Light theme                                                | |
 |:---------------------------------------------------------------------------------------------------------:|:---:|
 | <img src="assets/screenshots/home_light.png" width="260" alt="Light (paper-cream) home with daily quote"> | <img src="assets/screenshots/chapters_light.png" width="260" alt="Light (paper-cream) chapter list"> |
+
+### Vectors in 3D
+
+Enter two vectors as components (or magnitude & angle in 2D) and see them drawn tip-to-tail with the resultant, alongside the dot product, cross product, and the angle between them. The 3D view is fully interactive — drag to orbit, scroll or pinch to zoom — with an axis triad and dashed drop lines to the *xy*-plane so depth is unambiguous.
+
+<p align="center">
+  <img src="assets/screenshots/vectors_3d.png" width="280" alt="3D vector calculator: vectors A, B, and A+B drawn in an orbitable 3D space with an x/y/z axis triad and dashed drop lines to the floor plane">
+</p>
 
 Each planet in the home screen is drawn at its true
 heliocentric ecliptic longitude for the current date (JPL Keplerian elements,

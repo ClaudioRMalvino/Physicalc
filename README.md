@@ -1,6 +1,6 @@
 # Physicalc
 
-An interactive physics reference and equation solver for first-year undergraduate students, built with Kotlin Multiplatform and Compose Multiplatform. One shared codebase runs natively on **Android** and **desktop** (Linux/macOS/Windows).
+An interactive physics reference and equation solver for first-year undergraduate students, built with Kotlin Multiplatform and Compose Multiplatform. One shared codebase runs natively on **Android** and **desktop** (Linux).
 
 ![Development Status](https://img.shields.io/badge/status-stable-green)
 ![Kotlin](https://img.shields.io/badge/kotlin-2.4-blue)
@@ -21,7 +21,7 @@ First-year undergraduate physics students (and anyone reviewing the fundamentals
 - **Interactive solvers** — pick the variable you want, fill in the rest, get the answer with proper error handling (no real roots, division by zero, negative time, etc.)
 - **Definitions** — the key terms of each chapter in plain language
 - **Unit converter** — length, time, mass, force, energy, pressure, and speed, converting live as you type
-- **Vector calculator** — add and subtract vectors in **2D and 3D**, with a live tip-to-tail diagram, dot product, cross product, and the angle between them; the 3D view orbits, zooms, and drops lines to the floor plane so depth reads clearly
+- **Vector calculator** — add and subtract vectors in 2D and 3D, with a live tip-to-tail diagram, dot product, cross product, and the angle between them; the 3D view orbits, zooms, and drops lines to the floor plane so depth reads clearly
 - **Flashcards** — self-graded recall of equations and definitions, with spaced repetition (SM-2) scheduling reviews so the right cards resurface at the right time
 
 ## Screenshots
@@ -81,13 +81,13 @@ PhysicsApp/
 └── desktopApp/                  # Desktop (JVM) entry point
 ```
 
-The design principle carried over from Physics-TUI: **domain logic is pure and UI-free.** Every solver is a plain function from known values to the unknown, so it's trivially testable and platform-independent. Calculators follow the same convention as the Python original — the variable left unknown (`null`, formerly `None`) is the one solved for.
+The design principle carried over from Physics-TUI: domain logic is pure and UI-free. Every solver is a plain function from known values to the unknown, so it's trivially testable and platform-independent. Calculators follow the same convention as the Python original, the variable left unknown (`null`, formerly `None`) is the one solved for.
 
 ## Desktop app
 
-Physicalc runs as a standalone desktop application on **Linux, Windows, and macOS** — no Java or other dependencies required, because each build bundles its own runtime.
+Physicalc runs as a standalone desktop application on Linux. No Java or other dependencies required, the build bundles its own runtime.
 
-**Download** the build for your OS from the [Releases](https://github.com/ClaudioRMalvino/Physicalc/releases) page.
+**Download** the build from the [Releases](https://github.com/ClaudioRMalvino/Physicalc/releases) page.
 
 ### Linux (any distribution, including Arch)
 
@@ -97,12 +97,6 @@ Download the portable archive, extract it, and run the launcher:
 tar -xzf Physicalc-<version>-linux-x64.tar.gz
 ./Physicalc/bin/Physicalc
 ```
-
-The archive ships its own Java runtime, so it works on any distro — Arch/CachyOS, Fedora, Debian, etc. — with nothing else installed. (Debian/Ubuntu users can alternatively install the `.deb`.)
-
-### Windows / macOS
-
-Install the `.msi` (Windows) or `.dmg` (macOS) from Releases and launch Physicalc like any native app.
 
 ### Building the distributables yourself
 
@@ -143,7 +137,7 @@ Every calculation ported from Physics-TUI brings its test suite with it, ensurin
 
 ## License
 
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgments
 

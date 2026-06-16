@@ -35,7 +35,7 @@ class Chapter6 : PhysicsChapter(
         ),
         Equation(
             name = "Centripetal force with tangential velocity",
-            formula = "F_c = mv^2/r",
+            formula = "F_c = \\frac{mv^2}{r}",
             variables = mapOf(
                 "F_c" to "Centripetal force (N)",
                 "m" to "Mass of the object (kg)",
@@ -73,7 +73,7 @@ class Chapter6 : PhysicsChapter(
         ),
         Equation(
             name = "Ideal angle of a banked curve",
-            formula = "tan θ = v^2/rg",
+            formula = "tan θ = \\frac{v^2}{rg}",
             variables = mapOf(
                 "θ" to "Ideal angle (degrees)",
                 "v" to "Velocity (m/s)",
@@ -127,7 +127,7 @@ class Chapter6 : PhysicsChapter(
         ),
         Equation(
             name = "Terminal velocity",
-            formula = "v_t = √(2mg/ρCA)",
+            formula = "v_t = \\sqrt{\\frac{2mg}{ρCA}}",
             variables = mapOf(
                 "vₜ" to "Terminal velocity (m/s)",
                 "m" to "Mass of the object (kg)",

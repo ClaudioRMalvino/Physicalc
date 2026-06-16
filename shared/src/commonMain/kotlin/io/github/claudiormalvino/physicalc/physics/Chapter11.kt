@@ -42,7 +42,7 @@ class Chapter11 : PhysicsChapter(
         ),
         Equation(
             name = "Acceleration of an object rolling without slipping",
-            formula = "a_{CM} = (mgsinθ)/(m+(I_{CM}/r^2))",
+            formula = "a_{CM} = \\frac{mgsinθ}{m + \\frac{I_{CM}}{r^2}}",
             variables = mapOf(
                 "a_{CM}" to "Acceleration of the object (m/s²)",
                 "m" to "Mass of the object (kg)",
@@ -71,7 +71,7 @@ class Chapter11 : PhysicsChapter(
         ),
         Equation(
             name = "Derivative of angular momentum",
-            formula = "dL/dt = ∑τ",
+            formula = "\\frac{dL}{dt} = ∑τ",
         ),
         Equation(
             name = "Angular momentum of a system of particles",
@@ -95,7 +95,7 @@ class Chapter11 : PhysicsChapter(
         ),
         Equation(
             name = "Conservation of angular momentum",
-            formula = "dL/dt = 0",
+            formula = "\\frac{dL}{dt} = 0",
         ),
         Equation(
             name = "Conservation of angular momentum",
@@ -104,7 +104,7 @@ class Chapter11 : PhysicsChapter(
         ),
         Equation(
             name = "Processional angular velocity",
-            formula = "ω_p = (rMg)/(Iω)",
+            formula = "ω_p = \\frac{rMg}{Iω}",
             variables = mapOf(
                 "ωₚ" to "Processional angular velocity (m/s)",
                 "r" to "Distance from center of mass and the pivot point (m)",

@@ -21,7 +21,7 @@ class Chapter13 : PhysicsChapter(
     override val equations: List<Equation> = listOf(
         Equation(
             name = "Newton's law of gravitation",
-            formula = "F_{12} = G(m_1m_2/r^2)\\hat{r}_{12}",
+            formula = "F_{12} = G\\frac{m_1m_2}{r^2}\\hat{r}_{12}",
             variables = mapOf(
                 "F_{12}" to "Gravitational force between from object 1 on object 2 (N)",
                 "G" to "Newton's gravitational constant:  6.674 × 10⁻¹¹ m³ kg⁻¹ s⁻² (constant)",
@@ -40,7 +40,7 @@ class Chapter13 : PhysicsChapter(
         ),
         Equation(
             name = "Acceleration due to gravity at the surface of a stellar body",
-            formula = "g = GM/r^2",
+            formula = "g = \\frac{GM}{r^2}",
             variables = mapOf(
                 "g" to "Acceleration due to gravity (m/s²)",
                 "G" to "Newton's gravitational constant:  6.674 × 10⁻¹¹ m³ kg⁻¹ s⁻² (constant)",
@@ -57,7 +57,7 @@ class Chapter13 : PhysicsChapter(
         ),
         Equation(
             name = "Gravitational potential energy beyond a stellar body",
-            formula = "U = -GMm/r",
+            formula = "U = -\\frac{GMm}{r}",
             variables = mapOf(
                 "U" to "Gravitational potential energy (J)",
                 "G" to "Newton's gravitational constant:  6.674 × 10⁻¹¹ m³ kg⁻¹ s⁻² (constant)",
@@ -76,7 +76,7 @@ class Chapter13 : PhysicsChapter(
         ),
         Equation(
             name = "Conservation of energy",
-            formula = "½mv_1^2 - GMm/r_1 = ½mv_2^2 - GMm/r_2",
+            formula = "½mv_1^2 - \\frac{GMm}{r_1} = ½mv_2^2 - \\frac{GMm}{r_2}",
             variables = mapOf(
                 "G" to "Newton's gravitational constant:  6.674 × 10⁻¹¹ m³ kg⁻¹ s⁻² (constant)",
                 "m" to "Mass of the object (kg)",
@@ -99,7 +99,7 @@ class Chapter13 : PhysicsChapter(
         ),
         Equation(
             name = "Escape velocity",
-            formula = "v_{esc} = √(2GM/R)",
+            formula = "v_{esc} = \\sqrt{\\frac{2GM}{R}}",
             variables = mapOf(
                 "v_{esc}" to "Escape velocity (m/s)",
                 "G" to "Newton's gravitational constant:  6.674 × 10⁻¹¹ m³ kg⁻¹ s⁻² (constant)",
@@ -116,7 +116,7 @@ class Chapter13 : PhysicsChapter(
         ),
         Equation(
             name = "Orbital speed",
-            formula = "V_{orbit} = √(GM/r)",
+            formula = "V_{orbit} = \\sqrt{\\frac{GM}{r}}",
             variables = mapOf(
                 "v_{orb}" to "Escape velocity (m/s)",
                 "G" to "Newton's gravitational constant:  6.674 × 10⁻¹¹ m³ kg⁻¹ s⁻² (constant)",
@@ -133,7 +133,7 @@ class Chapter13 : PhysicsChapter(
         ),
         Equation(
             name = "Orbital period",
-            formula = "T = 2π√(r^3/GM)",
+            formula = "T = 2π\\sqrt{\\frac{r^3}{GM}}",
             variables = mapOf(
                 "T" to "Orbital period (s)",
                 "r" to "Altitude of orbiting body (m)",
@@ -150,7 +150,7 @@ class Chapter13 : PhysicsChapter(
         ),
         Equation(
             name = "Energy in circular orbit",
-            formula = "E = K + U = -GmM/2r",
+            formula = "E = K + U = -\\frac{GmM}{2r}",
             variables = mapOf(
                 "E" to "Total energy of the systen (J)",
                 "r" to "Distance between the center of mass of object M and m (m)",
@@ -161,7 +161,7 @@ class Chapter13 : PhysicsChapter(
         ),
         Equation(
             name = "Orbital equation",
-            formula = "α/r = 1 + ecosθ",
+            formula = "\\frac{α}{r} = 1 + ecosθ",
             variables = mapOf(
                 "α" to "Semi-latus rectum of the orbit",
                 "e" to "Eccentricity of the orbit",
@@ -179,7 +179,7 @@ class Chapter13 : PhysicsChapter(
         ),
         Equation(
             name = "Kepler's third law",
-            formula = "T^2 = (4π^2/GM)a^3",
+            formula = "T^2 = \\frac{4π^2}{GM}a^3",
             variables = mapOf(
                 "T" to "The orbital period of the stellar body (s)",
                 "a" to "Semi-major axis of the orbit",
@@ -196,7 +196,7 @@ class Chapter13 : PhysicsChapter(
         ),
         Equation(
             name = "Schwarzschild radius",
-            formula = "R_S = 2GM/c^2",
+            formula = "R_S = \\frac{2GM}{c^2}",
             variables = mapOf(
                 "R_S" to "Schwarzschild radius (m)",
                 "G" to "Newton's gravitational constant:  6.674 × 10⁻¹¹ m³ kg⁻¹ s⁻² (constant)",

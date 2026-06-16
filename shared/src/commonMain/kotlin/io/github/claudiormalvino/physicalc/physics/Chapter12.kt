@@ -28,7 +28,7 @@ class Chapter12 : PhysicsChapter(
         ),
         Equation(
             name = "Young's modulus",
-            formula = "Y = (F/A) × (L_0/ΔL)",
+            formula = "Y = \\frac{F}{A} × \\frac{L_0}{ΔL}",
             variables = mapOf(
                 "Y" to "Elastic modulus for tensile stress (Pa)",
                 "F" to "Force (N)",
@@ -48,7 +48,7 @@ class Chapter12 : PhysicsChapter(
         ),
         Equation(
             name = "Bulk modulus",
-            formula = "B = −Δp × (V_0/ΔV)",
+            formula = "B = −Δp × \\frac{V_0}{ΔV}",
             variables = mapOf(
                 "B" to "Elastic modulus for bulk stress (Pa)",
                 "Δp" to "Change in pressure (Pa)",
@@ -66,7 +66,7 @@ class Chapter12 : PhysicsChapter(
         ),
         Equation(
             name = "Shear modulus",
-            formula = "S = (F/A) × (L_0/Δx)",
+            formula = "S = \\frac{F}{A} × \\frac{L_0}{Δx}",
             variables = mapOf(
                 "S" to "Elastic modulus for shear stress (Pa)",
                 "F" to "Force (N)",

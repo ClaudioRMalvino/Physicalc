@@ -20,10 +20,12 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
@@ -40,12 +42,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.chrisbanes.haze.materials.HazeMaterials
+import io.github.claudiormalvino.physicalc.getPlatform
 import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
 
@@ -166,6 +170,46 @@ fun AnimatedVisibilityScope.SettingsSheet(
                     checked = AppSettings.darkTheme,
                     onCheckedChange = { AppSettings.updateDarkTheme(it) },
                 )
+            }
+
+            // --- UI scale (desktop only) ----------------------------------------
+            // Android manages its own density; on desktop the user steps the
+            // auto-detected scale up or down, with the whole app rescaling live.
+            if (getPlatform().isDesktop) {
+                val step = 0.1f
+                Spacer(Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text("Display scale", style = MaterialTheme.typography.bodyLarge)
+                        Text(
+                            text = "Resize the whole interface",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = colors.onSurfaceVariant,
+                        )
+                    }
+                    IconButton(
+                        onClick = { AppSettings.updateUiScale(AppSettings.uiScale - step) },
+                        enabled = AppSettings.uiScale > AppSettings.UI_SCALE_MIN,
+                    ) {
+                        Text("−", style = MaterialTheme.typography.titleLarge)
+                    }
+                    Text(
+                        text = "${(AppSettings.uiScale * 100).roundToInt()}%",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.SemiBold,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.width(64.dp),
+                    )
+                    IconButton(
+                        onClick = { AppSettings.updateUiScale(AppSettings.uiScale + step) },
+                        enabled = AppSettings.uiScale < AppSettings.UI_SCALE_MAX,
+                    ) {
+                        Text("+", style = MaterialTheme.typography.titleLarge)
+                    }
+                }
             }
 
             Spacer(Modifier.height(8.dp))

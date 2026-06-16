@@ -40,7 +40,7 @@ class Chapter9 : PhysicsChapter(
         ),
         Equation(
             name = "Average force from momentum",
-            formula = "F = Δp/Δt",
+            formula = "F = \\frac{Δp}{Δt}",
             variables = mapOf(
                 "F" to "Average force (N)",
                 "Δp" to "Change in momentum (N⋅s)",
@@ -49,7 +49,7 @@ class Chapter9 : PhysicsChapter(
         ),
         Equation(
             name = "Instantaneous force from momentum",
-            formula = "F(t) = dp/dt",
+            formula = "F(t) = \\frac{dp}{dt}",
             variables = mapOf(
                 "F(t)" to "Instantaneous force (N)",
                 "dp/dt" to "The rate of change of momentum with respect to time (N)",
@@ -57,7 +57,7 @@ class Chapter9 : PhysicsChapter(
         ),
         Equation(
             name = "Conservation of momentum",
-            formula = "dp_1/dt + dp_2/dt = 0 ⟺ m_1v_1 + m_2v_2 = constant",
+            formula = "\\frac{dp_1}{dt} + \\frac{dp_2}{dt} = 0 ⟺ m_1v_1 + m_2v_2 = constant",
             variables = mapOf(
                 "p₁" to "Momentum from the first object (N⋅s)",
                 "p₂" to "Momentum from the second object (N⋅s)",
@@ -122,7 +122,7 @@ class Chapter9 : PhysicsChapter(
         ),
         Equation(
             name = "External forces",
-            formula = "F_{ext} = ∑_{j=1}^{N} dp_j/dt",
+            formula = "F_{ext} = ∑_{j=1}^{N} \\frac{dp_j}{dt}",
             variables = mapOf(
                 "F_{ext}" to "External force (N)",
                 "∑dp_j/dt" to "The sum of all the rate of change of momenta with respect to time in the system",
@@ -130,7 +130,7 @@ class Chapter9 : PhysicsChapter(
         ),
         Equation(
             name = "Newton's second law for an extended object",
-            formula = "F = dp_{CM}/dt",
+            formula = "F = \\frac{dp_{CM}}{dt}",
             variables = mapOf(
                 "F" to "Force (N)",
                 "dp_{CM}/dt" to "Rate of change of momentum from the center of mass with respect to time",
@@ -138,7 +138,7 @@ class Chapter9 : PhysicsChapter(
         ),
         Equation(
             name = "Acceleration of the center of mass",
-            formula = "a_{CM} = d^2/dt^2 ((1/M)∑_{j=1}^{N} m_jr_j) = (1/M)∑_{j=1}^{N} m_ja_j",
+            formula = "a_{CM} = \\frac{d^2}{dt^2} (\\frac{1}{M}∑_{j=1}^{N} m_jr_j) = \\frac{1}{M}∑_{j=1}^{N} m_ja_j",
             variables = mapOf(
                 "a_{CM}" to "Acceleration of the center of mass (m/s²)",
                 "M" to "Total mass of the system (kg)",
@@ -147,7 +147,7 @@ class Chapter9 : PhysicsChapter(
         ),
         Equation(
             name = "Position of the center of mass for a system of particles",
-            formula = "r_{CM} = (1/M)∑_{j=1}^{N} m_jr_j",
+            formula = "r_{CM} = \\frac{1}{M}∑_{j=1}^{N} m_jr_j",
             variables = mapOf(
                 "r_{CM}" to "Position of the center of mass of the system (m)",
                 "M" to "Total mass of the system",
@@ -156,7 +156,7 @@ class Chapter9 : PhysicsChapter(
         ),
         Equation(
             name = "Velocity of the center of mass",
-            formula = "v_{CM} = d/dt ((1/M)∑_{j=1}^{N} m_jr_j) = (1/M)∑_{j=1}^{N} m_jv_j",
+            formula = "v_{CM} = \\frac{d}{dt} (\\frac{1}{M}∑_{j=1}^{N} m_jr_j) = \\frac{1}{M}∑_{j=1}^{N} m_jv_j",
             variables = mapOf(
                 "v_{CM}" to "Velocity of the center of mass (m/s)",
                 "M" to "Total mass of the system (m)",
@@ -165,11 +165,11 @@ class Chapter9 : PhysicsChapter(
         ),
         Equation(
             name = "Position of the center of mass of a continuous object",
-            formula = "r_{CM} = (1/M)∫r dm",
+            formula = "r_{CM} = \\frac{1}{M}∫r dm",
         ),
         Equation(
             name = "Rocket equation",
-            formula = "Δv = u ln(m_i/m)",
+            formula = "Δv = u ln(\\frac{m_i}{m})",
             variables = mapOf(
                 "Δv" to "Change of velocity obtained from loss of mass",
                 "u" to "Velocity of the gas being exhausted from the rocket",

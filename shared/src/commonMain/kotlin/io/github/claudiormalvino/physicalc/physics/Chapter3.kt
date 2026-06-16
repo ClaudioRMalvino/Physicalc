@@ -27,7 +27,7 @@ class Chapter3 : PhysicsChapter(
         ),
         Equation(
             name = "Average velocity (constant acceleration)",
-            formula = "v = Δx/Δt = (x - x_i)/(t - t_i)",
+            formula = "v = \\frac{Δx}{Δt} = \\frac{x - x_i}{t - t_i}",
             variables = mapOf(
                 "Δx" to "Displacement in direction (m)",
                 "Δt" to "Elapsed time (s)",
@@ -35,11 +35,11 @@ class Chapter3 : PhysicsChapter(
         ),
         Equation(
             name = "Instantaneous velocity",
-            formula = "v(t) = dx(t)/dt",
+            formula = "v(t) = \\frac{dx(t)}{dt}",
         ),
         Equation(
             name = "Average speed",
-            formula = "s = d/Δt",
+            formula = "s = \\frac{d}{Δt}",
             variables = mapOf(
                 "d" to "Total distance traveled (m)",
                 "Δt" to "Elapsed time (s)",
@@ -51,7 +51,7 @@ class Chapter3 : PhysicsChapter(
         ),
         Equation(
             name = "Average acceleration",
-            formula = "a = Δv/Δt",
+            formula = "a = \\frac{Δv}{Δt}",
             variables = mapOf(
                 "Δv" to "Change in velocity (m/s)",
                 "Δt" to "Elapsed time (s)",
@@ -59,7 +59,7 @@ class Chapter3 : PhysicsChapter(
         ),
         Equation(
             name = "Instantaneous acceleration",
-            formula = "a(t) = dv(t)/dt",
+            formula = "a(t) = \\frac{dv(t)}{dt}",
         ),
         Equation(
             name = "Position from avg. velocity",

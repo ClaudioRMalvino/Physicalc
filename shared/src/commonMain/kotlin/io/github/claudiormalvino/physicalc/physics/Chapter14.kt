@@ -14,7 +14,7 @@ class Chapter14 : PhysicsChapter(
     override val equations: List<Equation> = listOf(
         Equation(
             name = "Density of a sample at constant density",
-            formula = "ρ = m/V",
+            formula = "ρ = \\frac{m}{V}",
             variables = mapOf(
                 "ρ" to "Density (kg/m³)",
                 "m" to "mass (kg)",
@@ -23,7 +23,7 @@ class Chapter14 : PhysicsChapter(
         ),
         Equation(
             name = "Pressure",
-            formula = "p = F/A",
+            formula = "p = \\frac{F}{A}",
             variables = mapOf(
                 "p" to "Pressure (N/m²)",
                 "F" to "Force (N)",
@@ -50,7 +50,7 @@ class Chapter14 : PhysicsChapter(
         ),
         Equation(
             name = "Pressure gradiant in a fluid of constant density",
-            formula = "dp/dy = -ρg",
+            formula = "\\frac{dp}{dy} = -ρg",
             variables = mapOf(
                 "dp/dy" to "Rate of change of pressure with respect to height",
                 "ρ" to "Density of the fluid (kg/m³)",
@@ -67,7 +67,7 @@ class Chapter14 : PhysicsChapter(
         ),
         Equation(
             name = "Pascal's principle",
-            formula = "F_1/A_1 = F_2/A_2",
+            formula = "\\frac{F_1}{A_1} = \\frac{F_2}{A_2}",
             variables = mapOf(
                 "F_1" to "Force applied by piston 1 (N)",
                 "A_1" to "Area of piston 1 (m²)",
@@ -85,7 +85,7 @@ class Chapter14 : PhysicsChapter(
         ),
         Equation(
             name = "Volume flow rate",
-            formula = "Q = dV/dt",
+            formula = "Q = \\frac{dV}{dt}",
             variables = mapOf(
                 "Q" to "Flow rate",
                 "dV/dt" to "Rate of change of the volume with respect to time",
@@ -157,7 +157,7 @@ class Chapter14 : PhysicsChapter(
         ),
         Equation(
             name = "Viscocity",
-            formula = "η = FL/(vA)",
+            formula = "η = \\frac{FL}{vA}",
             variables = mapOf(
                 "η" to "Viscocity (Pa⋅s)",
                 "F" to "Force (N)",
@@ -177,7 +177,7 @@ class Chapter14 : PhysicsChapter(
         ),
         Equation(
             name = "Poiseuille’s law for resistance",
-            formula = "R = 8ηl/(πr^4)",
+            formula = "R = \\frac{8ηl}{πr^4}",
             variables = mapOf(
                 "R" to "Resistance to laminar flow",
                 "η" to "Viscocity (Pa⋅s)",
@@ -195,7 +195,7 @@ class Chapter14 : PhysicsChapter(
         ),
         Equation(
             name = "Poiseuille’s law",
-            formula = "Q = (p_1 - p_2)πr^4/(8ηl)",
+            formula = "Q = \\frac{(p_1 - p_2)πr^4}{8ηl}",
             variables = mapOf(
                 "Q" to "Flow rate",
                 "η" to "Viscocity (Pa⋅s)",

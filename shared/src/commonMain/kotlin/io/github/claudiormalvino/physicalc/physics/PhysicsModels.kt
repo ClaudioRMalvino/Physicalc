@@ -22,15 +22,38 @@ import kotlin.math.round
  */
 typealias Calculation = (variables: Map<String, Double?>) -> Double
 
+/** One solver result, with an optional label when an answer has several roots. */
+data class Root(val value: Double, val label: String? = null)
+
 /**
- * A physics equation. A null `calculation` means the equation is reference-only.
+ * A solver that may yield more than one valid answer (e.g. a quadratic). Returns
+ * the physical roots; throw IllegalArgumentException when none exist.
+ */
+typealias MultiCalculation = (variables: Map<String, Double?>) -> List<Root>
+
+/**
+ * A physics equation. Reference-only when both `calculation` and
+ * `multiCalculation` are null.
+ *
+ * Most solvers return a single value via `calculation`. An equation whose
+ * inverse can have several roots supplies `multiCalculation` instead, which the
+ * UI uses in preference and renders each root.
+ *
+ * `solvableFor` lists the symbols the solver can actually invert for; null means
+ * every variable is solvable (the common case). Use it when a variable can only
+ * be supplied as input — e.g. an angle the closed form can't be inverted for —
+ * so the UI doesn't offer a "Solve for" option that only throws.
  */
 data class Equation(
     val name: String,
     val formula: String,
     val variables: Map<String, String> = emptyMap(),
     val calculation: Calculation? = null,
-)
+    val solvableFor: Set<String>? = null,
+    val multiCalculation: MultiCalculation? = null,
+) {
+    val isCalculable: Boolean get() = calculation != null || multiCalculation != null
+}
 
 /**
  * A physics term and its plain-language meaning.
@@ -64,5 +87,5 @@ abstract class PhysicsChapter(
 
     /** Equations that have a solver attached. */
     fun calculableEquations(): List<Equation> =
-        equations.filter { it.calculation != null }
+        equations.filter { it.isCalculable }
 }

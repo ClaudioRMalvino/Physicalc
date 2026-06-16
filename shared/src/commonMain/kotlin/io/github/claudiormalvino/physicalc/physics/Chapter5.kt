@@ -51,7 +51,7 @@ class Chapter5 : PhysicsChapter(
         ),
         Equation(
             name = "Newton's second law, momentum form",
-            formula = "F_{net} = dp/dt = d(mv)/dt",
+            formula = "F_{net} = \\frac{dp}{dt} = \\frac{d(mv)}{dt}",
             variables = mapOf(
                 "F_{net}" to "Sum of all force vectors (N)",
                 "p" to "Time dependent momentum vector (kg⋅m/s)",

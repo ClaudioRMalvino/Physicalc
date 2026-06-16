@@ -41,7 +41,7 @@ class Chapter8 : PhysicsChapter(
         ),
         Equation(
             name = "Condition for conservative forces in two dimensions",
-            formula = "(∂F(y)/∂x) = (∂F(x)/∂y)",
+            formula = "\\frac{∂F(y)}{∂x} = \\frac{∂F(x)}{∂y}",
             variables = mapOf(
                 "∂F(y)/∂x" to "Partial derivative of F(y) with respect to x",
                 "∂F(x)/∂y" to "Partial derivative of F(x) with respect to y",
@@ -49,7 +49,7 @@ class Chapter8 : PhysicsChapter(
         ),
         Equation(
             name = "Conservative force is the negative derivative of the potential energy",
-            formula = "F(l) = -∂U/∂x(l)",
+            formula = "F(l) = -\\frac{∂U}{∂x}(l)",
             variables = mapOf(
                 "F(l)" to "Conservative force (N)",
                 "dU/dx(l)" to "Derivative of U with respect to x(l)",

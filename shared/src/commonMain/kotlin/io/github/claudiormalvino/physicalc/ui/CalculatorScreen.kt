@@ -51,6 +51,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.github.claudiormalvino.physicalc.physics.PhysicsChapter
+import io.github.claudiormalvino.physicalc.physics.Root
 
 /*
  * Interactive solver: pick the unknown (chips), enter the knowns, solve.
@@ -67,15 +68,17 @@ fun CalculatorScreen(
     val colors = MaterialTheme.colorScheme
     val equation = chapter.equations[equationIndex]
     val symbols = equation.variables.keys.toList()
+    // Variables the solver can invert for; the rest are input-only.
+    val solvableSymbols = symbols.filter { equation.solvableFor?.contains(it) ?: true }
 
-    var target by remember { mutableStateOf(symbols.last()) }   // variable to solve for
+    var target by remember { mutableStateOf(solvableSymbols.last()) }   // variable to solve for
     val inputs = remember { mutableStateMapOf<String, String>() } // text typed per symbol
-    var result by remember { mutableStateOf<Double?>(null) }
+    var roots by remember { mutableStateOf<List<Root>>(emptyList()) }
     var error by remember { mutableStateOf<String?>(null) }
 
     fun solve() {
         error = null
-        result = null
+        roots = emptyList()
         val values = mutableMapOf<String, Double?>()
         for (symbol in symbols) {
             if (symbol == target) {
@@ -94,14 +97,18 @@ fun CalculatorScreen(
             }
             values[symbol] = parsed
         }
-        result = try {
-            equation.calculation?.invoke(values)
+        roots = try {
+            when {
+                equation.multiCalculation != null -> equation.multiCalculation!!.invoke(values)
+                equation.calculation != null -> listOf(Root(equation.calculation!!.invoke(values)))
+                else -> emptyList()
+            }
         } catch (e: IllegalArgumentException) {
             error = e.message ?: "These values have no solution"
-            null
+            emptyList()
         } catch (e: Exception) {
             error = "Could not solve with these values"
-            null
+            emptyList()
         }
     }
 
@@ -152,12 +159,12 @@ fun CalculatorScreen(
                 )
                 Spacer(Modifier.height(8.dp))
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    symbols.forEach { symbol ->
+                    solvableSymbols.forEach { symbol ->
                         FilterChip(
                             selected = symbol == target,
                             onClick = {
                                 target = symbol
-                                result = null
+                                roots = emptyList()
                                 error = null
                             },
                             label = {
@@ -179,7 +186,7 @@ fun CalculatorScreen(
                         value = inputs[symbol] ?: "",
                         onValueChange = { newText ->
                             inputs[symbol] = newText
-                            result = null
+                            roots = emptyList()
                         },
                         modifier = Modifier.fillMaxWidth(),
                         label = { FormulaText(symbol) },
@@ -222,9 +229,10 @@ fun CalculatorScreen(
                 }
             }
 
-            // Result card — pops in with a scale + fade
+            // Result card — pops in with a scale + fade. Shows every root when
+            // the answer is multi-valued (e.g. the two x's of a trajectory).
             AnimatedVisibility(
-                visible = result != null,
+                visible = roots.isNotEmpty(),
                 enter = scaleIn(initialScale = 0.9f) + fadeIn(),
                 exit = fadeOut(),
             ) {
@@ -239,11 +247,21 @@ fun CalculatorScreen(
                             .padding(vertical = 24.dp, horizontal = 16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        FormulaText(
-                            formula = "$target = ${formatResult(result ?: 0.0)}",
-                            style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-                            color = colors.onPrimaryContainer,
-                        )
+                        roots.forEachIndexed { index, root ->
+                            if (index > 0) Spacer(Modifier.height(14.dp))
+                            FormulaText(
+                                formula = "$target = ${formatResult(root.value)}",
+                                style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+                                color = colors.onPrimaryContainer,
+                            )
+                            if (root.label != null) {
+                                Text(
+                                    text = root.label,
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = colors.onPrimaryContainer.copy(alpha = 0.7f),
+                                )
+                            }
+                        }
                         Spacer(Modifier.height(6.dp))
                         Text(
                             text = equation.variables[target] ?: "",

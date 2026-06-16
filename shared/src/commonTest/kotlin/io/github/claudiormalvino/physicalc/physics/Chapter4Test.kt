@@ -3,6 +3,7 @@ package io.github.claudiormalvino.physicalc.physics
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
 /*
  * Tests for the Chapter4 solvers (projectile motion and centripetal acceleration).
@@ -40,18 +41,35 @@ class Chapter4Test {
 
     @Test
     fun timeOfFlightSolvingForTheta() {
-        val v0 = listOf(0.0, 10.0, 56.41)
-        val t = listOf(0.0, -10.0, 20.0)
+        // θ = arcsin(gT / 2v₀). Each row is a forward-then-inverse round trip.
+        val v0 = listOf(25.0, 100.0, 10.0)
+        val theta = listOf(25.7, 75.8, 45.0)
 
-        for (i in v0.indices) {
-            val ex = assertFailsWith<IllegalArgumentException> {
-                calc.timeOfFlight(v0 = v0[i], t = t[i])
-            }
-            assertEquals(
-                "Cannot solve for theta with this equation. Yields complex numbers. \n Please input a value for theta.",
-                ex.message,
-            )
+        for (i in theta.indices) {
+            val t = calc.timeOfFlight(v0 = v0[i], theta = theta[i])
+            val result = calc.timeOfFlight(v0 = v0[i], t = t)
+            assertEquals(theta[i], result, 0.01)
         }
+    }
+
+    @Test
+    fun timeOfFlightThetaRejectsUnphysicalTime() {
+        // v₀ = 10, T = 20 needs sinθ = 9.8 — far beyond a 10 m/s launch's reach.
+        val ex = assertFailsWith<IllegalArgumentException> {
+            calc.timeOfFlight(v0 = 10.0, t = 20.0)
+        }
+        assertEquals(
+            "No real solution: this flight time is too long for the given launch speed.",
+            ex.message,
+        )
+    }
+
+    @Test
+    fun timeOfFlightThetaRejectsZeroVelocity() {
+        val ex = assertFailsWith<IllegalArgumentException> {
+            calc.timeOfFlight(v0 = 0.0, t = 5.0)
+        }
+        assertEquals("Division by zero is undefined.", ex.message)
     }
 
     // ---- trajectory ----
@@ -114,6 +132,40 @@ class Chapter4Test {
                 ex.message,
             )
         }
+    }
+
+    @Test
+    fun trajectorySolvingForXReturnsBothRoots() {
+        // θ = 45°, v₀ = 20, height 5 m (below the ~10.2 m apex): two crossings.
+        val roots = calc.trajectoryXPositions(theta = 45.0, v0 = 20.0, y = 5.0)
+        assertEquals(2, roots.size)
+        assertEquals("ascending", roots[0].label)
+        assertEquals("descending", roots[1].label)
+        // Ascending crossing comes first (smaller x).
+        assertTrue(roots[0].value < roots[1].value)
+        // Each root, fed back through y(x), must reproduce the height.
+        for (root in roots) {
+            assertEquals(5.0, calc.trajectory(theta = 45.0, v0 = 20.0, x = root.value), 0.01)
+        }
+    }
+
+    @Test
+    fun trajectorySolvingForXAtGroundGivesLaunchAndRange() {
+        // Height 0: the two crossings are the launch point (0) and the range.
+        val roots = calc.trajectoryXPositions(theta = 45.0, v0 = 20.0, y = 0.0)
+        assertEquals(2, roots.size)
+        assertEquals(0.0, roots[0].value, 1e-9)
+        val range = calc.projectileRange(v0 = 20.0, theta = 45.0)
+        assertEquals(range, roots[1].value, 0.01)
+    }
+
+    @Test
+    fun trajectorySolvingForXRejectsHeightAboveApex() {
+        // Apex for θ=45°, v₀=20 is ~10.2 m; 15 m is never reached.
+        val ex = assertFailsWith<IllegalArgumentException> {
+            calc.trajectoryXPositions(theta = 45.0, v0 = 20.0, y = 15.0)
+        }
+        assertEquals("No real solution: this height is never reached on the path.", ex.message)
     }
 
     @Test

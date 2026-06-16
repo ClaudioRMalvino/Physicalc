@@ -15,7 +15,7 @@ class Chapter10 : PhysicsChapter(
     override val equations: List<Equation> = listOf(
         Equation(
             name = "Angular position",
-            formula = "θ = s/r",
+            formula = "θ = \\frac{s}{r}",
             variables = mapOf(
                 "θ" to "Angular position (rads)",
                 "s" to "Arc length (m)",
@@ -31,7 +31,7 @@ class Chapter10 : PhysicsChapter(
         ),
         Equation(
             name = "Angular velocity",
-            formula = "ω = lim(Δt→0) Δθ/Δt = dθ/dt",
+            formula = "ω = lim_{Δt→0} \\frac{Δθ}{Δt} = \\frac{dθ}{dt}",
             variables = mapOf(
                 "ω" to "Angular velocity (rads/s)",
                 "dθ/dt" to "The change in angular position with respect to time.",
@@ -55,7 +55,7 @@ class Chapter10 : PhysicsChapter(
         ),
         Equation(
             name = "Angular acceleration",
-            formula = "α = lim(Δt→0) Δω/Δt = dω/dt = d^2θ/dt^2",
+            formula = "α = lim_{Δt→0} \\frac{Δω}{Δt} = \\frac{dω}{dt} = \\frac{d^2θ}{dt^2}",
             variables = mapOf(
                 "α" to "Angular acceleration (m/s²)",
                 "d²θ/dt²" to "Second derivative of the angular position with respect to time.",
@@ -72,7 +72,7 @@ class Chapter10 : PhysicsChapter(
         ),
         Equation(
             name = "Average angular velocity",
-            formula = "ω_{avg} = (ω_0 + ω_f)/2",
+            formula = "ω_{avg} = \\frac{ω_0 + ω_f}{2}",
             variables = mapOf(
                 "ω_{avg}" to "Average angular velocity (rad/s)",
                 "ω₀" to "Initial angular velocity (rad/s)",

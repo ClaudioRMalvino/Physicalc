@@ -27,7 +27,7 @@ class Chapter4 : PhysicsChapter(
         ),
         Equation(
             name = "Velocity vector",
-            formula = "v(t) = lim(Δt→0) ((r(t + Δt) − r(t)) / Δt) = dr/dt",
+            formula = "v(t) = lim_{Δt→0} \\frac{r(t + Δt) − r(t)}{Δt} = \\frac{dr}{dt}",
             variables = mapOf("Δt" to "Elapsed time (s)"),
         ),
         Equation(
@@ -36,23 +36,23 @@ class Chapter4 : PhysicsChapter(
         ),
         Equation(
             name = "Velocity components",
-            formula = "v_x = dx/dt, v_y = dy/dt, v_z = dz/dt",
+            formula = "v_x = \\frac{dx}{dt}, v_y = \\frac{dy}{dt}, v_z = \\frac{dz}{dt}",
         ),
         Equation(
             name = "Average velocity",
-            formula = "v_{avg} = (r(t_2) − r(t_1)) / (t_2 − t_1)",
+            formula = "v_{avg} = \\frac{r(t_2) − r(t_1)}{t_2 − t_1}",
         ),
         Equation(
             name = "Instantaneous acceleration",
-            formula = "a(t) = lim(Δt→0) ((v(t + Δt) − v(t)) / Δt) = dv/dt",
+            formula = "a(t) = lim_{Δt→0} \\frac{v(t + Δt) − v(t)}{Δt} = \\frac{dv}{dt}",
         ),
         Equation(
             name = "Acceleration components",
-            formula = "a(t) = (d^2x/dt^2)\\hat{i} + (d^2y/dt^2)\\hat{j} + (d^2z/dt^2)\\hat{k}",
+            formula = "a(t) = \\frac{d^2x}{dt^2}\\hat{i} + \\frac{d^2y}{dt^2}\\hat{j} + \\frac{d^2z}{dt^2}\\hat{k}",
         ),
         Equation(
             name = "Time of Flight",
-            formula = "T_{tot} = 2v_0sinθ / g",
+            formula = "T_{tot} = \\frac{2v_0sinθ}{g}",
             variables = mapOf(
                 "v₀" to "Initial velocity (m/s)",
                 "θ" to "Launch angle (degrees)",
@@ -68,23 +68,28 @@ class Chapter4 : PhysicsChapter(
         ),
         Equation(
             name = "Trajectory",
-            formula = "y = (tanθ)x − (g / (2(v_0cosθ)^2))x^2",
+            formula = "y = (tanθ)x − \\frac{g}{2(v_0cosθ)^2}x^2",
             variables = mapOf(
                 "θ" to "Launch angle (degrees)",
                 "v₀" to "Initial velocity (m/s)",
-                "x" to "Position along he x-axis (m)",
+                "x" to "Position along the x-axis (m)",
+                "y" to "Height at x (m)",
             ),
-            calculation = { v ->
-                Calculate.trajectory(
-                    theta = v["θ"],
-                    v0 = v["v₀"],
-                    x = v["x"],
-                )
+            // Solving for x is a quadratic — a projectile passes a given height
+            // twice — so this returns both roots; the other targets are single-valued.
+            multiCalculation = { v ->
+                if (v["x"] == null) {
+                    Calculate.trajectoryXPositions(theta = v["θ"], v0 = v["v₀"], y = v["y"])
+                } else {
+                    listOf(Root(Calculate.trajectory(theta = v["θ"], v0 = v["v₀"], x = v["x"], y = v["y"])))
+                }
             },
+            // θ inverts to a two-angle quadratic, still unsupported; v₀, x, y are solvable.
+            solvableFor = setOf("v₀", "x", "y"),
         ),
         Equation(
             name = "Range",
-            formula = "R = (v_0^2sin2θ) / g",
+            formula = "R = \\frac{v_0^2sin2θ}{g}",
             variables = mapOf(
                 "θ" to "Launch angle (degrees)",
                 "v₀" to "Initial velocity (m/2)",
@@ -98,7 +103,7 @@ class Chapter4 : PhysicsChapter(
         ),
         Equation(
             name = "Centripetal acceleration",
-            formula = "a_c = v^2 / r",
+            formula = "a_c = \\frac{v^2}{r}",
             variables = mapOf(
                 "v" to "Velocity (m/s)",
                 "r" to "Radius (m)",
@@ -121,7 +126,7 @@ class Chapter4 : PhysicsChapter(
         ),
         Equation(
             name = "Velocity vector (uniform cirular motion)",
-            formula = "v(t) = dr(t)/dt = −Aω sin ωt \\hat{i} + Aω cos ωt \\hat{j}",
+            formula = "v(t) = \\frac{dr(t)}{dt} = −Aω sin ωt \\hat{i} + Aω cos ωt \\hat{j}",
             variables = mapOf(
                 "A" to "Amplitude (m)",
                 "ω" to "Angular frequency (rads/s)",
@@ -130,7 +135,7 @@ class Chapter4 : PhysicsChapter(
         ),
         Equation(
             name = "Acceleration vector (uniform circular motion)",
-            formula = "a(t) = dv(t)/dt = −Aω^2 cos ωt \\hat{i} − Aω^2 sin ωt \\hat{j}",
+            formula = "a(t) = \\frac{dv(t)}{dt} = −Aω^2 cos ωt \\hat{i} − Aω^2 sin ωt \\hat{j}",
             variables = mapOf(
                 "A" to "Amplitude (m)",
                 "ω" to "Angular frequency (rads/s)",
@@ -139,7 +144,7 @@ class Chapter4 : PhysicsChapter(
         ),
         Equation(
             name = "Tangential acceleration",
-            formula = "a_T = d|v|/dt",
+            formula = "a_T = \\frac{d|v|}{dt}",
         ),
         Equation(
             name = "Total acceleration",
@@ -211,22 +216,34 @@ class Chapter4 : PhysicsChapter(
         private fun round4(value: Double): Double = roundResult(value)
 
         /**
-         * T = 2v₀sinθ / g. Pass null for the unknown. θ (degrees) is always
-         * required — the equation cannot be inverted for θ without complex numbers.
+         * T = 2v₀sinθ / g. Pass null for the unknown. Inverting for θ gives
+         * θ = arcsin(gT / 2v₀), real whenever gT / 2v₀ ≤ 1 — i.e. when the
+         * requested flight time is physically reachable at the given launch speed.
          */
         fun timeOfFlight(
             v0: Double? = null,
             theta: Double? = null,
             t: Double? = null,
         ): Double {
-            if (theta == null) {
-                throw IllegalArgumentException(
-                    "Cannot solve for theta with this equation. Yields complex numbers. \n Please input a value for theta."
-                )
-            }
-            val thetaRadians: Double = theta * (PI / 180)
-
             if (t != null && t < 0) throw IllegalArgumentException("Time cannot be a negative value")
+
+            // Solve for θ
+            if (theta == null) {
+                if (v0 == null || t == null) {
+                    throw IllegalArgumentException("Provide initial velocity and time of flight to solve for theta.")
+                }
+                if (v0 == 0.0) throw IllegalArgumentException("Division by zero is undefined.")
+
+                val argument: Double = (t * G) / (2.0 * v0)
+                if (argument > 1.0) {
+                    throw IllegalArgumentException(
+                        "No real solution: this flight time is too long for the given launch speed."
+                    )
+                }
+                return round4(asin(argument) * (180 / PI))
+            }
+
+            val thetaRadians: Double = theta * (PI / 180)
 
             // Solve for v₀
             if (v0 == null) {
@@ -281,6 +298,50 @@ class Chapter4 : PhysicsChapter(
             // Solve for y
             val vCos: Double = v0 * cos(thetaRadian)
             return round4(tan(thetaRadian) * x - ((G / (2 * vCos * vCos)) * (x * x)))
+        }
+
+        /**
+         * Horizontal positions where the trajectory reaches height y, given θ and v₀.
+         * Rearranges y = (tanθ)x − k·x² (k = g / 2(v₀cosθ)²) into k·x² − (tanθ)x + y = 0
+         * and solves the quadratic. A projectile passes a given height twice, so this
+         * returns up to two roots (ascending then descending), filtered to x ≥ 0.
+         * Throws when the height is above the apex (no real root).
+         */
+        fun trajectoryXPositions(
+            theta: Double? = null,
+            v0: Double? = null,
+            y: Double? = null,
+        ): List<Root> {
+            if (theta == null || v0 == null || y == null) {
+                throw IllegalArgumentException("Provide angle, initial velocity, and height to solve for x.")
+            }
+            val thetaRadian: Double = theta * (PI / 180.0)
+            val vCos: Double = v0 * cos(thetaRadian)
+            if (vCos == 0.0) throw IllegalArgumentException("Division by zero is undefined")
+
+            val k: Double = G / (2.0 * vCos * vCos)
+            val b: Double = tan(thetaRadian)
+            val discriminant: Double = b * b - 4.0 * k * y
+            if (discriminant < 0) {
+                throw IllegalArgumentException("No real solution: this height is never reached on the path.")
+            }
+
+            val sqrtDisc: Double = sqrt(discriminant)
+            val candidates = listOf((b - sqrtDisc) / (2.0 * k), (b + sqrtDisc) / (2.0 * k))
+                .filter { it >= 0.0 }
+                .sorted()
+            if (candidates.isEmpty()) {
+                throw IllegalArgumentException("No solution with positive x for this height.")
+            }
+
+            return if (candidates.size == 2 && candidates[0] != candidates[1]) {
+                listOf(
+                    Root(round4(candidates[0]), "ascending"),
+                    Root(round4(candidates[1]), "descending"),
+                )
+            } else {
+                listOf(Root(round4(candidates[0])))
+            }
         }
 
         /** R = (v₀²sin2θ) / g. Pass null for the unknown. */

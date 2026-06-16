@@ -134,7 +134,7 @@ private fun EquationsTab(
         itemsIndexed(chapter.equations) { index, equation ->
             EquationCard(
                 equation = equation,
-                onOpenCalculator = if (equation.calculation != null) {
+                onOpenCalculator = if (equation.isCalculable) {
                     { onOpenCalculator(index) }
                 } else null,
             )

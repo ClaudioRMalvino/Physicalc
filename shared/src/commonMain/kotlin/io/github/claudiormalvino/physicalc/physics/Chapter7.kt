@@ -87,7 +87,7 @@ class Chapter7 : PhysicsChapter(
         ),
         Equation(
             name = "Kinetic energy (momentum representation)",
-            formula = "K = ½(p^2/m)",
+            formula = "K = ½\\frac{p^2}{m}",
             variables = mapOf(
                 "K" to "Kinetic energy (J)",
                 "m" to "Mass (kg)",
@@ -121,7 +121,7 @@ class Chapter7 : PhysicsChapter(
         ),
         Equation(
             name = "Average power",
-            formula = "P_{avg} = ΔW/Δt",
+            formula = "P_{avg} = \\frac{ΔW}{Δt}",
             variables = mapOf(
                 "P_{avg}" to "Average power (J/s)",
                 "ΔW" to "Elapsed work done (W)",

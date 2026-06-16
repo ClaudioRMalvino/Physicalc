@@ -1,11 +1,24 @@
 package io.github.claudiormalvino.physicalc.ui
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.takeOrElse
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -15,7 +28,12 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
+import androidx.compose.ui.unit.isSpecified
+import androidx.compose.ui.unit.sp
+import kotlin.math.max
 
 /*
  * FormulaText — lightweight TeX-lite physics-formula renderer.
@@ -38,15 +56,228 @@ fun FormulaText(
     style: TextStyle = LocalTextStyle.current,
     textAlign: TextAlign? = null,
 ) {
-    // Parsing is pure; remember() caches it per formula string.
-    val rendered = remember(formula) { FormulaParser.parse(formula) }
-    Text(
-        text = rendered,
+    // Top-level split into whitespace-delimited tokens (wrap points); each token's
+    // \frac groups become stacked 2D fractions, the rest stays inline styled text.
+    val tokens = remember(formula) { tokenize(formula) }
+    val barColor = color.takeOrElse { LocalContentColor.current }
+
+    Layout(
         modifier = modifier,
-        color = color,
-        style = style,
-        textAlign = textAlign,
-    )
+        content = { tokens.forEach { SegRow(it.segments, color, style, barColor) } },
+    ) { measurables, constraints ->
+        val maxWidth = constraints.maxWidth
+        val gapPx = run {
+            val fontPx = if (style.fontSize.isSpecified) style.fontSize.toPx() else 16.sp.toPx()
+            (fontPx * 0.25f).toInt()
+        }
+
+        val placeables = measurables.map { it.measure(Constraints(maxWidth = maxWidth)) }
+        val lineOf = IntArray(placeables.size)
+        val xOf = IntArray(placeables.size)
+        val lineHeights = ArrayList<Int>()
+        val lineWidths = ArrayList<Int>()
+
+        var x = 0
+        var line = 0
+        var lineHeight = 0
+        var lineHasContent = false
+
+        placeables.forEachIndexed { idx, p ->
+            val gap = if (lineHasContent && tokens[idx].spaceBefore) gapPx else 0
+            if (lineHasContent && x + gap + p.width > maxWidth) {
+                lineHeights.add(lineHeight); lineWidths.add(x)
+                line++; x = 0; lineHeight = 0; lineHasContent = false
+            }
+            val g = if (lineHasContent && tokens[idx].spaceBefore) gapPx else 0
+            xOf[idx] = x + g
+            lineOf[idx] = line
+            x += g + p.width
+            lineHeight = max(lineHeight, p.height)
+            lineHasContent = true
+        }
+        if (lineHasContent) { lineHeights.add(lineHeight); lineWidths.add(x) }
+
+        val totalHeight = lineHeights.sum()
+        val outWidth = if (constraints.hasBoundedWidth) maxWidth else (lineWidths.maxOrNull() ?: 0)
+        val lineTop = IntArray(lineHeights.size)
+        var acc = 0
+        for (l in lineHeights.indices) { lineTop[l] = acc; acc += lineHeights[l] }
+
+        layout(outWidth, totalHeight) {
+            placeables.forEachIndexed { idx, p ->
+                val l = lineOf[idx]
+                val centerShift = if (textAlign == TextAlign.Center) (outWidth - lineWidths[l]) / 2 else 0
+                // Center each piece on its line, so a fraction's bar lines up with adjacent text.
+                val y = lineTop[l] + (lineHeights[l] - p.height) / 2
+                p.place(xOf[idx] + centerShift, y)
+            }
+        }
+    }
+}
+
+/** A horizontal run of segments (text + fractions), vertically centered on a shared axis. */
+@Composable
+private fun SegRow(segments: List<Seg>, color: Color, style: TextStyle, barColor: Color) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        segments.forEach { seg ->
+            when (seg) {
+                is Seg.Txt -> {
+                    val rendered = remember(seg.src) { FormulaParser.parse(seg.src) }
+                    Text(text = rendered, color = color, style = style, softWrap = false, maxLines = 1)
+                }
+                is Seg.Frac -> Fraction(seg.num, seg.den, color, style, barColor)
+                is Seg.Sqrt -> Radical(seg.radicand, color, style, barColor)
+            }
+        }
+    }
+}
+
+/** A radical sign with a vinculum drawn over the radicand. */
+@Composable
+private fun Radical(radicand: String, color: Color, style: TextStyle, barColor: Color) {
+    val segs = remember(radicand) { splitSegments(radicand) }
+    val hook = 9.dp
+    val topGap = 4.dp
+    Box(
+        modifier = Modifier
+            .drawBehind {
+                val sw = 1.4.dp.toPx()
+                val hookPx = hook.toPx()
+                val topY = sw
+                // Vinculum over the radicand, from the top of the radical tick rightward.
+                drawLine(barColor, Offset(hookPx, topY), Offset(size.width, topY), sw)
+                // The radical check mark, rising to meet the vinculum.
+                drawPath(
+                    Path().apply {
+                        moveTo(hookPx * 0.18f, size.height * 0.6f)
+                        lineTo(hookPx * 0.5f, size.height - sw)
+                        lineTo(hookPx, topY)
+                    },
+                    barColor,
+                    style = Stroke(width = sw),
+                )
+            }
+            .padding(start = hook + 2.dp, top = topGap),
+    ) {
+        SegRow(segs, color, style, barColor)
+    }
+}
+
+/** Numerator stacked over denominator with a rule as wide as the wider half. */
+@Composable
+private fun Fraction(num: String, den: String, color: Color, style: TextStyle, barColor: Color) {
+    // Fraction halves typeset a touch smaller, as in printed math; nesting compounds.
+    val half = if (style.fontSize.isSpecified) style.copy(fontSize = style.fontSize * 0.94f) else style
+    Layout(
+        content = {
+            SegRow(remember(num) { splitSegments(num) }, color, half, barColor)
+            SegRow(remember(den) { splitSegments(den) }, color, half, barColor)
+            Box(Modifier.background(barColor))
+        },
+    ) { measurables, _ ->
+        val numP = measurables[0].measure(Constraints())
+        val denP = measurables[1].measure(Constraints())
+        val sidePad = 2.dp.roundToPx()
+        val barWidth = max(numP.width, denP.width) + 2 * sidePad
+        val barThick = max(1, (1.5.dp).roundToPx())
+        val barP = measurables[2].measure(Constraints.fixed(barWidth, barThick))
+        val gap = 3.dp.roundToPx()
+
+        val width = barWidth
+        val height = numP.height + gap + barThick + gap + denP.height
+        layout(width, height) {
+            numP.place((width - numP.width) / 2, 0)
+            barP.place(0, numP.height + gap)
+            denP.place((width - denP.width) / 2, numP.height + gap + barThick + gap)
+        }
+    }
+}
+
+// ---- Top-level structure: tokens and segments -------------------------------
+
+/** A piece of a token: plain styled text, a stacked fraction, or a radical. */
+private sealed interface Seg {
+    data class Txt(val src: String) : Seg
+    data class Frac(val num: String, val den: String) : Seg
+    data class Sqrt(val radicand: String) : Seg
+}
+
+/** A whitespace-delimited token; [spaceBefore] marks where a gap (and wrap) may go. */
+private data class Token(val segments: List<Seg>, val spaceBefore: Boolean)
+
+/** Splits a formula into tokens at top-level (brace-depth-0) whitespace. */
+private fun tokenize(formula: String): List<Token> {
+    val tokens = ArrayList<Token>()
+    var i = 0
+    var spaceBefore = false
+    while (i < formula.length) {
+        if (formula[i].isWhitespace()) { spaceBefore = true; i++; continue }
+        val start = i
+        var depth = 0
+        while (i < formula.length) {
+            when (formula[i]) {
+                '{' -> depth++
+                '}' -> depth--
+                else -> if (formula[i].isWhitespace() && depth == 0) break
+            }
+            i++
+        }
+        tokens.add(Token(splitSegments(formula.substring(start, i)), spaceBefore))
+        spaceBefore = false
+    }
+    return tokens
+}
+
+/** Splits a token (or a fraction half) into text and \frac segments, in order. */
+private fun splitSegments(src: String): List<Seg> {
+    val segs = ArrayList<Seg>()
+    val text = StringBuilder()
+    fun flush() { if (text.isNotEmpty()) { segs.add(Seg.Txt(text.toString())); text.clear() } }
+
+    var i = 0
+    while (i < src.length) {
+        if (src.startsWith("\\frac", i)) {
+            val (num, afterNum) = readBraceGroup(src, i + 5)
+            val (den, afterDen) = readBraceGroup(src, afterNum)
+            if (num != null && den != null) {
+                flush()
+                segs.add(Seg.Frac(num, den))
+                i = afterDen
+                continue
+            }
+        } else if (src.startsWith("\\sqrt", i)) {
+            val (radicand, after) = readBraceGroup(src, i + 5)
+            if (radicand != null) {
+                flush()
+                segs.add(Seg.Sqrt(radicand))
+                i = after
+                continue
+            }
+        }
+        text.append(src[i]); i++
+    }
+    flush()
+    return segs
+}
+
+/** Reads a balanced {group} starting at the first '{' at or after [from]. */
+private fun readBraceGroup(src: String, from: Int): Pair<String?, Int> {
+    var i = from
+    while (i < src.length && src[i] != '{') {
+        if (!src[i].isWhitespace()) return null to from // not a brace group
+        i++
+    }
+    if (i >= src.length) return null to from
+    var depth = 0
+    val open = i
+    while (i < src.length) {
+        when (src[i]) {
+            '{' -> depth++
+            '}' -> { depth--; if (depth == 0) return src.substring(open + 1, i) to (i + 1) }
+        }
+        i++
+    }
+    return null to from // unbalanced
 }
 
 /** Pure parser: TeX-lite source -> styled AnnotatedString. Kept UI-free so it's unit-testable. */

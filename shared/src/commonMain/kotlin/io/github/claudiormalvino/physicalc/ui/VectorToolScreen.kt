@@ -56,6 +56,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
@@ -577,6 +578,22 @@ private fun Vector3Canvas(
                             // Clamp short of ±90° so the view can't flip over the pole.
                             pitch = (pitch + pan.y * 0.008f).coerceIn(-1.5f, 1.5f)
                             zoom = (zoom * gestureZoom).coerceIn(0.3f, 5f)
+                        }
+                    }
+                    // Mouse wheel / trackpad scroll zooms on desktop, where there's
+                    // no pinch. Touch never emits scroll events, so this is inert there.
+                    .pointerInput(Unit) {
+                        awaitPointerEventScope {
+                            while (true) {
+                                val event = awaitPointerEvent()
+                                if (event.type == PointerEventType.Scroll) {
+                                    val dy = event.changes.fold(0f) { acc, c -> acc + c.scrollDelta.y }
+                                    if (dy != 0f) {
+                                        zoom = (zoom * (1f - dy * 0.12f)).coerceIn(0.3f, 5f)
+                                        event.changes.forEach { it.consume() }
+                                    }
+                                }
+                            }
                         }
                     }
                     .pointerInput(Unit) {

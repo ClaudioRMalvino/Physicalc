@@ -21,8 +21,11 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "io.github.claudiormalvino.physicalc"
+            // User-facing name: the app-image folder and launcher become "Physicalc".
+            packageName = "Physicalc"
             packageVersion = "1.0.0"
+            description = "Interactive physics reference and equation solver"
+            vendor = "Claudio R. Malvino"
         }
     }
 }

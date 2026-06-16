@@ -34,17 +34,9 @@ First-year undergraduate physics students (and anyone reviewing the fundamentals
 |:---:|:---:|:---:|
 | <img src="assets/screenshots/solver_dark.png" width="260" alt="Interactive solver with result"> | <img src="assets/screenshots/converter_dark.png" width="260" alt="Live unit converter"> | <img src="assets/screenshots/flashcard_back.png" width="260" alt="Flashcards with self-graded recall"> |
 
-|                                                Light theme                                                | |
-|:---------------------------------------------------------------------------------------------------------:|:---:|
-| <img src="assets/screenshots/home_light.png" width="260" alt="Light (paper-cream) home with daily quote"> | <img src="assets/screenshots/chapters_light.png" width="260" alt="Light (paper-cream) chapter list"> |
-
-### Vectors in 3D
-
-Enter two vectors as components (or magnitude & angle in 2D) and see them drawn tip-to-tail with the resultant, alongside the dot product, cross product, and the angle between them. The 3D view is fully interactive — drag to orbit, scroll or pinch to zoom — with an axis triad and dashed drop lines to the *xy*-plane so depth is unambiguous.
-
-<p align="center">
-  <img src="assets/screenshots/vectors_3d.png" width="280" alt="3D vector calculator: vectors A, B, and A+B drawn in an orbitable 3D space with an x/y/z axis triad and dashed drop lines to the floor plane">
-</p>
+| Vectors (3D) | Light theme | Light theme |
+|:---:|:---:|:---:|
+| <img src="assets/screenshots/vectors_3d.png" width="260" alt="3D vector calculator: vectors A, B, and A+B in an orbitable 3D space with an x/y/z axis triad and dashed drop lines to the floor plane"> | <img src="assets/screenshots/home_light.png" width="260" alt="Light (paper-cream) home with daily quote"> | <img src="assets/screenshots/chapters_light.png" width="260" alt="Light (paper-cream) chapter list"> |
 
 Each planet in the home screen is drawn at its true
 heliocentric ecliptic longitude for the current date (JPL Keplerian elements,
@@ -91,7 +83,41 @@ PhysicsApp/
 
 The design principle carried over from Physics-TUI: **domain logic is pure and UI-free.** Every solver is a plain function from known values to the unknown, so it's trivially testable and platform-independent. Calculators follow the same convention as the Python original — the variable left unknown (`null`, formerly `None`) is the one solved for.
 
-## Building and running
+## Desktop app
+
+Physicalc runs as a standalone desktop application on **Linux, Windows, and macOS** — no Java or other dependencies required, because each build bundles its own runtime.
+
+**Download** the build for your OS from the [Releases](https://github.com/ClaudioRMalvino/Physicalc/releases) page.
+
+### Linux (any distribution, including Arch)
+
+Download the portable archive, extract it, and run the launcher:
+
+```bash
+tar -xzf Physicalc-<version>-linux-x64.tar.gz
+./Physicalc/bin/Physicalc
+```
+
+The archive ships its own Java runtime, so it works on any distro — Arch/CachyOS, Fedora, Debian, etc. — with nothing else installed. (Debian/Ubuntu users can alternatively install the `.deb`.)
+
+### Windows / macOS
+
+Install the `.msi` (Windows) or `.dmg` (macOS) from Releases and launch Physicalc like any native app.
+
+### Building the distributables yourself
+
+```bash
+# Portable app image for the current OS — the Linux tarball is zipped from this
+./gradlew :desktopApp:createDistributable
+#   → desktopApp/build/compose/binaries/main/app/Physicalc/
+
+# Native installer for the current OS (.deb/.rpm on Linux, .msi on Windows, .dmg on macOS)
+./gradlew :desktopApp:packageDistributionForCurrentOS
+```
+
+`jpackage` can't cross-compile, so each platform's installer must be produced on that platform.
+
+## Building and running from source
 
 Prerequisites: JDK 17+, and for Android an SDK (the project reads its location from `local.properties`).
 
